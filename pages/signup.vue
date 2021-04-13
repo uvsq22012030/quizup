@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="bg-local" style="background-image: url(background.jpg)">
     <!-- component -->
     <section class="flex flex-col min-h-screen">
       <div class="flex items-center justify-center flex-1">
         <div
-          class="w-full px-4 py-16 text-center rounded-lg sm:border-2 lg:px-24 lg:max-w-xl sm:max-w-md"
+          class="bg-white w-full px-4 py-5 text-center rounded-lg sm:border-2 lg:px-24 lg:max-w-xl sm:max-w-md"
         >
           <form class="text-center">
             <div class="flex items-center justify-center flex-1">
@@ -403,7 +403,6 @@
                 >
               </div>
             </div>
-
             <div class="py-2">
               <button
                 type="submit"
