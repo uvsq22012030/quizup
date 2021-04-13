@@ -35,6 +35,24 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
+    //https://firebase.nuxtjs.org/guide/getting-started/
+    [
+      '@nuxtjs/firebase',
+      {
+        config: {
+          apiKey: "AIzaSyDJHk1sA1ooexdAZt_0P6dywT5ByuE4EEA",
+          authDomain: "quizup-91757.firebaseapp.com",
+          projectId: "quizup-91757",
+          storageBucket: "quizup-91757.appspot.com",
+          messagingSenderId: "737504622882",
+          appId: "1:737504622882:web:9c7d18b64d1e06884e4d7b",
+          measurementId: "G-BZXCQ7M42Q"
+        },
+        services: {
+          auth: true // Just as example. Can be any other service.
+        }
+      }
+    ]
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
