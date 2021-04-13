@@ -28,7 +28,7 @@
             <h1
               class="w-full mb-8 text-3xl font-bold tracking-wider text-gray-600"
             >
-              Connexion
+              Sign up
             </h1>
             <div class="py-2 text-left">
               <input
@@ -44,6 +44,28 @@
                 placeholder="Password"
               />
             </div>
+            <div class="py-2 text-left">
+              <input
+                type="password"
+                class="block w-full px-4 py-2 bg-gray-100 bg-gray-200 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700"
+                placeholder="Password"
+              />
+            </div>
+            <div class="py-2 text-left">
+              <input
+                type="password"
+                class="block w-full px-4 py-2 bg-gray-100 bg-gray-200 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700"
+                placeholder="Password"
+              />
+            </div>
+            <div class="py-2 text-left">
+              <input
+                type="password"
+                class="block w-full px-4 py-2 bg-gray-100 bg-gray-200 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700"
+                placeholder="Password"
+              />
+            </div>
+
             <div class="py-2">
               <button
                 type="submit"
@@ -76,6 +98,27 @@
     >
       Support me
     </a>
+
+    <!-- component -->
+    <div class="max-w-md px-8 py-4 my-20 bg-white rounded-lg shadow-lg">
+      <div class="flex justify-center -mt-16 md:justify-end">
+        <img
+          class="object-cover w-20 h-20 border-2 border-indigo-500 rounded-full"
+          src="https://images.unsplash.com/photo-1499714608240-22fc6ad53fb2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=334&q=80"
+        />
+      </div>
+      <div>
+        <h2 class="text-3xl font-semibold text-gray-800">Design Tools</h2>
+        <p class="mt-2 text-gray-600">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae dolores
+          deserunt ea doloremque natus error, rerum quas odio quaerat nam ex
+          commodi hic, suscipit in a veritatis pariatur minus consequuntur!
+        </p>
+      </div>
+      <div class="flex justify-end mt-4">
+        <a href="#" class="text-xl font-medium text-indigo-500">John Doe</a>
+      </div>
+    </div>
   </div>
 </template>
 

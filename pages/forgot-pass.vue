@@ -28,7 +28,7 @@
             <h1
               class="w-full mb-8 text-3xl font-bold tracking-wider text-gray-600"
             >
-              Connexion
+              Mot de passe oublié
             </h1>
             <div class="py-2 text-left">
               <input
@@ -37,19 +37,12 @@
                 placeholder="Email"
               />
             </div>
-            <div class="py-2 text-left">
-              <input
-                type="password"
-                class="block w-full px-4 py-2 bg-gray-100 bg-gray-200 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700"
-                placeholder="Password"
-              />
-            </div>
             <div class="py-2">
               <button
                 type="submit"
                 class="block w-full p-2 font-bold tracking-wider text-white bg-purple-600 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700 hover:bg-purple-700"
               >
-                Sign In
+                Réinitialiser
               </button>
             </div>
           </form>
