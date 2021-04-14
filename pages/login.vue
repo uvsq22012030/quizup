@@ -4,7 +4,7 @@
     <section class="flex flex-col min-h-screen">
       <div class="flex items-center justify-center flex-1">
         <div
-          class="bg-white w-full px-4 py-16 text-center rounded-lg sm:border-2 lg:px-24 lg:max-w-xl sm:max-w-md"
+          class="w-full px-4 py-16 text-center bg-white rounded-lg sm:border-2 lg:px-24 lg:max-w-xl sm:max-w-md"
         >
           <form class="text-center">
             <div class="flex items-center justify-center flex-1">
@@ -20,6 +20,7 @@
             </h1>
             <div class="py-2 text-left">
               <input
+                v-model="email"
                 type="email"
                 class="block w-full px-4 py-2 bg-gray-100 bg-gray-200 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700"
                 placeholder="Email"
@@ -27,6 +28,7 @@
             </div>
             <div class="py-2 text-left">
               <input
+                v-model="password"
                 type="password"
                 class="block w-full px-4 py-2 bg-gray-100 bg-gray-200 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700"
                 placeholder="Password"
@@ -34,8 +36,8 @@
             </div>
             <div class="py-2">
               <button
-                type="submit"
-                class="block w-full p-2 font-bold tracking-wider text-white bg-red-400 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700 hover:bg-red-600"
+                class="block w-full p-2 font-bold tracking-wider text-white uppercase bg-red-400 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700 hover:bg-red-600"
+                @click="signInUser"
               >
                 Sign In
               </button>
@@ -61,7 +63,29 @@
 </template>
 
 <script>
-export default {}
+export default {
+  data() {
+    return {
+      email: '',
+      password: '',
+    }
+  },
+  methods: {
+    async signInUser(e) {
+      e.preventDefault()
+      try {
+        const userInfo = await this.$fire.auth.signInWithEmailAndPassword(
+          this.email,
+          this.password
+        )
+        console.log(userInfo)
+        this.$router.push('/')
+      } catch (e) {
+        alert(e)
+      }
+    },
+  },
+}
 </script>
 
 <style></style>

@@ -1,32 +1,35 @@
 <template>
   <div class="container">
     <div>
-      <Logo />
-      <h1 class="title">QuizUp</h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
+      <h1 class="text-9xl title">QuizUp</h1>
+      <p class="text-lg font-bold tracking-wider text-gray-500">
+        {{ $fire.auth.currentUser.email }}
+      </p>
+      <div class="mt-5">
+        <button
+          class="px-4 py-2 font-semibold text-red-700 bg-transparent border border-red-500 rounded hover:bg-red-500 hover:text-white hover:border-transparent"
+          @click="signOut"
         >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
+          Deconnexion
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  methods: {
+    async signOut() {
+      try {
+        await this.$fire.auth.signOut()
+        this.$router.push('/login')
+      } catch (e) {
+        alert(e)
+      }
+    },
+  },
+}
 </script>
 
 <style>
@@ -42,22 +45,8 @@ export default {}
 .title {
   font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
     'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
   font-weight: 300;
-  font-size: 100px;
   color: #35495e;
   letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
 }
 </style>
