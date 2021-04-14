@@ -62,6 +62,7 @@ export default {
             ssr: false, // default
           },
         },
+        onFirebaseHosting: true,
       },
     ],
   ],
