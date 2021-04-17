@@ -71,6 +71,7 @@ export default {
       try {
         await this.$fire.auth.sendPasswordResetEmail(this.email)
         alert('Email sent successfully !')
+        this.$router.push('/login')
       } catch (e) {
         alert(e)
       }
