@@ -1,5 +1,5 @@
 const actions = {
-  async onAuthStateChangedAction(state, { authUser, claims }) {
+  onAuthStateChangedAction(state, { authUser, claims }) {
     if (!authUser) {
       // remove state
       state.commit('SET_USER', null)
