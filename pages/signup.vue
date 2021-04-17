@@ -69,43 +69,45 @@
           </div>
         </div>
         <!--Popup-->
-        <div
-          class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center"
-        >
+        <template v-if="popup">
           <div
-            class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"
-          ></div>
-          <div
-            class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto"
+            class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center"
           >
-            <div class="modal-content py-4 text-left px-6">
-              <!--Icon-->
-              <div class="flex items-center justify-center flex-1">
-                <img
-                  class="object-fill h-50 w-55"
-                  src="~/assets/img/tick.png"
-                />
-              </div>
-              <!--Title-->
-              <div class="flex justify-between items-center pb-3">
-                <p class="text-2xl text-center font-bold">
-                  Registration successful !
-                </p>
-              </div>
-              <!--Body-->
-              <p>Please click on the button below to continue.</p>
-              <!--Footer-->
-              <div class="flex justify-end pt-2">
-                <button
-                  class="block w-full p-2 font-bold tracking-wider text-white bg-red-400 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700 hover:bg-red-600"
-                  @click="goToIndex"
-                >
-                  Continue
-                </button>
+            <div
+              class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"
+            ></div>
+            <div
+              class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto"
+            >
+              <div class="modal-content py-4 text-left px-6">
+                <!--Icon-->
+                <div class="flex items-center justify-center flex-1">
+                  <img
+                    class="object-fill h-50 w-55"
+                    src="~/assets/img/tick.png"
+                  />
+                </div>
+                <!--Title-->
+                <div class="flex justify-between items-center pb-3">
+                  <p class="text-2xl text-center font-bold">
+                    Registration successful !
+                  </p>
+                </div>
+                <!--Body-->
+                <p>Please click on the button below to continue.</p>
+                <!--Footer-->
+                <div class="flex justify-end pt-2">
+                  <button
+                    class="block w-full p-2 font-bold tracking-wider text-white bg-red-400 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700 hover:bg-red-600"
+                    @click="goToIndex"
+                  >
+                    Continue
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </template>
       </div>
     </section>
   </div>
@@ -119,6 +121,7 @@ export default {
       email: '',
       password: '',
       confirm_password: '',
+      popup: false,
     }
   },
   methods: {
@@ -140,11 +143,7 @@ export default {
           this.$fire.auth.currentUser.updateProfile({
             displayName: this.username,
           })
-          const body = document.querySelector('body')
-          const modal = document.querySelector('.modal')
-          modal.classList.toggle('opacity-0')
-          modal.classList.toggle('pointer-events-none')
-          body.classList.toggle('modal-active')
+          this.popup = true
         } catch (e) {
           alert(e)
         }
