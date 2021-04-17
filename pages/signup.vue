@@ -43,6 +43,7 @@
             </div>
             <div class="py-2 text-left">
               <input
+                v-model="confirm_password"
                 type="password"
                 class="block w-full px-4 py-2 bg-gray-100 bg-gray-200 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700"
                 placeholder="Confirm password"
@@ -77,18 +78,28 @@ export default {
     return {
       email: '',
       password: '',
+      confirm_password: '',
     }
   },
   methods: {
     async createUser(e) {
       e.preventDefault()
-      try {
-        await this.$fire.auth.createUserWithEmailAndPassword(
-          this.email,
-          this.password
-        )
-      } catch (e) {
-        alert(e)
+      if (!this.confirm_password) {
+        alert('Please confirm password')
+      } else if (this.confirm_password !== this.password) {
+        alert('Password confirmation is wrong')
+      } else {
+        try {
+          await this.$fire.auth.createUserWithEmailAndPassword(
+            this.email,
+            this.password
+          )
+          this.$store.commit('SET_REGISTER', true)
+          console.log('Signup: ' + this.$store.state.register)
+          this.$router.push('/register_success')
+        } catch (e) {
+          alert(e)
+        }
       }
     },
   },
