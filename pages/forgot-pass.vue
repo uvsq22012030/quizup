@@ -20,6 +20,7 @@
             </h1>
             <div class="py-2 text-left">
               <input
+                v-model="email"
                 type="email"
                 class="block w-full px-4 py-2 bg-gray-100 bg-gray-200 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700"
                 placeholder="Email"
@@ -27,6 +28,7 @@
             </div>
             <div class="mb-6 text-center">
               <button
+                @click="sendEmail"
                 type="submit"
                 class="block w-full p-2 font-bold tracking-wider text-white bg-red-400 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700 hover:bg-red-600"
               >
@@ -57,7 +59,24 @@
 </template>
 
 <script>
-export default {}
+export default {
+  data() {
+    return {
+      email: '',
+    }
+  },
+  methods: {
+    async sendEmail(e) {
+      e.preventDefault()
+      try {
+        await this.$fire.auth.sendPasswordResetEmail(this.email)
+        alert('Email sent successfully !')
+      } catch (e) {
+        alert(e)
+      }
+    },
+  },
+}
 </script>
 
 <style></style>
