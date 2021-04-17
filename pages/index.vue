@@ -2,8 +2,8 @@
   <div class="container">
     <div>
       <h1 class="text-9xl title">QuizUp</h1>
-      <p class="text-lg font-bold tracking-wider text-gray-500">
-        {{ $fire.auth.currentUser.email }}
+      <p class="mt-3 mb-5 text-lg font-bold tracking-wider text-gray-500">
+        Welcome : {{ $fire.auth.currentUser.displayName }} !
       </p>
       <div class="mt-5">
         <button

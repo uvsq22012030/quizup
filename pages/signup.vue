@@ -20,6 +20,7 @@
             </h1>
             <div class="py-2 text-left">
               <input
+                v-model="username"
                 type="text"
                 class="block w-full px-4 py-2 bg-gray-100 bg-gray-200 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700"
                 placeholder="Username"
@@ -96,8 +97,8 @@
               <!--Footer-->
               <div class="flex justify-end pt-2">
                 <button
-                  @click="goToIndex"
                   class="block w-full p-2 font-bold tracking-wider text-white bg-red-400 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700 hover:bg-red-600"
+                  @click="goToIndex"
                 >
                   Continue
                 </button>
@@ -114,6 +115,7 @@
 export default {
   data() {
     return {
+      username: '',
       email: '',
       password: '',
       confirm_password: '',
@@ -122,6 +124,9 @@ export default {
   methods: {
     async createUser(e) {
       e.preventDefault()
+      if (!this.username) {
+        alert('Please enter a username')
+      }
       if (!this.confirm_password) {
         alert('Please confirm password')
       } else if (this.confirm_password !== this.password) {
@@ -132,6 +137,9 @@ export default {
             this.email,
             this.password
           )
+          this.$fire.auth.currentUser.updateProfile({
+            displayName: this.username,
+          })
           const body = document.querySelector('body')
           const modal = document.querySelector('.modal')
           modal.classList.toggle('opacity-0')
