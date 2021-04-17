@@ -28,9 +28,9 @@
             </div>
             <div class="mb-6 text-center">
               <button
-                @click="sendEmail"
                 type="submit"
                 class="block w-full p-2 font-bold tracking-wider text-white bg-red-400 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700 hover:bg-red-600"
+                @click="sendEmail"
               >
                 Reset password
               </button>
