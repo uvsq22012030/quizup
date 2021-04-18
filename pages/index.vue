@@ -22,7 +22,15 @@ export default {
   methods: {
     async signOut() {
       try {
-        await this.$fire.auth.signOut()
+        // Check if a user is logged in with an anonymous an account
+        if (!this.$fire.auth.currentUser.isAnonymous) {
+          // If not, log out
+          await this.$fire.auth.signOut()
+        } else {
+          // Else delete the anonymous account
+          this.$fire.auth.currentUser.delete()
+        }
+        // Redirect to login page
         this.$router.push('/login')
       } catch (e) {
         alert(e)
