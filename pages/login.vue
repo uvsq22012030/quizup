@@ -56,6 +56,16 @@
               >Create one</NuxtLink
             >
           </div>
+          <div class="mt-2 text-center">
+            <span> Or </span>
+            <a
+              href="#"
+              class="font-light font-semibold text-red-400 underline text-md hover:text-red-600"
+              @click="signInAnonymous"
+              >Click here</a
+            >
+            <span> to login anonymously. </span>
+          </div>
         </div>
       </div>
     </section>
@@ -79,6 +89,18 @@ export default {
           this.password
         )
         console.log(userInfo)
+        this.$router.push('/')
+      } catch (e) {
+        alert(e)
+      }
+    },
+    async signInAnonymous(e) {
+      e.preventDefault()
+      try {
+        await this.$fire.auth.signInAnonymously()
+        await this.$fire.auth.currentUser.updateProfile({
+          displayName: 'Guest#' + Date.now(),
+        })
         this.$router.push('/')
       } catch (e) {
         alert(e)
