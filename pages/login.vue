@@ -99,7 +99,7 @@ export default {
       try {
         await this.$fire.auth.signInAnonymously()
         await this.$fire.auth.currentUser.updateProfile({
-          displayName: 'Guest#' + Date.now(),
+          displayName: 'Guest_' + Date.now(),
         })
         this.$router.push('/')
       } catch (e) {
