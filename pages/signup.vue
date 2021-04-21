@@ -16,14 +16,14 @@
             <h1
               class="w-full mb-8 text-3xl font-bold tracking-wider text-gray-600"
             >
-              Sign up
+              Inscription
             </h1>
             <div class="py-2 text-left">
               <input
                 v-model="username"
                 type="text"
                 class="block w-full px-4 py-2 bg-gray-100 bg-gray-200 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700"
-                placeholder="Username"
+                placeholder="Pseudo"
               />
             </div>
             <div class="py-2 text-left">
@@ -39,7 +39,7 @@
                 v-model="password"
                 type="password"
                 class="block w-full px-4 py-2 bg-gray-100 bg-gray-200 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700"
-                placeholder="Password"
+                placeholder="Mot de passe"
               />
             </div>
             <div class="py-2 text-left">
@@ -47,7 +47,7 @@
                 v-model="confirm_password"
                 type="password"
                 class="block w-full px-4 py-2 bg-gray-100 bg-gray-200 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700"
-                placeholder="Confirm password"
+                placeholder="Confirmer mot de passe"
               />
             </div>
             <div class="py-2">
@@ -55,16 +55,16 @@
                 class="block w-full p-2 font-bold tracking-wider text-white bg-red-400 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700 hover:bg-red-600"
                 @click="createUser"
               >
-                Sign Up
+                S'inscrire
               </button>
             </div>
           </form>
           <div class="mt-12 text-center">
-            <span> Already have an account? </span>
+            <span> Vous avez déjà un compte? </span>
             <NuxtLink
               to="/login"
               class="font-light font-semibold text-red-400 underline uppercase text-md hover:text-red-600"
-              >Sign in</NuxtLink
+              >Se connecter</NuxtLink
             >
           </div>
         </div>
@@ -90,18 +90,18 @@
                 <!--Title-->
                 <div class="flex justify-between items-center pb-3">
                   <p class="text-2xl text-center font-bold">
-                    Registration successful !
+                    Inscription réussie !
                   </p>
                 </div>
                 <!--Body-->
-                <p>Please click on the button below to continue.</p>
+                <p>Cliquer sur le bouton ci-dessous pour continuer</p>
                 <!--Footer-->
                 <div class="flex justify-end pt-2">
                   <button
                     class="block w-full p-2 font-bold tracking-wider text-white bg-red-400 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700 hover:bg-red-600"
                     @click="goToIndex"
                   >
-                    Continue
+                    Continuer
                   </button>
                 </div>
               </div>
@@ -128,12 +128,12 @@ export default {
     async createUser(e) {
       e.preventDefault()
       if (!this.username) {
-        alert('Please enter a username')
+        alert("Veuillez saisir un nom d'utilisateur")
       }
       if (!this.confirm_password) {
-        alert('Please confirm password')
+        alert('Veuillez confirmer le mot de passe')
       } else if (this.confirm_password !== this.password) {
-        alert('Password confirmation is wrong')
+        alert('La confirmation du mot de passe est fausse')
       } else {
         try {
           await this.$fire.auth.createUserWithEmailAndPassword(

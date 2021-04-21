@@ -16,7 +16,7 @@
             <h1
               class="w-full mb-8 text-3xl font-bold tracking-wider text-gray-600"
             >
-              Reset password
+              Changement de mot de passe
             </h1>
             <div class="py-2 text-left">
               <input
@@ -32,23 +32,23 @@
                 class="block w-full p-2 font-bold tracking-wider text-white bg-red-400 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700 hover:bg-red-600"
                 @click="sendEmail"
               >
-                Reset password
+                Envoyer
               </button>
             </div>
             <hr class="mb-6 border-t" />
             <div class="mt-12 text-center">
-              <span> Already have an account? </span>
+              <span> Vous avez déjà un compte? </span>
               <NuxtLink
                 to="/login"
                 class="font-light font-semibold text-red-400 underline text-md hover:text-red-600"
-                >Sign in</NuxtLink
+                >Se connecter</NuxtLink
               >
               <br />
-              <span> Don't have an account? </span>
+              <span> Pas de compte? </span>
               <NuxtLink
                 to="/signup"
                 class="font-light font-semibold text-red-400 underline text-md hover:text-red-600"
-                >Create one</NuxtLink
+                >En créer un</NuxtLink
               >
             </div>
           </form>
@@ -70,7 +70,7 @@ export default {
       e.preventDefault()
       try {
         await this.$fire.auth.sendPasswordResetEmail(this.email)
-        alert('Email sent successfully !')
+        alert("L'email a bient été envoyé !")
         this.$router.push('/login')
       } catch (e) {
         alert(e)

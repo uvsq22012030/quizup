@@ -16,7 +16,7 @@
             <h1
               class="w-full mb-8 text-3xl font-bold tracking-wider text-gray-600"
             >
-              Login
+              Connexion
             </h1>
             <div class="py-2 text-left">
               <input
@@ -31,7 +31,7 @@
                 v-model="password"
                 type="password"
                 class="block w-full px-4 py-2 bg-gray-100 bg-gray-200 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700"
-                placeholder="Password"
+                placeholder="Mot de passe"
               />
             </div>
             <div class="py-2">
@@ -39,32 +39,32 @@
                 class="block w-full p-2 font-bold tracking-wider text-white uppercase bg-red-400 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700 hover:bg-red-600"
                 @click="signInUser"
               >
-                Sign In
+                Connexion
               </button>
             </div>
           </form>
           <div class="text-center">
             <NuxtLink to="/forgot-pass" class="hover:underline"
-              >Forgot password?</NuxtLink
+              >Mot de passe oublié?</NuxtLink
             >
           </div>
           <div class="mt-12 text-center">
-            <span> Don't have an account? </span>
+            <span> Pas de compte? </span>
             <NuxtLink
               to="/signup"
               class="font-light font-semibold text-red-400 underline text-md hover:text-red-600"
-              >Create one</NuxtLink
+              >En créer un</NuxtLink
             >
           </div>
           <div class="mt-2 text-center">
-            <span> Or </span>
+            <span> Sinon </span>
             <a
               href="#"
               class="font-light font-semibold text-red-400 underline text-md hover:text-red-600"
               @click="signInAnonymous"
-              >Click here</a
+              >Cliquer ici</a
             >
-            <span> to login anonymously. </span>
+            <span> pour se connecter en tant qu'invité. </span>
           </div>
         </div>
       </div>
