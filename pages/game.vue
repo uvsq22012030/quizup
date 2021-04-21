@@ -32,23 +32,14 @@
                   Difficulté
                   <div class="flex items-center md:mt-2 mb-4 md:mb-3">
                     <svg
-                      v-for="i in Object.keys(questionsJson).indexOf(
-                        difficulty
-                      ) + 1"
+                      v-for="i in Object.keys(questionsJson).length"
                       :key="i"
-                      class="mx-1 w-4 h-4 fill-current text-yellow-500"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"
-                      />
-                    </svg>
-                    <svg
-                      v-for="j in Object.keys(questionsJson).length -
-                      (Object.keys(questionsJson).indexOf(difficulty) + 1)"
-                      :key="j"
-                      class="mx-1 w-4 h-4 fill-current text-gray-400"
+                      :class="[
+                        i <= Object.keys(questionsJson).indexOf(difficulty) + 1
+                          ? 'text-yellow-500'
+                          : 'text-gray-400',
+                        'mx-1 w-4 h-4 fill-current',
+                      ]"
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 20 20"
                     >
@@ -252,7 +243,7 @@ export default {
     }
   },
   mounted() {
-    if (this.$route.params.isTimed) setTimeout(this.countdown, 1000)
+    if (this.$route.params.isTimed) setTimeout(this.countdown, 4000)
   },
   methods: {
     play(e) {
@@ -332,29 +323,31 @@ export default {
       // Fin du chronometre
       if (!this.timer) {
         // On met la bonne réponse en vert
-        const rightAnswer = this.questionsJson[this.difficulty][
-          this.currentQuestionNumber
-        ].réponse
-        const buttons1 = this.$refs.buttons1.children
-        const buttons2 = this.$refs.buttons2.children
-        buttons1.forEach(function (b) {
-          if (b.innerText === rightAnswer) {
-            b.className = b.className
-              .replace('hover:bg-gray-100', '')
-              .replace('bg-white', 'bg-green-400')
-          }
-        })
-        buttons2.forEach(function (b) {
-          if (b.innerText === rightAnswer) {
-            b.className = b.className
-              .replace('hover:bg-gray-100', '')
-              .replace('bg-white', 'bg-green-400')
-          }
-        })
-        // On cache le timer
-        // On termine le tour
-        this.$refs.timeBar.className += 'hidden'
-        this.done = true
+        try {
+          const rightAnswer = this.questionsJson[this.difficulty][
+            this.currentQuestionNumber
+          ].réponse
+          const buttons1 = this.$refs.buttons1.children
+          const buttons2 = this.$refs.buttons2.children
+          buttons1.forEach(function (b) {
+            if (b.innerText === rightAnswer) {
+              b.className = b.className
+                .replace('hover:bg-gray-100', '')
+                .replace('bg-white', 'bg-green-400')
+            }
+          })
+          buttons2.forEach(function (b) {
+            if (b.innerText === rightAnswer) {
+              b.className = b.className
+                .replace('hover:bg-gray-100', '')
+                .replace('bg-white', 'bg-green-400')
+            }
+          })
+          // On cache le timer
+          // On termine le tour
+          this.$refs.timeBar.className += 'hidden'
+          this.done = true
+        } catch (e) {}
       } else if (!this.done) {
         setTimeout(this.countdown, 1000)
       }

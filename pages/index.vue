@@ -46,7 +46,7 @@
                     />
                   </button>
                   <ul
-                    class="w-7 bg-white border-0 transform scale-0 group-hover:scale-100 absolute transition duration-150 ease-in-out origin-top"
+                    class="w-7 md:w-12 bg-white border-0 transform scale-0 group-hover:scale-100 absolute transition duration-150 ease-in-out origin-top"
                   >
                     <li class="w-full h-5 border-1 rounded-md border-red-400">
                       <input
@@ -105,12 +105,14 @@
               <div
                 class="bg-gray-100 flex items-center rounded-2xl md:rounded-full shadow-lg w-2/3 lg:w-1/3 mx-auto"
               >
-                <input
+                <v-select
                   id="search"
-                  class="bg-gray-100 rounded-l-2xl md:rounded-l-full w-full py-4 px-6 text-gray-700 leading-tight focus:outline-none"
+                  class="bg-gray-100 border-0 rounded-l-2xl md:rounded-l-full w-full py-4 px-6 text-gray-700 leading-tight focus:outline-none"
+                  label="theme"
                   type="text"
                   placeholder="Chercher un thème..."
-                />
+                >
+                </v-select>
                 <div class="p-4">
                   <button
                     class="bg-red-400 text-white rounded-full p-2 hover:bg-red-500 focus:outline-none h-8 w-8 md:w-12 md:h-12 flex items-center justify-center"
@@ -526,7 +528,7 @@
                     <input
                       id="normal"
                       v-model="gameMode"
-                      value="false"
+                      :value="false"
                       class="hidden"
                       type="radio"
                       checked
@@ -540,7 +542,7 @@
                     <input
                       id="timed"
                       v-model="gameMode"
-                      value="true"
+                      :value="true"
                       class="hidden"
                       type="radio"
                     />
@@ -596,6 +598,7 @@ import jsonFile3 from '~/assets/animateurs_télé.json'
 export default {
   data() {
     return {
+      searchSuggestions: ['Theme1', 'Theme2'],
       optionsPopup: false,
       chosenTheme: null,
       difficulty: '',
@@ -604,9 +607,20 @@ export default {
       themeJson2: jsonFile2,
       themeJson3: jsonFile3,
       jsonFiles: [jsonFile1, jsonFile2, jsonFile3],
+      ip: null,
     }
   },
+  mounted() {
+    // this.fetchSomething()
+    // console.log(this.ip)
+  },
   methods: {
+    async fetchSomething() {
+      const ip = await this.$axios.$get(
+        'https://7c49b1cc9ff7.ngrok.io/questions'
+      )
+      this.ip = ip
+    },
     async signOut() {
       try {
         // On vérifie si l'utilisateur est connecté en tant qu'anonyme
