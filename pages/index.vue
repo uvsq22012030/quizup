@@ -10,7 +10,7 @@
             class="flex justify-between flex-wrap bg-white py-4 lg:px-12 shadow-2xl border-solid border-1"
           >
             <div
-              class="left-0 flex justify-between lg:w-auto w-full lg:border-b-0 pl-6 pr-2 border-solid border-0 pb-5 lg:pb-0"
+              class="left-0 flex justify-between lg:w-auto w-full lg:border-b-0 px-2 sm:pl-6 sm:pr-2 border-solid border-0 pb-5 lg:pb-0"
             >
               <div
                 class="flex items-center flex-shrink-0 text-gray-800 mr-auto"
@@ -28,13 +28,13 @@
               <!-- Avatar (mobile) -->
               <div class="flex items-center space-x-2">
                 <span
-                  class="text-gray-500 font-bold font-mono pl-10 tracking-tight text-sm sm:flex lg:hidden"
+                  class="text-gray-500 font-bold font-mono pl-10 tracking-tight text-xs sm:text-sm sm:flex lg:hidden"
                 >
                   {{ $fire.auth.currentUser.displayName }}
                 </span>
                 <div class="group border-0 lg:hidden">
                   <button
-                    class="outline-none focus:outline-none bg-white border-0 rounded-sm flex items-center min-w-13"
+                    class="outline-none focus:outline-none bg-white border-0 rounded-sm flex items-center"
                   >
                     <img
                       class="border-gray-500 border-2 rounded-lg h-8 w-8 md:h-13 md:w-13"
@@ -46,12 +46,17 @@
                     />
                   </button>
                   <ul
-                    class="bg-white border rounded-sm transform scale-0 group-hover:scale-100 absolute transition duration-150 ease-in-out origin-top min-w-13"
+                    class="w-7 bg-white border-0 transform scale-0 group-hover:scale-100 absolute transition duration-150 ease-in-out origin-top"
                   >
-                    <li class="w-10 rounded-sm py-1 hover:bg-red-400">
-                      <button class="w-1/2" @click="signOut">
-                        Déconnexion
-                      </button>
+                    <li class="w-full h-5 border-1 rounded-md border-red-400">
+                      <input
+                        id="image"
+                        class="object-cover h-full w-full"
+                        type="image"
+                        alt="Logout"
+                        src="exit.png"
+                        @click="signOut"
+                      />
                     </li>
                   </ul>
                 </div>
@@ -94,7 +99,7 @@
               </div>
             </div>
           </nav>
-          <div class="block justify-center min-h-full bg-white mx-20 my-0">
+          <div class="block justify-center min-h-full bg-white md:mx-20 my-0">
             <!--Search Bar -->
             <div class="p-8">
               <div
@@ -283,195 +288,199 @@
                 Historique des parties (bientôt)
               </h1>
               <div class="bg-white shadow-md rounded">
-                <table class="w-full table-auto shadow-2xl">
+                <table
+                  class="max-w-sm md:w-full table-fixed md:table-auto shadow-2xl"
+                >
                   <tbody class="text-gray-600 text-sm font-light">
                     <tr class="h-40 border-b border-gray-200 hover:bg-red-400">
-                      <td class="py-3 px-6 text-left whitespace-nowrap">
+                      <td
+                        class="px-1 py-1 md:px-6 md:py-3 text-left whitespace-nowrap"
+                      >
                         <div class="flex items-center">
                           <span class="font-medium">Apr 19, 14:30</span>
                         </div>
                       </td>
-                      <td class="py-3 px-6 text-left">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
                         <div class="flex items-center">
                           <span>Theme</span>
                         </div>
                       </td>
-                      <td class="py-3 px-6 text-center">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
                         <span
                           class="bg-red-200 text-gray-800 py-1 px-3 rounded-full text-xs"
                         >
                           Solo
                         </span>
                       </td>
-                      <td class="py-3 px-6 text-center">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
                         <div class="flex item-center justify-center font-bold">
                           0 pts
                         </div>
                       </td>
                     </tr>
                     <tr class="h-40 border-b border-gray-200 hover:bg-red-400">
-                      <td class="py-3 px-6 text-left">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
                         <div class="flex items-center">
                           <span class="font-medium">Apr 19, 14:30</span>
                         </div>
                       </td>
-                      <td class="py-3 px-6 text-left">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
                         <div class="flex items-center">
                           <span>Theme</span>
                         </div>
                       </td>
-                      <td class="py-3 px-6 text-center">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
                         <span
                           class="bg-blue-200 text-gray-800 py-1 px-3 rounded-full text-xs"
                         >
                           Multijoueur
                         </span>
                       </td>
-                      <td class="py-3 px-6 text-center">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
                         <div class="flex item-center justify-center font-bold">
                           0 pts
                         </div>
                       </td>
                     </tr>
                     <tr class="h-40 border-b border-gray-200 hover:bg-red-400">
-                      <td class="py-3 px-6 text-left">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
                         <div class="flex items-center">
                           <span class="font-medium">Apr 19, 14:30</span>
                         </div>
                       </td>
-                      <td class="py-3 px-6 text-left">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
                         <div class="flex items-center">
                           <span>Theme</span>
                         </div>
                       </td>
-                      <td class="py-3 px-6 text-center">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
                         <span
                           class="bg-blue-200 text-gray-800 py-1 px-3 rounded-full text-xs"
                         >
                           Multijoueur
                         </span>
                       </td>
-                      <td class="py-3 px-6 text-center">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
                         <div class="flex item-center justify-center font-bold">
                           0 pts
                         </div>
                       </td>
                     </tr>
                     <tr class="h-40 border-b border-gray-200 hover:bg-red-400">
-                      <td class="py-3 px-6 text-left">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
                         <div class="flex items-center">
                           <span class="font-medium">Apr 19, 14:30</span>
                         </div>
                       </td>
-                      <td class="py-3 px-6 text-left">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
                         <div class="flex items-center">
                           <span>Theme</span>
                         </div>
                       </td>
-                      <td class="py-3 px-6 text-center">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
                         <span
                           class="bg-red-200 text-gray-800 py-1 px-3 rounded-full text-xs"
                         >
                           Solo
                         </span>
                       </td>
-                      <td class="py-3 px-6 text-center">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
                         <div class="flex item-center justify-center font-bold">
                           0 pts
                         </div>
                       </td>
                     </tr>
                     <tr class="h-40 border-b border-gray-200 hover:bg-red-400">
-                      <td class="py-3 px-6 text-left">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
                         <div class="flex items-center">
                           <span class="font-medium">Apr 19, 14:30</span>
                         </div>
                       </td>
-                      <td class="py-3 px-6 text-left">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
                         <div class="flex items-center">
                           <span>Theme</span>
                         </div>
                       </td>
-                      <td class="py-3 px-6 text-center">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
                         <span
                           class="bg-red-200 text-gray-800 py-1 px-3 rounded-full text-xs"
                         >
                           Solo
                         </span>
                       </td>
-                      <td class="py-3 px-6 text-center">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
                         <div class="flex item-center justify-center font-bold">
                           0 pts
                         </div>
                       </td>
                     </tr>
                     <tr class="h-40 border-b border-gray-200 hover:bg-red-400">
-                      <td class="py-3 px-6 text-left">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
                         <div class="flex items-center">
                           <span class="font-medium">Apr 19, 14:30</span>
                         </div>
                       </td>
-                      <td class="py-3 px-6 text-left">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
                         <div class="flex items-center">
                           <span>Theme</span>
                         </div>
                       </td>
-                      <td class="py-3 px-6 text-center">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
                         <span
                           class="bg-blue-200 text-gray-800 py-1 px-3 rounded-full text-xs"
                         >
                           Multijoueur
                         </span>
                       </td>
-                      <td class="py-3 px-6 text-center">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
                         <div class="flex item-center justify-center font-bold">
                           0 pts
                         </div>
                       </td>
                     </tr>
                     <tr class="h-40 border-b border-gray-200 hover:bg-red-400">
-                      <td class="py-3 px-6 text-left">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
                         <div class="flex items-center">
                           <span class="font-medium">Apr 19, 14:30</span>
                         </div>
                       </td>
-                      <td class="py-3 px-6 text-left">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
                         <div class="flex items-center">
                           <span>Theme</span>
                         </div>
                       </td>
-                      <td class="py-3 px-6 text-center">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
                         <span
                           class="bg-red-200 text-gray-800 py-1 px-3 rounded-full text-xs"
                         >
                           Solo
                         </span>
                       </td>
-                      <td class="py-3 px-6 text-center">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
                         <div class="flex item-center justify-center font-bold">
                           0 pts
                         </div>
                       </td>
                     </tr>
                     <tr class="h-40 border-b border-gray-200 hover:bg-red-400">
-                      <td class="py-3 px-6 text-left">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
                         <div class="flex items-center">
                           <span class="font-medium">Apr 19, 14:30</span>
                         </div>
                       </td>
-                      <td class="py-3 px-6 text-left">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
                         <div class="flex items-center">
                           <span>Theme</span>
                         </div>
                       </td>
-                      <td class="py-3 px-6 text-center">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
                         <span
                           class="bg-blue-200 text-gray-800 py-1 px-3 rounded-full text-xs"
                         >
                           Multijoueur
                         </span>
                       </td>
-                      <td class="py-3 px-6 text-center">
+                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
                         <div class="flex item-center justify-center font-bold">
                           0 pts
                         </div>
@@ -517,7 +526,7 @@
                     <input
                       id="normal"
                       v-model="gameMode"
-                      v-bind:value="false"
+                      value="false"
                       class="hidden"
                       type="radio"
                       checked
@@ -531,7 +540,7 @@
                     <input
                       id="timed"
                       v-model="gameMode"
-                      v-bind:value="true"
+                      value="true"
                       class="hidden"
                       type="radio"
                     />
@@ -634,7 +643,7 @@ export default {
       e.preventDefault()
       // On verifie que l'utilisateur a bien choisi les paramètres
       if (!this.difficulty) {
-        alert('Please pick a difficulty !')
+        alert('Veuillez choisir une difficulté !')
       } else {
         // On redirige vers la page de jeu en envoyant le json correspondant
         this.$router.push({
@@ -655,5 +664,9 @@ export default {
 input:checked + label {
   background-color: #fc8181;
   color: white;
+}
+th,
+td {
+  word-wrap: break-word;
 }
 </style>

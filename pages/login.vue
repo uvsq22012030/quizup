@@ -84,11 +84,10 @@ export default {
     async signInUser(e) {
       e.preventDefault()
       try {
-        const userInfo = await this.$fire.auth.signInWithEmailAndPassword(
+        await this.$fire.auth.signInWithEmailAndPassword(
           this.email,
           this.password
         )
-        console.log(userInfo)
         this.$router.push('/')
       } catch (e) {
         alert(e)
