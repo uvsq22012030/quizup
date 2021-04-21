@@ -5,7 +5,7 @@
   >
     <section class="flex flex-col min-h-screen">
       <div
-        class="flex items-stretch justify-center py-10 flex-1 lg:px-15 min-h-screen"
+        class="flex items-stretch justify-center py-5 sm:py-10 flex-1 lg:px-15 min-h-screen"
       >
         <div
           class="rounded-lg border-1 shadow-2xl px-1 md:px-5 py-3 sm:border-2 xl:max-w-3/5 sm:w-screen"
@@ -15,25 +15,57 @@
             v-if="currentQuestionNumber + 1 <= 10"
             class="flex justify-between h-5 w-full mb-8"
           >
-            <p
-              class="w-1/5 text-center md:w-1/5 text-xs md:font-bold md:text-l"
+            <div
+              class="block md:flex text-left w-1/3 text-xs md:font-bold md:text-l"
             >
               <!-- Bouton retour au menu -->
-              <button
-                type="submit"
-                class="bg-red-400 hover:bg-red-600 text-white text-lg font-bold md:w-7 border rounded-full focus:outline-none"
-                @click="$router.push('/')"
-              >
-                «
-              </button>
-              Difficulté : {{ difficulty }}
-            </p>
-            <p class="w-1/6 text-xs md:font-bold md:text-l">
-              Bonne réponses : {{ answers }}
-            </p>
-            <p class="w-1/6 text-xs md:font-bold md:text-l">
-              Question : {{ currentQuestionNumber + 1 }}/{{ totalQuestions }}
-            </p>
+              <div class="flex items-start md:items-center">
+                <button
+                  type="submit"
+                  class="md:pl-2 flex items-center bg-red-400 hover:bg-red-600 text-white text-lg font-bold md:w-7 border mr-2 rounded-full focus:outline-none"
+                  @click="$router.push('/')"
+                >
+                  «
+                </button>
+                <!-- Difficulté -->
+                <div class="w-auto space-x-3 text-left md:flex md:items-center">
+                  Difficulté
+                  <div class="flex items-center md:mt-2 mb-4 md:mb-3">
+                    <svg
+                      v-for="i in Object.keys(questionsJson).length"
+                      :key="i"
+                      :class="[
+                        i <= Object.keys(questionsJson).indexOf(difficulty) + 1
+                          ? 'text-yellow-500'
+                          : 'text-gray-400',
+                        'mx-1 w-4 h-4 fill-current',
+                      ]"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="justify-center space-x-2 flex w-1/3 items-center text-xs md:font-bold md:text-l"
+            >
+              <img class="h-3 w-3 md:h-8 md:w-8" src="~/assets/img/check.png" />
+              <p>{{ answers }}</p>
+            </div>
+            <div
+              class="justify-end space-x-1 flex w-1/3 items-center text-xs md:font-bold md:text-l"
+            >
+              <img
+                class="h-3 w-3 md:h-8 md:w-8"
+                src="~/assets/img/questions.png"
+              />
+              <p>{{ currentQuestionNumber + 1 }}/{{ totalQuestions }}</p>
+            </div>
           </div>
           <!-- Timer bar -->
           <div v-if="isTimed" ref="timeBar">
@@ -181,7 +213,7 @@
             <div class="block h-auto w-full mb-5">
               <button
                 type="submit"
-                class="float-right h-full w-1/4 md:w-1/6 p-2 text-xs md:text-l tracking-wider text-gray-700 bg-white border-2 border-gray-700 shadow-xl rounded-xl focus:outline-none focus:border-gray-700 hover:bg-gray-100 hover:font-bold"
+                class="float-right h-full w-1/4 md:w-1/6 sm:p-2 text-xs md:text-l tracking-wider text-gray-700 bg-white border-2 border-gray-700 shadow-xl rounded-xl focus:outline-none focus:border-gray-700 hover:bg-gray-100 hover:font-bold"
                 @click="nextQuestion"
               >
                 Suivant »
@@ -211,8 +243,7 @@ export default {
     }
   },
   mounted() {
-    console.log(this.$route.params)
-    if (this.$route.params.isTimed) setTimeout(this.countdown, 1000)
+    if (this.$route.params.isTimed) setTimeout(this.countdown, 4000)
   },
   methods: {
     play(e) {
@@ -237,7 +268,6 @@ export default {
         e.target.className = e.target.className
           .replace('hover:bg-gray-100', '')
           .replace('bg-white', 'bg-red-400')
-        console.log('pas la')
         // On met la bonne réponse en vert
         const buttons1 = this.$refs.buttons1.children
         const buttons2 = this.$refs.buttons2.children
@@ -293,29 +323,31 @@ export default {
       // Fin du chronometre
       if (!this.timer) {
         // On met la bonne réponse en vert
-        const rightAnswer = this.questionsJson[this.difficulty][
-          this.currentQuestionNumber
-        ].réponse
-        const buttons1 = this.$refs.buttons1.children
-        const buttons2 = this.$refs.buttons2.children
-        buttons1.forEach(function (b) {
-          if (b.innerText === rightAnswer) {
-            b.className = b.className
-              .replace('hover:bg-gray-100', '')
-              .replace('bg-white', 'bg-green-400')
-          }
-        })
-        buttons2.forEach(function (b) {
-          if (b.innerText === rightAnswer) {
-            b.className = b.className
-              .replace('hover:bg-gray-100', '')
-              .replace('bg-white', 'bg-green-400')
-          }
-        })
-        // On cache le timer
-        // On termine le tour
-        this.$refs.timeBar.className += 'hidden'
-        this.done = true
+        try {
+          const rightAnswer = this.questionsJson[this.difficulty][
+            this.currentQuestionNumber
+          ].réponse
+          const buttons1 = this.$refs.buttons1.children
+          const buttons2 = this.$refs.buttons2.children
+          buttons1.forEach(function (b) {
+            if (b.innerText === rightAnswer) {
+              b.className = b.className
+                .replace('hover:bg-gray-100', '')
+                .replace('bg-white', 'bg-green-400')
+            }
+          })
+          buttons2.forEach(function (b) {
+            if (b.innerText === rightAnswer) {
+              b.className = b.className
+                .replace('hover:bg-gray-100', '')
+                .replace('bg-white', 'bg-green-400')
+            }
+          })
+          // On cache le timer
+          // On termine le tour
+          this.$refs.timeBar.className += 'hidden'
+          this.done = true
+        } catch (e) {}
       } else if (!this.done) {
         setTimeout(this.countdown, 1000)
       }
