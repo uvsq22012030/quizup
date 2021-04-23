@@ -27,15 +27,15 @@
                 >
                   «
                 </button>
-                <!-- Difficulté -->
+                <!-- Difficulté 
                 <div class="w-auto space-x-3 text-left md:flex md:items-center">
                   Difficulté
                   <div class="flex items-center md:mt-2 mb-4 md:mb-3">
                     <svg
-                      v-for="i in Object.keys(questionsJson).length"
+                      v-for="i in Object.keys(randomQuestions).length"
                       :key="i"
                       :class="[
-                        i <= Object.keys(questionsJson).indexOf(difficulty) + 1
+                        i <= Object.keys(randomQuestions).indexOf(difficulty) + 1
                           ? 'text-yellow-500'
                           : 'text-gray-400',
                         'mx-1 w-4 h-4 fill-current',
@@ -49,6 +49,7 @@
                     </svg>
                   </div>
                 </div>
+                -->
               </div>
             </div>
             <div
@@ -94,7 +95,7 @@
             <p
               class="block float-left w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
             >
-              {{ questionsJson[difficulty][currentQuestionNumber].question }}
+              {{ randomQuestions[currentQuestionNumber].question }}
             </p>
           </div>
           <!-- Message de fin de partie -->
@@ -149,9 +150,7 @@
               :class="defaultButtonClass"
               @click="play"
             >
-              {{
-                questionsJson[difficulty][currentQuestionNumber].propositions[0]
-              }}
+              {{ randomQuestions[currentQuestionNumber].propositions[0] }}
             </button>
             <button
               :disabled="done"
@@ -159,9 +158,7 @@
               :class="defaultButtonClass"
               @click="play"
             >
-              {{
-                questionsJson[difficulty][currentQuestionNumber].propositions[1]
-              }}
+              {{ randomQuestions[currentQuestionNumber].propositions[1] }}
             </button>
           </div>
           <div
@@ -175,9 +172,7 @@
               :class="defaultButtonClass"
               @click="play"
             >
-              {{
-                questionsJson[difficulty][currentQuestionNumber].propositions[2]
-              }}
+              {{ randomQuestions[currentQuestionNumber].propositions[2] }}
             </button>
             <button
               :disabled="done"
@@ -185,9 +180,7 @@
               :class="defaultButtonClass"
               @click="play"
             >
-              {{
-                questionsJson[difficulty][currentQuestionNumber].propositions[3]
-              }}
+              {{ randomQuestions[currentQuestionNumber].propositions[3] }}
             </button>
           </div>
           <div v-if="done">
@@ -203,9 +196,7 @@
                   class="block float-left w-full text-xs md:text-xl font-bold tracking-wider text-gray-600"
                 >
                   Anecdote :
-                  {{
-                    questionsJson[difficulty][currentQuestionNumber].anecdote
-                  }}
+                  {{ randomQuestions[currentQuestionNumber].anecdote }}
                 </p>
               </div>
             </div>
@@ -233,28 +224,55 @@ export default {
       isTimed: this.$route.params.isTimed,
       timer: 20,
       done: false,
-      questionsJson: this.$route.params.questions.quizz.fr,
+      theme: [],
+      randomQuestions: [],
+      themeName: this.$route.params.themeName,
       defaultButtonClass:
         'h-5/6 w-5/12 p-2 font-xl tracking-wider text-gray-700 border-2 border-gray-700 shadow-xl rounded-3xl focus:outline-none focus:border-gray-700 hover:font-bold hover:bg-gray-100 bg-white',
-      difficulty: this.$route.params.difficulty,
       answers: 0,
       currentQuestionNumber: 0,
       totalQuestions: 10,
     }
   },
+  created() {
+    // On recupere le theme choisi et on selectionne 10 questions au hasard parmis les 30
+    this.theme = this.$route.params.theme
+    this.randomQuestions = this.shuffleJsonArray(this.theme.questions).slice(
+      0,
+      10
+    )
+  },
   mounted() {
-    if (this.$route.params.isTimed) setTimeout(this.countdown, 4000)
+    // Si le mode choisi est le mode Chrono alors on lance le décompte
+    if (this.$route.params.isTimed) setTimeout(this.countdown, 2000)
   },
   methods: {
+    shuffleJsonArray(array) {
+      // Implementation du Fisher Yates shuffle
+      // https://bost.ocks.org/mike/shuffle
+      let currentIndex = array.length
+      let temporaryValue
+      let randomIndex
+      // While there remain elements to shuffle...
+      while (currentIndex !== 0) {
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex)
+        currentIndex -= 1
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex]
+        array[currentIndex] = array[randomIndex]
+        array[randomIndex] = temporaryValue
+      }
+      return array
+    },
     play(e) {
       e.preventDefault()
       // On cache le timer
       if (this.isTimed) this.$refs.timeBar.className += 'hidden'
       // On récupere la réponse cliquée
       const userAnswer = e.target.innerText
-      const rightAnswer = this.questionsJson[this.difficulty][
-        this.currentQuestionNumber
-      ].réponse
+      const rightAnswer = this.randomQuestions[this.currentQuestionNumber]
+        .réponse
       if (userAnswer === rightAnswer) {
         // Bonne réponse
         // On la met en vert
@@ -312,6 +330,11 @@ export default {
     },
     retry(e) {
       e.preventDefault()
+      // On tire 10 questions au hasard
+      this.randomQuestions = this.shuffleJsonArray(this.theme.questions).slice(
+        0,
+        10
+      )
       // On remet le score et les questions à zero
       this.answers = 0
       this.currentQuestionNumber = 0
@@ -324,9 +347,8 @@ export default {
       if (!this.timer) {
         // On met la bonne réponse en vert
         try {
-          const rightAnswer = this.questionsJson[this.difficulty][
-            this.currentQuestionNumber
-          ].réponse
+          const rightAnswer = this.randomQuestions[this.currentQuestionNumber]
+            .réponse
           const buttons1 = this.$refs.buttons1.children
           const buttons2 = this.$refs.buttons2.children
           buttons1.forEach(function (b) {

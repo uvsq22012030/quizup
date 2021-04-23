@@ -107,6 +107,7 @@
               >
                 <v-select
                   id="search"
+                  :options="searchSuggestions"
                   class="bg-gray-100 border-0 rounded-l-2xl md:rounded-l-full w-full py-4 px-6 text-gray-700 leading-tight focus:outline-none"
                   label="theme"
                   type="text"
@@ -150,33 +151,13 @@
                       <h3
                         class="font-medium text-gray-600 text-lg my-2 uppercase"
                       >
-                        {{
-                          themeJson1.thème.substring(
-                            0,
-                            themeJson1.thème.indexOf('(')
-                          )
-                        }}
+                        {{ popularThemes[0] }}
                       </h3>
-                      <p class="text-center">
-                        {{
-                          themeJson1.thème.substring(
-                            themeJson1.thème.indexOf('(') + 1,
-                            themeJson1.thème.length - 1
-                          )
-                        }}
-                      </p>
                       <div class="group border-0 mt-5">
                         <button
                           type="submit"
                           class="hover:bg-red-600 rounded-full py-2 px-3 font-semibold hover:text-white bg-red-400 text-white"
-                          @click="
-                            soloPopup(
-                              themeJson1.thème.substring(
-                                0,
-                                themeJson1.thème.indexOf('(')
-                              )
-                            )
-                          "
+                          @click="soloPopup(popularThemes[0])"
                         >
                           Jouer en solo
                         </button>
@@ -198,33 +179,13 @@
                       <h3
                         class="font-medium text-gray-600 text-lg my-2 uppercase"
                       >
-                        {{
-                          themeJson2.thème.substring(
-                            0,
-                            themeJson2.thème.indexOf('(')
-                          )
-                        }}
+                        {{ popularThemes[1] }}
                       </h3>
-                      <p class="text-center">
-                        {{
-                          themeJson2.thème.substring(
-                            themeJson2.thème.indexOf('(') + 1,
-                            themeJson2.thème.length - 1
-                          )
-                        }}
-                      </p>
                       <div class="mt-5">
                         <button
                           type="submit"
                           class="hover:bg-red-600 rounded-full py-2 px-3 font-semibold hover:text-white bg-red-400 text-white"
-                          @click="
-                            soloPopup(
-                              themeJson2.thème.substring(
-                                0,
-                                themeJson2.thème.indexOf('(')
-                              )
-                            )
-                          "
+                          @click="soloPopup(popularThemes[1])"
                         >
                           Jouer en solo
                         </button>
@@ -246,33 +207,13 @@
                       <h3
                         class="font-medium text-gray-600 text-lg my-2 uppercase"
                       >
-                        {{
-                          themeJson3.thème.substring(
-                            0,
-                            themeJson3.thème.indexOf('(')
-                          )
-                        }}
+                        {{ popularThemes[2] }}
                       </h3>
-                      <p class="text-center">
-                        {{
-                          themeJson3.thème.substring(
-                            themeJson3.thème.indexOf('(') + 1,
-                            themeJson3.thème.length - 1
-                          )
-                        }}
-                      </p>
                       <div class="mt-5">
                         <button
                           type="submit"
                           class="hover:bg-red-600 rounded-full py-2 px-3 font-semibold hover:text-white bg-red-400 text-white"
-                          @click="
-                            soloPopup(
-                              themeJson3.thème.substring(
-                                0,
-                                themeJson3.thème.indexOf('(')
-                              )
-                            )
-                          "
+                          @click="soloPopup(popularThemes[2])"
                         >
                           Jouer en solo
                         </button>
@@ -554,7 +495,7 @@
                     </label>
                   </div>
                 </fieldset>
-                <!-- Difficulty -->
+                <!-- Difficulty
                 <fieldset
                   class="flex items-center text-center justify-between p-4"
                 >
@@ -572,6 +513,7 @@
                     </select>
                   </div>
                 </fieldset>
+                 -->
                 <div class="text-center flex items-center mt-5">
                   <button
                     type="submit"
@@ -591,36 +533,54 @@
 </template>
 
 <script>
-import jsonFile1 from '~/assets/canada.json'
-import jsonFile2 from '~/assets/breaking_bad.json'
-import jsonFile3 from '~/assets/animateurs_télé.json'
-
 export default {
   data() {
     return {
-      searchSuggestions: ['Theme1', 'Theme2'],
+      searchSuggestions: [],
       optionsPopup: false,
-      chosenTheme: null,
-      difficulty: '',
       gameMode: false,
-      themeJson1: jsonFile1,
-      themeJson2: jsonFile2,
-      themeJson3: jsonFile3,
-      jsonFiles: [jsonFile1, jsonFile2, jsonFile3],
-      ip: null,
+      chosenTheme: null,
+      fetchedThemes: [],
+      popularThemes: [],
     }
   },
-  mounted() {
-    // this.fetchSomething()
-    // console.log(this.ip)
+  created() {
+    // On recupere les theme de l'API
+    this.fetchThemes()
   },
   methods: {
-    async fetchSomething() {
-      const ip = await this.$axios.$get(
-        'https://7c49b1cc9ff7.ngrok.io/questions'
+    // Methode qui formatte le nom d'un thème pour l'affichage
+    format(themeName) {
+      return (
+        themeName[0].toUpperCase() + themeName.slice(1).replaceAll('_', ' ')
       )
-      this.ip = ip
     },
+    // Recuperation des theme à partir de l'API
+    async fetchThemes() {
+      try {
+        const json = await this.$axios.get(
+          'https://quizup-91757.oa.r.appspot.com/categories'
+        )
+        // On recupere les themes
+        this.fetchedThemes = json.data
+        // On reformatte le nom de chaque theme pour l'inserer dans la liste des suggestions de la barre de recherche
+        this.fetchedThemes.forEach((theme) => {
+          this.searchSuggestions.push(this.format(theme.name))
+        })
+        // On récupere 15 thèmes à la une
+        const randomNumbers = []
+        for (let i = 0; i < 15; i++) {
+          let random = Math.floor(Math.random() * this.fetchedThemes.length)
+          while (randomNumbers.includes(random))
+            random = Math.floor(Math.random() * this.fetchedThemes.length)
+          randomNumbers.push(random)
+          this.popularThemes.push(this.format(this.fetchedThemes[random].name))
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    // Deconnexion
     async signOut() {
       try {
         // On vérifie si l'utilisateur est connecté en tant qu'anonyme
@@ -637,38 +597,36 @@ export default {
         alert(e)
       }
     },
-    soloPopup(themeName) {
+    // Affichage du menu d'options de partie
+    async soloPopup(themeName) {
       // On affiche le menu d'options de partie
       this.optionsPopup = true
-      // On récupere le fichier json correspondant au theme cliqué
-      for (let i = 0; i < this.jsonFiles.length; i++) {
+      // On récupere l'id du theme choisi
+      for (let i = 0; i < this.fetchedThemes.length; i++) {
         if (
-          this.jsonFiles[i].thème.substring(
-            0,
-            this.jsonFiles[i].thème.indexOf('(')
-          ) === themeName
+          this.fetchedThemes[i].name ===
+          themeName.replace(' ', '_').toLowerCase()
         ) {
-          this.chosenTheme = this.jsonFiles[i]
+          this.chosenTheme = await this.$axios.get(
+            'https://quizup-91757.oa.r.appspot.com/categories/' +
+              String(this.fetchedThemes[i].id)
+          )
           return
         }
       }
     },
+    // Lancement du jeu solo
     playSolo(e) {
       e.preventDefault()
-      // On verifie que l'utilisateur a bien choisi les paramètres
-      if (!this.difficulty) {
-        alert('Veuillez choisir une difficulté !')
-      } else {
-        // On redirige vers la page de jeu en envoyant le json correspondant
-        this.$router.push({
-          name: 'game',
-          params: {
-            questions: this.chosenTheme,
-            difficulty: this.difficulty,
-            isTimed: this.gameMode,
-          },
-        })
-      }
+      // On redirige vers la page de jeu en envoyant le json correspondant
+      this.$router.push({
+        name: 'game',
+        params: {
+          theme: this.chosenTheme.data,
+          themeName: this.themeName,
+          isTimed: this.gameMode,
+        },
+      })
     },
   },
 }
