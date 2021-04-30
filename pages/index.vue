@@ -232,10 +232,12 @@
               </h1>
               <div class="bg-white shadow-md rounded">
                 <table
-                  class="max-w-sm md:w-full table-fixed md:table-auto shadow-2xl"
+                  class="max-w-sm md:w-full md:max-w-full table-fixed md:table-auto shadow-2xl"
                 >
-                  <tbody class="text-gray-600 text-sm font-light">
-                    <tr class="h-40 border-b border-gray-200 hover:bg-red-400">
+                  <tbody class="w-full text-gray-600 text-sm font-light">
+                    <tr
+                      class="w-full h-40 border-b border-gray-200 hover:bg-red-400"
+                    >
                       <td
                         class="px-1 py-1 md:px-6 md:py-3 text-left whitespace-nowrap"
                       >
@@ -253,174 +255,6 @@
                           class="bg-red-200 text-gray-800 py-1 px-3 rounded-full text-xs"
                         >
                           Solo
-                        </span>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <div class="flex item-center justify-center font-bold">
-                          0 pts
-                        </div>
-                      </td>
-                    </tr>
-                    <tr class="h-40 border-b border-gray-200 hover:bg-red-400">
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span class="font-medium">Apr 19, 14:30</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span>Theme</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <span
-                          class="bg-blue-200 text-gray-800 py-1 px-3 rounded-full text-xs"
-                        >
-                          Multijoueur
-                        </span>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <div class="flex item-center justify-center font-bold">
-                          0 pts
-                        </div>
-                      </td>
-                    </tr>
-                    <tr class="h-40 border-b border-gray-200 hover:bg-red-400">
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span class="font-medium">Apr 19, 14:30</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span>Theme</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <span
-                          class="bg-blue-200 text-gray-800 py-1 px-3 rounded-full text-xs"
-                        >
-                          Multijoueur
-                        </span>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <div class="flex item-center justify-center font-bold">
-                          0 pts
-                        </div>
-                      </td>
-                    </tr>
-                    <tr class="h-40 border-b border-gray-200 hover:bg-red-400">
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span class="font-medium">Apr 19, 14:30</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span>Theme</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <span
-                          class="bg-red-200 text-gray-800 py-1 px-3 rounded-full text-xs"
-                        >
-                          Solo
-                        </span>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <div class="flex item-center justify-center font-bold">
-                          0 pts
-                        </div>
-                      </td>
-                    </tr>
-                    <tr class="h-40 border-b border-gray-200 hover:bg-red-400">
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span class="font-medium">Apr 19, 14:30</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span>Theme</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <span
-                          class="bg-red-200 text-gray-800 py-1 px-3 rounded-full text-xs"
-                        >
-                          Solo
-                        </span>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <div class="flex item-center justify-center font-bold">
-                          0 pts
-                        </div>
-                      </td>
-                    </tr>
-                    <tr class="h-40 border-b border-gray-200 hover:bg-red-400">
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span class="font-medium">Apr 19, 14:30</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span>Theme</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <span
-                          class="bg-blue-200 text-gray-800 py-1 px-3 rounded-full text-xs"
-                        >
-                          Multijoueur
-                        </span>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <div class="flex item-center justify-center font-bold">
-                          0 pts
-                        </div>
-                      </td>
-                    </tr>
-                    <tr class="h-40 border-b border-gray-200 hover:bg-red-400">
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span class="font-medium">Apr 19, 14:30</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span>Theme</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <span
-                          class="bg-red-200 text-gray-800 py-1 px-3 rounded-full text-xs"
-                        >
-                          Solo
-                        </span>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <div class="flex item-center justify-center font-bold">
-                          0 pts
-                        </div>
-                      </td>
-                    </tr>
-                    <tr class="h-40 border-b border-gray-200 hover:bg-red-400">
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span class="font-medium">Apr 19, 14:30</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span>Theme</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <span
-                          class="bg-blue-200 text-gray-800 py-1 px-3 rounded-full text-xs"
-                        >
-                          Multijoueur
                         </span>
                       </td>
                       <td class="px-1 py-1 md:px-6 md:py-3 text-center">
@@ -495,25 +329,6 @@
                     </label>
                   </div>
                 </fieldset>
-                <!-- Difficulty
-                <fieldset
-                  class="flex items-center text-center justify-between p-4"
-                >
-                  <div class="block m-auto">
-                    <legend class="block font-bold mb-2">
-                      Choisir la difficulté :
-                    </legend>
-                    <select v-model="difficulty" class="block m-auto">
-                      <option
-                        v-for="diff in Object.keys(chosenTheme.quizz.fr)"
-                        :key="diff"
-                      >
-                        {{ diff }}
-                      </option>
-                    </select>
-                  </div>
-                </fieldset>
-                 -->
                 <div class="text-center flex items-center mt-5">
                   <button
                     type="submit"
@@ -542,6 +357,7 @@ export default {
       chosenTheme: null,
       fetchedThemes: [],
       popularThemes: [],
+      themeIdDictionary: {},
     }
   },
   created() {
@@ -559,7 +375,7 @@ export default {
     async fetchThemes() {
       try {
         const json = await this.$axios.get(
-          'https://quizup-91757.oa.r.appspot.com/categories'
+          'https://enigmatic-stream-69193.herokuapp.com/categories'
         )
         // On recupere les themes
         this.fetchedThemes = json.data
@@ -574,7 +390,9 @@ export default {
           while (randomNumbers.includes(random))
             random = Math.floor(Math.random() * this.fetchedThemes.length)
           randomNumbers.push(random)
-          this.popularThemes.push(this.format(this.fetchedThemes[random].name))
+          const formattedName = this.format(this.fetchedThemes[random].name)
+          this.popularThemes.push(formattedName)
+          this.themeIdDictionary[formattedName] = this.fetchedThemes[random].id
         }
       } catch (err) {
         console.log(err)
@@ -599,21 +417,18 @@ export default {
     },
     // Affichage du menu d'options de partie
     async soloPopup(themeName) {
+      console.log(themeName)
+      console.log(this.themeIdDictionary)
+      console.log(this.themeIdDictionary[themeName])
+      // Recuperation du nom du theme
+      this.themeName = themeName
+      // On récupere l'id du theme choisi
+      this.chosenTheme = await this.$axios.get(
+        'https://enigmatic-stream-69193.herokuapp.com/categories/' +
+          String(this.themeIdDictionary[themeName])
+      )
       // On affiche le menu d'options de partie
       this.optionsPopup = true
-      // On récupere l'id du theme choisi
-      for (let i = 0; i < this.fetchedThemes.length; i++) {
-        if (
-          this.fetchedThemes[i].name ===
-          themeName.replace(' ', '_').toLowerCase()
-        ) {
-          this.chosenTheme = await this.$axios.get(
-            'https://quizup-91757.oa.r.appspot.com/categories/' +
-              String(this.fetchedThemes[i].id)
-          )
-          return
-        }
-      }
     },
     // Lancement du jeu solo
     playSolo(e) {
