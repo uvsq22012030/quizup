@@ -56,7 +56,7 @@
               class="justify-center space-x-2 flex w-1/3 items-center text-xs md:font-bold md:text-l"
             >
               <img class="h-3 w-3 md:h-8 md:w-8" src="~/assets/img/check.png" />
-              <p>{{ answers }}</p>
+              <p>{{ gameInfo.answers }}</p>
             </div>
             <div
               class="justify-end space-x-1 flex w-1/3 items-center text-xs md:font-bold md:text-l"
@@ -112,7 +112,7 @@
             <p
               class="block text-center bottom-0 w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
             >
-              {{ answers }} / {{ totalQuestions }}
+              {{ gameInfo.answers }} / {{ totalQuestions }}
             </p>
             <p
               class="block text-center bottom-0 w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
@@ -183,7 +183,7 @@
               {{ randomQuestions[currentQuestionNumber].propositions[3] }}
             </button>
           </div>
-          <div v-if="done">
+          <div v-if="currentQuestionNumber + 1 <= 10 && done">
             <!-- Anecdote -->
             <div class="block h-auto w-full space-y-2 mt-2">
               <hr class="w-full border-t" />
@@ -221,20 +221,34 @@
 export default {
   data() {
     return {
-      isTimed: this.$route.params.isTimed,
-      timer: 20,
-      done: false,
+      historyRef: null, // Reference sur l'historique dans la base de données
+      intervalId: null, // Identifiant pour la fonction setInterval du chronometre
+      isTimed: this.$route.params.isTimed, // Booléen décrivant le mode de jeu (Chrono/Normal)
+      timer: 20, // Temps donné pour chaque question
+      done: false, // Booléen décrivant si l'utilisateur a repondu ou non à la question courante
       theme: [],
-      randomQuestions: [],
-      themeName: this.$route.params.themeName,
+      randomQuestions: [], // Liste aleatoire de questions
       defaultButtonClass:
+        // CSS par défaut de chaque bouton
         'h-5/6 w-5/12 p-2 font-xl tracking-wider text-gray-700 border-2 border-gray-700 shadow-xl rounded-3xl focus:outline-none focus:border-gray-700 hover:font-bold hover:bg-gray-100 bg-white',
-      answers: 0,
-      currentQuestionNumber: 0,
-      totalQuestions: 10,
+      currentQuestionNumber: 0, // Numero de la question courante
+      totalQuestions: 10, // Nombre total de questions
+      gameInfo: {
+        // Informations de la partie qui seront stockées dans l'historique
+        date: new Date().toLocaleDateString(),
+        theme: this.$route.params.themeName,
+        type: 'Solo',
+        score: 0,
+        answers: 0,
+      },
+      gameKey: null, // Clé de la partie dans la base de donnée
     }
   },
   created() {
+    // On se connecte à la base de données
+    this.historyRef = this.$fire.database.ref(
+      'history/' + this.$fire.auth.currentUser.uid
+    )
     // On recupere le theme choisi et on selectionne 10 questions au hasard parmis les 30
     this.theme = this.$route.params.theme
     this.randomQuestions = this.shuffleJsonArray(this.theme.questions).slice(
@@ -243,8 +257,11 @@ export default {
     )
   },
   mounted() {
-    // Si le mode choisi est le mode Chrono alors on lance le décompte
-    if (this.$route.params.isTimed) setTimeout(this.countdown, 2000)
+    // Si le mode choisi est le mode Chrono alors on lance le décompte et on enregistre la partie dans la base de données
+    if (this.$route.params.isTimed) {
+      this.gameKey = this.historyRef.push(this.gameInfo).key
+      this.intervalId = setInterval(this.countdown, 1000)
+    }
   },
   methods: {
     shuffleJsonArray(array) {
@@ -267,8 +284,11 @@ export default {
     },
     play(e) {
       e.preventDefault()
-      // On cache le timer
-      if (this.isTimed) this.$refs.timeBar.className += 'hidden'
+      // On stop et cache le timer
+      if (this.isTimed) {
+        clearInterval(this.intervalId)
+        this.$refs.timeBar.className += 'hidden'
+      }
       // On récupere la réponse cliquée
       const userAnswer = e.target.innerText
       const rightAnswer = this.randomQuestions[this.currentQuestionNumber]
@@ -279,7 +299,17 @@ export default {
         e.target.className = e.target.className
           .replace('hover:bg-gray-100', '')
           .replace('bg-white', 'bg-green-400')
-        this.answers += 1
+        // On augmente le nombre de bonne réponses
+        this.gameInfo.answers += 1
+        if (this.isTimed) {
+          // On calcule le score de la question
+          this.gameInfo.score += Math.max(0, this.timer) * 20
+          // On l'enregistre dans la base de données
+          this.historyRef.child(this.gameKey).update({
+            score: this.gameInfo.score,
+            answers: this.gameInfo.answers,
+          })
+        }
       } else {
         // Mauvaise réponse
         // On met la réponse en rouge
@@ -309,69 +339,77 @@ export default {
     },
     nextQuestion(e) {
       e.preventDefault()
-      // On remet les boutons à zero
-      const buttons1 = this.$refs.buttons1.children
-      const buttons2 = this.$refs.buttons2.children
-      buttons1.forEach((b) => (b.className = this.defaultButtonClass))
-      buttons2.forEach((b) => (b.className = this.defaultButtonClass))
       // On passe à la prochaine question
       this.currentQuestionNumber++
-      // On cache l'anecdote et le bouton suivant
-      this.done = false
-      if (this.isTimed) {
-        // On affiche et remet le chrono à zero et on relance le decompte
-        this.$refs.timeBar.className = this.$refs.timeBar.className.replace(
-          'hidden',
-          ' '
-        )
-        this.timer = 20
-        setTimeout(this.countdown, 1000)
-      }
+      if (this.currentQuestionNumber < 10) {
+        // On remet les boutons à zero
+        const buttons1 = this.$refs.buttons1.children
+        const buttons2 = this.$refs.buttons2.children
+        buttons1.forEach((b) => (b.className = this.defaultButtonClass))
+        buttons2.forEach((b) => (b.className = this.defaultButtonClass))
+        // On cache l'anecdote et le bouton suivant
+        this.done = false
+        if (this.isTimed) {
+          // On affiche et remet le chrono à zero et on relance le decompte
+          this.$refs.timeBar.className = this.$refs.timeBar.className.replace(
+            'hidden',
+            ' '
+          )
+          this.timer = 20
+          this.intervalId = setInterval(this.countdown, 1000)
+        }
+      } else clearInterval(this.intervalId)
     },
     retry(e) {
       e.preventDefault()
+      // On cache l'anectode et le bouton suivant
+      this.done = false
       // On tire 10 questions au hasard
       this.randomQuestions = this.shuffleJsonArray(this.theme.questions).slice(
         0,
         10
       )
       // On remet le score et les questions à zero
-      this.answers = 0
+      this.gameInfo.answers = 0
+      this.gameInfo.score = 0
+      this.gameInfo.date = new Date().toLocaleDateString()
       this.currentQuestionNumber = 0
+      // On cree une nouvelle partie dans l'historique
+      this.gameKey = this.historyRef.push(this.gameInfo).key
       // On remet le chrono à zero
       this.timer = 20
+      // On relance le decompte
+      this.intervalId = setInterval(this.countdown, 1000)
     },
     countdown() {
+      // On decremente le compteur
       this.timer -= 1
       // Fin du chronometre
       if (!this.timer) {
+        clearInterval(this.intervalId)
         // On met la bonne réponse en vert
-        try {
-          const rightAnswer = this.randomQuestions[this.currentQuestionNumber]
-            .réponse
-          const buttons1 = this.$refs.buttons1.children
-          const buttons2 = this.$refs.buttons2.children
-          buttons1.forEach(function (b) {
-            if (b.innerText === rightAnswer) {
-              b.className = b.className
-                .replace('hover:bg-gray-100', '')
-                .replace('bg-white', 'bg-green-400')
-            }
-          })
-          buttons2.forEach(function (b) {
-            if (b.innerText === rightAnswer) {
-              b.className = b.className
-                .replace('hover:bg-gray-100', '')
-                .replace('bg-white', 'bg-green-400')
-            }
-          })
-          // On cache le timer
-          // On termine le tour
-          this.$refs.timeBar.className += 'hidden'
-          this.done = true
-        } catch (e) {}
-      } else if (!this.done) {
-        setTimeout(this.countdown, 1000)
+        const rightAnswer = this.randomQuestions[this.currentQuestionNumber]
+          .réponse
+        const buttons1 = this.$refs.buttons1.children
+        const buttons2 = this.$refs.buttons2.children
+        buttons1.forEach(function (b) {
+          if (b.innerText === rightAnswer) {
+            b.className = b.className
+              .replace('hover:bg-gray-100', '')
+              .replace('bg-white', 'bg-green-400')
+          }
+        })
+        buttons2.forEach(function (b) {
+          if (b.innerText === rightAnswer) {
+            b.className = b.className
+              .replace('hover:bg-gray-100', '')
+              .replace('bg-white', 'bg-green-400')
+          }
+        })
+        // On cache le timer
+        // On termine le tour
+        this.$refs.timeBar.className += 'hidden'
+        this.done = true
       }
     },
   },
