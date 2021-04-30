@@ -245,10 +245,12 @@ export default {
     }
   },
   created() {
-    // On se connecte à la base de données
-    this.historyRef = this.$fire.database.ref(
-      'history/' + this.$fire.auth.currentUser.uid
-    )
+    if (!this.$fire.auth.currentUser.isAnonymous) {
+      // On se connecte à la base de données
+      this.historyRef = this.$fire.database.ref(
+        'history/' + this.$fire.auth.currentUser.uid
+      )
+    }
     // On recupere le theme choisi et on selectionne 10 questions au hasard parmis les 30
     this.theme = this.$route.params.theme
     this.randomQuestions = this.shuffleJsonArray(this.theme.questions).slice(
@@ -259,7 +261,8 @@ export default {
   mounted() {
     // Si le mode choisi est le mode Chrono alors on lance le décompte et on enregistre la partie dans la base de données
     if (this.$route.params.isTimed) {
-      this.gameKey = this.historyRef.push(this.gameInfo).key
+      if (!this.$fire.auth.currentUser.isAnonymous)
+        this.gameKey = this.historyRef.push(this.gameInfo).key
       this.intervalId = setInterval(this.countdown, 1000)
     }
   },
@@ -304,11 +307,13 @@ export default {
         if (this.isTimed) {
           // On calcule le score de la question
           this.gameInfo.score += Math.max(0, this.timer) * 20
-          // On l'enregistre dans la base de données
-          this.historyRef.child(this.gameKey).update({
-            score: this.gameInfo.score,
-            answers: this.gameInfo.answers,
-          })
+          if (!this.$fire.auth.currentUser.isAnonymous) {
+            // On l'enregistre dans la base de données
+            this.historyRef.child(this.gameKey).update({
+              score: this.gameInfo.score,
+              answers: this.gameInfo.answers,
+            })
+          }
         }
       } else {
         // Mauvaise réponse
@@ -374,8 +379,10 @@ export default {
       this.gameInfo.score = 0
       this.gameInfo.date = new Date().toLocaleDateString()
       this.currentQuestionNumber = 0
-      // On cree une nouvelle partie dans l'historique
-      this.gameKey = this.historyRef.push(this.gameInfo).key
+      if (!this.$fire.auth.currentUser.isAnonymous) {
+        // On cree une nouvelle partie dans l'historique
+        this.gameKey = this.historyRef.push(this.gameInfo).key
+      }
       // On remet le chrono à zero
       this.timer = 20
       // On relance le decompte

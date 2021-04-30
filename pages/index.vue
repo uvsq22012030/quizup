@@ -224,11 +224,14 @@
               </div>
             </div>
             <!-- Game history -->
-            <div class="mx-auto w-full lg:w-5/6">
+            <div
+              v-if="!$fire.auth.currentUser.isAnonymous"
+              class="mx-auto w-full lg:w-5/6"
+            >
               <h1
                 class="text-left w-max-screen lg:w-max-200 font-bold font-mono text-l md:text-4xl mb-3"
               >
-                Historique des parties (bientôt)
+                Historique des parties
               </h1>
               <div class="bg-white shadow-md rounded">
                 <table
@@ -236,30 +239,32 @@
                 >
                   <tbody class="w-full text-gray-600 text-sm font-light">
                     <tr
+                      v-for="(game, idx) in gamesHistory"
+                      :key="idx"
                       class="w-full h-40 border-b border-gray-200 hover:bg-red-400"
                     >
                       <td
                         class="px-1 py-1 md:px-6 md:py-3 text-left whitespace-nowrap"
                       >
                         <div class="flex items-center">
-                          <span class="font-medium">Apr 19, 14:30</span>
+                          <span class="font-medium">{{ game.date }}</span>
                         </div>
                       </td>
                       <td class="px-1 py-1 md:px-6 md:py-3 text-left">
                         <div class="flex items-center">
-                          <span>Theme</span>
+                          <span>{{ game.theme }}</span>
                         </div>
                       </td>
                       <td class="px-1 py-1 md:px-6 md:py-3 text-center">
                         <span
                           class="bg-red-200 text-gray-800 py-1 px-3 rounded-full text-xs"
                         >
-                          Solo
+                          {{ game.type }}
                         </span>
                       </td>
                       <td class="px-1 py-1 md:px-6 md:py-3 text-center">
                         <div class="flex item-center justify-center font-bold">
-                          0 pts
+                          {{ game.score }} pts
                         </div>
                       </td>
                     </tr>
@@ -358,11 +363,24 @@ export default {
       fetchedThemes: [],
       popularThemes: [],
       themeIdDictionary: {},
+      historyRef: null,
+      gamesHistory: [],
     }
   },
   created() {
     // On recupere les theme de l'API
     this.fetchThemes()
+    // On recupere l'historique si l'utilisateur n'est pas anonyme
+    if (!this.$fire.auth.currentUser.isAnonymous) {
+      // On recupere la reference de l'historique dans la base de données
+      this.historyRef = this.$fire.database.ref(
+        'history/' + this.$fire.auth.currentUser.uid
+      )
+      // Ajout d'un ecouteur d'evenement pour récuperer l'historique
+      this.historyRef.on('child_added', (snapshot) =>
+        this.gamesHistory.push({ ...snapshot.val(), id: snapshot.key })
+      )
+    }
   },
   methods: {
     // Methode qui formatte le nom d'un thème pour l'affichage
@@ -417,9 +435,6 @@ export default {
     },
     // Affichage du menu d'options de partie
     async soloPopup(themeName) {
-      console.log(themeName)
-      console.log(this.themeIdDictionary)
-      console.log(this.themeIdDictionary[themeName])
       // Recuperation du nom du theme
       this.themeName = themeName
       // On récupere l'id du theme choisi
