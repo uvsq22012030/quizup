@@ -107,6 +107,7 @@
               >
                 <v-select
                   id="search"
+                  :options="searchSuggestions"
                   class="bg-gray-100 border-0 rounded-l-2xl md:rounded-l-full w-full py-4 px-6 text-gray-700 leading-tight focus:outline-none"
                   label="theme"
                   type="text"
@@ -150,33 +151,13 @@
                       <h3
                         class="font-medium text-gray-600 text-lg my-2 uppercase"
                       >
-                        {{
-                          themeJson1.thème.substring(
-                            0,
-                            themeJson1.thème.indexOf('(')
-                          )
-                        }}
+                        {{ popularThemes[0] }}
                       </h3>
-                      <p class="text-center">
-                        {{
-                          themeJson1.thème.substring(
-                            themeJson1.thème.indexOf('(') + 1,
-                            themeJson1.thème.length - 1
-                          )
-                        }}
-                      </p>
                       <div class="group border-0 mt-5">
                         <button
                           type="submit"
                           class="hover:bg-red-600 rounded-full py-2 px-3 font-semibold hover:text-white bg-red-400 text-white"
-                          @click="
-                            soloPopup(
-                              themeJson1.thème.substring(
-                                0,
-                                themeJson1.thème.indexOf('(')
-                              )
-                            )
-                          "
+                          @click="soloPopup(popularThemes[0])"
                         >
                           Jouer en solo
                         </button>
@@ -198,33 +179,13 @@
                       <h3
                         class="font-medium text-gray-600 text-lg my-2 uppercase"
                       >
-                        {{
-                          themeJson2.thème.substring(
-                            0,
-                            themeJson2.thème.indexOf('(')
-                          )
-                        }}
+                        {{ popularThemes[1] }}
                       </h3>
-                      <p class="text-center">
-                        {{
-                          themeJson2.thème.substring(
-                            themeJson2.thème.indexOf('(') + 1,
-                            themeJson2.thème.length - 1
-                          )
-                        }}
-                      </p>
                       <div class="mt-5">
                         <button
                           type="submit"
                           class="hover:bg-red-600 rounded-full py-2 px-3 font-semibold hover:text-white bg-red-400 text-white"
-                          @click="
-                            soloPopup(
-                              themeJson2.thème.substring(
-                                0,
-                                themeJson2.thème.indexOf('(')
-                              )
-                            )
-                          "
+                          @click="soloPopup(popularThemes[1])"
                         >
                           Jouer en solo
                         </button>
@@ -246,33 +207,13 @@
                       <h3
                         class="font-medium text-gray-600 text-lg my-2 uppercase"
                       >
-                        {{
-                          themeJson3.thème.substring(
-                            0,
-                            themeJson3.thème.indexOf('(')
-                          )
-                        }}
+                        {{ popularThemes[2] }}
                       </h3>
-                      <p class="text-center">
-                        {{
-                          themeJson3.thème.substring(
-                            themeJson3.thème.indexOf('(') + 1,
-                            themeJson3.thème.length - 1
-                          )
-                        }}
-                      </p>
                       <div class="mt-5">
                         <button
                           type="submit"
                           class="hover:bg-red-600 rounded-full py-2 px-3 font-semibold hover:text-white bg-red-400 text-white"
-                          @click="
-                            soloPopup(
-                              themeJson3.thème.substring(
-                                0,
-                                themeJson3.thème.indexOf('(')
-                              )
-                            )
-                          "
+                          @click="soloPopup(popularThemes[2])"
                         >
                           Jouer en solo
                         </button>
@@ -283,208 +224,47 @@
               </div>
             </div>
             <!-- Game history -->
-            <div class="mx-auto w-full lg:w-5/6">
+            <div
+              v-if="!$fire.auth.currentUser.isAnonymous"
+              class="mx-auto w-full lg:w-5/6"
+            >
               <h1
                 class="text-left w-max-screen lg:w-max-200 font-bold font-mono text-l md:text-4xl mb-3"
               >
-                Historique des parties (bientôt)
+                Historique des parties
               </h1>
               <div class="bg-white shadow-md rounded">
                 <table
-                  class="max-w-sm md:w-full table-fixed md:table-auto shadow-2xl"
+                  class="max-w-sm md:w-full md:max-w-full table-fixed md:table-auto shadow-2xl"
                 >
-                  <tbody class="text-gray-600 text-sm font-light">
-                    <tr class="h-40 border-b border-gray-200 hover:bg-red-400">
+                  <tbody class="w-full text-gray-600 text-sm font-light">
+                    <tr
+                      v-for="(game, idx) in gamesHistory"
+                      :key="idx"
+                      class="w-full h-40 border-b border-gray-200 hover:bg-red-400"
+                    >
                       <td
                         class="px-1 py-1 md:px-6 md:py-3 text-left whitespace-nowrap"
                       >
                         <div class="flex items-center">
-                          <span class="font-medium">Apr 19, 14:30</span>
+                          <span class="font-medium">{{ game.date }}</span>
                         </div>
                       </td>
                       <td class="px-1 py-1 md:px-6 md:py-3 text-left">
                         <div class="flex items-center">
-                          <span>Theme</span>
+                          <span>{{ game.theme }}</span>
                         </div>
                       </td>
                       <td class="px-1 py-1 md:px-6 md:py-3 text-center">
                         <span
                           class="bg-red-200 text-gray-800 py-1 px-3 rounded-full text-xs"
                         >
-                          Solo
+                          {{ game.type }}
                         </span>
                       </td>
                       <td class="px-1 py-1 md:px-6 md:py-3 text-center">
                         <div class="flex item-center justify-center font-bold">
-                          0 pts
-                        </div>
-                      </td>
-                    </tr>
-                    <tr class="h-40 border-b border-gray-200 hover:bg-red-400">
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span class="font-medium">Apr 19, 14:30</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span>Theme</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <span
-                          class="bg-blue-200 text-gray-800 py-1 px-3 rounded-full text-xs"
-                        >
-                          Multijoueur
-                        </span>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <div class="flex item-center justify-center font-bold">
-                          0 pts
-                        </div>
-                      </td>
-                    </tr>
-                    <tr class="h-40 border-b border-gray-200 hover:bg-red-400">
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span class="font-medium">Apr 19, 14:30</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span>Theme</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <span
-                          class="bg-blue-200 text-gray-800 py-1 px-3 rounded-full text-xs"
-                        >
-                          Multijoueur
-                        </span>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <div class="flex item-center justify-center font-bold">
-                          0 pts
-                        </div>
-                      </td>
-                    </tr>
-                    <tr class="h-40 border-b border-gray-200 hover:bg-red-400">
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span class="font-medium">Apr 19, 14:30</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span>Theme</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <span
-                          class="bg-red-200 text-gray-800 py-1 px-3 rounded-full text-xs"
-                        >
-                          Solo
-                        </span>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <div class="flex item-center justify-center font-bold">
-                          0 pts
-                        </div>
-                      </td>
-                    </tr>
-                    <tr class="h-40 border-b border-gray-200 hover:bg-red-400">
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span class="font-medium">Apr 19, 14:30</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span>Theme</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <span
-                          class="bg-red-200 text-gray-800 py-1 px-3 rounded-full text-xs"
-                        >
-                          Solo
-                        </span>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <div class="flex item-center justify-center font-bold">
-                          0 pts
-                        </div>
-                      </td>
-                    </tr>
-                    <tr class="h-40 border-b border-gray-200 hover:bg-red-400">
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span class="font-medium">Apr 19, 14:30</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span>Theme</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <span
-                          class="bg-blue-200 text-gray-800 py-1 px-3 rounded-full text-xs"
-                        >
-                          Multijoueur
-                        </span>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <div class="flex item-center justify-center font-bold">
-                          0 pts
-                        </div>
-                      </td>
-                    </tr>
-                    <tr class="h-40 border-b border-gray-200 hover:bg-red-400">
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span class="font-medium">Apr 19, 14:30</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span>Theme</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <span
-                          class="bg-red-200 text-gray-800 py-1 px-3 rounded-full text-xs"
-                        >
-                          Solo
-                        </span>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <div class="flex item-center justify-center font-bold">
-                          0 pts
-                        </div>
-                      </td>
-                    </tr>
-                    <tr class="h-40 border-b border-gray-200 hover:bg-red-400">
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span class="font-medium">Apr 19, 14:30</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                        <div class="flex items-center">
-                          <span>Theme</span>
-                        </div>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <span
-                          class="bg-blue-200 text-gray-800 py-1 px-3 rounded-full text-xs"
-                        >
-                          Multijoueur
-                        </span>
-                      </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <div class="flex item-center justify-center font-bold">
-                          0 pts
+                          {{ game.score }} pts
                         </div>
                       </td>
                     </tr>
@@ -554,24 +334,6 @@
                     </label>
                   </div>
                 </fieldset>
-                <!-- Difficulty -->
-                <fieldset
-                  class="flex items-center text-center justify-between p-4"
-                >
-                  <div class="block m-auto">
-                    <legend class="block font-bold mb-2">
-                      Choisir la difficulté :
-                    </legend>
-                    <select v-model="difficulty" class="block m-auto">
-                      <option
-                        v-for="diff in Object.keys(chosenTheme.quizz.fr)"
-                        :key="diff"
-                      >
-                        {{ diff }}
-                      </option>
-                    </select>
-                  </div>
-                </fieldset>
                 <div class="text-center flex items-center mt-5">
                   <button
                     type="submit"
@@ -591,36 +353,70 @@
 </template>
 
 <script>
-import jsonFile1 from '~/assets/canada.json'
-import jsonFile2 from '~/assets/breaking_bad.json'
-import jsonFile3 from '~/assets/animateurs_télé.json'
-
 export default {
   data() {
     return {
-      searchSuggestions: ['Theme1', 'Theme2'],
+      searchSuggestions: [],
       optionsPopup: false,
-      chosenTheme: null,
-      difficulty: '',
       gameMode: false,
-      themeJson1: jsonFile1,
-      themeJson2: jsonFile2,
-      themeJson3: jsonFile3,
-      jsonFiles: [jsonFile1, jsonFile2, jsonFile3],
-      ip: null,
+      chosenTheme: null,
+      fetchedThemes: [],
+      popularThemes: [],
+      themeIdDictionary: {},
+      historyRef: null,
+      gamesHistory: [],
     }
   },
-  mounted() {
-    // this.fetchSomething()
-    // console.log(this.ip)
+  created() {
+    // On recupere les theme de l'API
+    this.fetchThemes()
+    // On recupere l'historique si l'utilisateur n'est pas anonyme
+    if (!this.$fire.auth.currentUser.isAnonymous) {
+      // On recupere la reference de l'historique dans la base de données
+      this.historyRef = this.$fire.database.ref(
+        'history/' + this.$fire.auth.currentUser.uid
+      )
+      // Ajout d'un ecouteur d'evenement pour récuperer l'historique
+      this.historyRef.on('child_added', (snapshot) =>
+        this.gamesHistory.push({ ...snapshot.val(), id: snapshot.key })
+      )
+    }
   },
   methods: {
-    async fetchSomething() {
-      const ip = await this.$axios.$get(
-        'https://7c49b1cc9ff7.ngrok.io/questions'
+    // Methode qui formatte le nom d'un thème pour l'affichage
+    format(themeName) {
+      return (
+        themeName[0].toUpperCase() + themeName.slice(1).replaceAll('_', ' ')
       )
-      this.ip = ip
     },
+    // Recuperation des theme à partir de l'API
+    async fetchThemes() {
+      try {
+        const json = await this.$axios.get(
+          'https://enigmatic-stream-69193.herokuapp.com/categories'
+        )
+        // On recupere les themes
+        this.fetchedThemes = json.data
+        // On reformatte le nom de chaque theme pour l'inserer dans la liste des suggestions de la barre de recherche
+        this.fetchedThemes.forEach((theme) => {
+          this.searchSuggestions.push(this.format(theme.name))
+        })
+        // On récupere 15 thèmes à la une
+        const randomNumbers = []
+        for (let i = 0; i < 15; i++) {
+          let random = Math.floor(Math.random() * this.fetchedThemes.length)
+          while (randomNumbers.includes(random))
+            random = Math.floor(Math.random() * this.fetchedThemes.length)
+          randomNumbers.push(random)
+          const formattedName = this.format(this.fetchedThemes[random].name)
+          this.popularThemes.push(formattedName)
+          this.themeIdDictionary[formattedName] = this.fetchedThemes[random].id
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    },
+    // Deconnexion
     async signOut() {
       try {
         // On vérifie si l'utilisateur est connecté en tant qu'anonyme
@@ -637,38 +433,30 @@ export default {
         alert(e)
       }
     },
-    soloPopup(themeName) {
+    // Affichage du menu d'options de partie
+    async soloPopup(themeName) {
+      // Recuperation du nom du theme
+      this.themeName = themeName
+      // On récupere l'id du theme choisi
+      this.chosenTheme = await this.$axios.get(
+        'https://enigmatic-stream-69193.herokuapp.com/categories/' +
+          String(this.themeIdDictionary[themeName])
+      )
       // On affiche le menu d'options de partie
       this.optionsPopup = true
-      // On récupere le fichier json correspondant au theme cliqué
-      for (let i = 0; i < this.jsonFiles.length; i++) {
-        if (
-          this.jsonFiles[i].thème.substring(
-            0,
-            this.jsonFiles[i].thème.indexOf('(')
-          ) === themeName
-        ) {
-          this.chosenTheme = this.jsonFiles[i]
-          return
-        }
-      }
     },
+    // Lancement du jeu solo
     playSolo(e) {
       e.preventDefault()
-      // On verifie que l'utilisateur a bien choisi les paramètres
-      if (!this.difficulty) {
-        alert('Veuillez choisir une difficulté !')
-      } else {
-        // On redirige vers la page de jeu en envoyant le json correspondant
-        this.$router.push({
-          name: 'game',
-          params: {
-            questions: this.chosenTheme,
-            difficulty: this.difficulty,
-            isTimed: this.gameMode,
-          },
-        })
-      }
+      // On redirige vers la page de jeu en envoyant le json correspondant
+      this.$router.push({
+        name: 'game',
+        params: {
+          theme: this.chosenTheme.data,
+          themeName: this.themeName,
+          isTimed: this.gameMode,
+        },
+      })
     },
   },
 }
