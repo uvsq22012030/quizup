@@ -223,6 +223,15 @@
                 </div>
               </div>
             </div>
+            <div>
+              <button
+                type="submit"
+                class="hover:bg-red-600 rounded-full py-2 px-3 font-semibold hover:text-white bg-red-400 text-white"
+                @click="browseLobbies()"
+              >
+                Parcourir les lobbies
+              </button>
+            </div>
             <!-- Game history -->
             <div
               v-if="!$fire.auth.currentUser.isAnonymous"
@@ -275,7 +284,7 @@
             </div>
           </div>
         </div>
-        <!-- Popup -->
+        <!-- Solo popup -->
         <template v-if="optionsPopup">
           <div
             class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center"
@@ -383,6 +392,10 @@ export default {
     }
   },
   methods: {
+    // Methode qui redirige vers la page des lobbies
+    browseLobbies() {
+      this.$router.push('/lobby')
+    },
     // Methode qui formatte le nom d'un thème pour l'affichage
     format(themeName) {
       return (
