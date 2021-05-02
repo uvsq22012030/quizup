@@ -217,7 +217,7 @@ export default {
       timer: 20, // Temps donné pour chaque question
       done: false, // Booléen décrivant si le round est terminé ou non
       lobbyRef: null, // Reference sur le lobby dans la base de données
-      lobbyInfo: {}, // Informations du lobby
+      lobbyInfo: null, // Informations du lobby
       theme: [], // Theme recuperé de l'API
       randomQuestions: [], // Liste aleatoire de questions
       defaultButtonClass:
@@ -304,7 +304,10 @@ export default {
       )
     }
     // On recupere les positions dans la bdd de l'utilisateur et de son adversaire
-    if (this.lobbyInfo.creator.uid === this.$fire.auth.currentUser.uid) {
+    if (
+      this.lobbyInfo &&
+      this.lobbyInfo.creator.uid === this.$fire.auth.currentUser.uid
+    ) {
       this.userNumber = 0
       this.opponentNumber = 1
     } else {
