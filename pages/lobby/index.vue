@@ -132,13 +132,13 @@
 export default {
   data() {
     return {
-      lobbiesRef: null,
-      lobbiesList: [],
-      lobbyPopup: false,
-      fetchedThemes: null,
-      selectedTheme: null,
-      themeList: [],
-      themeIdDictionary: {},
+      lobbiesRef: null, // Reference sur les lobby dans la base de données
+      lobbiesList: [], // Liste des lobbies existants
+      lobbyPopup: false, // Booléen pour afficher le popup de creation de lobby
+      fetchedThemes: null, // Themes recuperés
+      selectedTheme: null, // Theme choisi dans le menu de creation de lobby
+      themeList: [], // Liste des noms des themes pour la barre de recherche
+      themeIdDictionary: {}, // Dictionnaire nom : id pour les themes
     }
   },
   created() {
@@ -186,6 +186,7 @@ export default {
           uid: this.$fire.auth.currentUser.uid,
           isReady: false,
           isDone: false,
+          score: 0,
         })
         this.$router.push('/lobby/' + lobbyId)
       }
@@ -197,10 +198,19 @@ export default {
       )
     },
     // Creation du lobby
-    createLobby(themeName) {
+    async createLobby(themeName) {
       if (!this.selectedTheme) {
         alert('Veuillez choisir un theme')
       } else {
+        // On recupere le theme
+        let fetchedQuestions = await this.$axios.get(
+          'https://enigmatic-stream-69193.herokuapp.com/categories/' +
+            String(this.themeIdDictionary[themeName])
+        )
+        // On prend 10 questions au hasard parmis les 30
+        fetchedQuestions = this.shuffleJsonArray(
+          fetchedQuestions.data.questions
+        ).slice(0, 10)
         const lobbyInfo = {
           creator: {
             name: this.$fire.auth.currentUser.displayName,
@@ -217,29 +227,45 @@ export default {
               uid: this.$fire.auth.currentUser.uid,
               isReady: false,
               isDone: false,
+              score: 0,
             },
           ],
+          questions: fetchedQuestions,
         }
         const lobbyId = this.lobbiesRef.push(lobbyInfo).key
         this.$router.push('/lobby/' + lobbyId)
       }
     },
+    shuffleJsonArray(array) {
+      // Implementation du Fisher Yates shuffle
+      // https://bost.ocks.org/mike/shuffle
+      let currentIndex = array.length
+      let temporaryValue
+      let randomIndex
+      // While there remain elements to shuffle...
+      while (currentIndex !== 0) {
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex)
+        currentIndex -= 1
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex]
+        array[currentIndex] = array[randomIndex]
+        array[randomIndex] = temporaryValue
+      }
+      return array
+    },
     // Recuperation des theme à partir de l'API
     async fetchThemes() {
-      try {
-        const json = await this.$axios.get(
-          'https://enigmatic-stream-69193.herokuapp.com/categories'
-        )
-        // On recupere les themes
-        this.fetchedThemes = json.data
-        // On reformatte le nom de chaque theme pour l'inserer dans la liste des suggestions de la barre de recherche
-        this.fetchedThemes.forEach((theme) => {
-          this.themeList.push(this.format(theme.name))
-          this.themeIdDictionary[this.format(theme.name)] = theme.id
-        })
-      } catch (err) {
-        console.log(err)
-      }
+      const json = await this.$axios.get(
+        'https://enigmatic-stream-69193.herokuapp.com/categories'
+      )
+      // On recupere les themes
+      this.fetchedThemes = json.data
+      // On reformatte le nom de chaque theme pour l'inserer dans la liste des suggestions de la barre de recherche
+      this.fetchedThemes.forEach((theme) => {
+        this.themeList.push(this.format(theme.name))
+        this.themeIdDictionary[this.format(theme.name)] = theme.id
+      })
     },
   },
 }

@@ -102,6 +102,7 @@
               class="block mr-auto ml-auto object-fill h-20 w-20 md:h-50 md:w-50"
               src="~/assets/img/wreath.png"
             />
+            <!-- Partie terminée -->
             <p
               class="block text-center bottom-0 w-full mt-5 text-xl md:text-6xl font-bold tracking-wide text-gray-600"
             >
@@ -112,11 +113,44 @@
             >
               {{ gameInfo.answers }} / {{ totalQuestions }}
             </p>
+            <!-- Bonne réponses -->
             <p
               class="block text-center bottom-0 w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
             >
               Bonne réponses
             </p>
+            <!-- Score -->
+            <p
+              class="block text-center bottom-0 w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
+            >
+              Score : {{ gameInfo.score }} points
+            </p>
+            <!-- Gagné/Perdu/Egalité -->
+            <p
+              v-if="
+                lobbyInfo.players[userNumber].score >
+                lobbyInfo.players[opponentNumber].score
+              "
+              class="block text-center bottom-0 w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
+            >
+              Vous avez gagné :D !
+            </p>
+            <p
+              v-else-if="
+                lobbyInfo.players[userNumber].score <
+                lobbyInfo.players[opponentNumber].score
+              "
+              class="block text-center bottom-0 w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
+            >
+              Vous avez perdu :(
+            </p>
+            <p
+              v-else
+              class="block text-center bottom-0 w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
+            >
+              Egalité
+            </p>
+            <!-- Bouton retour au menu -->
             <div
               class="flex w-full h-1/4 items-stretch justify-center text-center space-x-8 mt-5"
             >
@@ -218,7 +252,6 @@ export default {
       done: false, // Booléen décrivant si le round est terminé ou non
       lobbyRef: null, // Reference sur le lobby dans la base de données
       lobbyInfo: null, // Informations du lobby
-      theme: [], // Theme recuperé de l'API
       randomQuestions: [], // Liste aleatoire de questions
       defaultButtonClass:
         // CSS par défaut de chaque bouton
@@ -296,7 +329,7 @@ export default {
       }
     })
     // On recupere les questions du theme choisi
-    this.fetchTheme()
+    this.randomQuestions = this.lobbyInfo.questions
     // On se connecte à la base de données pour sauvegarder l'historique
     if (!this.$fire.auth.currentUser.isAnonymous) {
       this.historyRef = this.$fire.database.ref(
@@ -338,9 +371,13 @@ export default {
               state: 'pending',
             })
         }
+        clearInterval(this.intervalId)
         next()
       } else next(false)
-    } else next()
+    } else {
+      clearInterval(this.intervalId)
+      next()
+    }
   },
   methods: {
     // Methode qui permet à l'utilisateur de se mettre pret
@@ -348,37 +385,6 @@ export default {
       this.lobbyRef.child('players/' + this.userNumber).update({
         isReady: true,
       })
-    },
-    // On recupere le theme choisi de l'api
-    async fetchTheme() {
-      this.theme = await this.$axios.get(
-        'https://enigmatic-stream-69193.herokuapp.com/categories/' +
-          String(this.lobbyInfo.theme.id)
-      )
-      // On recupere le theme choisi et on selectionne 10 questions au hasard parmis les 30
-      this.theme = this.theme.data
-      this.randomQuestions = this.shuffleJsonArray(this.theme.questions).slice(
-        0,
-        10
-      )
-    },
-    shuffleJsonArray(array) {
-      // Implementation du Fisher Yates shuffle
-      // https://bost.ocks.org/mike/shuffle
-      let currentIndex = array.length
-      let temporaryValue
-      let randomIndex
-      // While there remain elements to shuffle...
-      while (currentIndex !== 0) {
-        // Pick a remaining element...
-        randomIndex = Math.floor(Math.random() * currentIndex)
-        currentIndex -= 1
-        // And swap it with the current element.
-        temporaryValue = array[currentIndex]
-        array[currentIndex] = array[randomIndex]
-        array[randomIndex] = temporaryValue
-      }
-      return array
     },
     play(e) {
       e.preventDefault()
@@ -399,6 +405,11 @@ export default {
         this.gameInfo.answers += 1
         // On calcule le score de la question
         this.gameInfo.score += Math.max(0, this.timer) * 20
+        // On met à jour le score dans le lobby
+        this.lobbyRef.child('players/' + this.userNumber).update({
+          score: this.gameInfo.score,
+        })
+        // On le sauvegarde dans l'historique
         if (!this.$fire.auth.currentUser.isAnonymous) {
           // On l'enregistre dans la base de données
           this.historyRef.child(this.gameKey).update({
