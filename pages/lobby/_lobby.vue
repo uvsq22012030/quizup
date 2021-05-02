@@ -282,9 +282,6 @@ export default {
           if (this.gameReady) {
             // On lance la partie
             this.gameStarted = true
-            // On lance le décompte et on enregistre la partie dans la base de données
-            if (!this.$fire.auth.currentUser.isAnonymous)
-              this.gameKey = this.historyRef.push(this.gameInfo).key
             this.intervalId = setInterval(this.countdown, 1000)
           }
         } else {
@@ -442,6 +439,7 @@ export default {
         clearInterval(this.intervalId)
         // On se connecte à la base de données pour sauvegarder l'historique
         if (!this.$fire.auth.currentUser.isAnonymous) {
+          this.gameKey = this.historyRef.push(this.gameInfo).key
           this.historyRef = this.$fire.database.ref(
             'history/' + this.$fire.auth.currentUser.uid
           )
