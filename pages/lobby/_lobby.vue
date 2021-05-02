@@ -310,12 +310,6 @@ export default {
     })
     // On recupere les questions du theme choisi
     this.randomQuestions = this.lobbyInfo.questions
-    // On se connecte à la base de données pour sauvegarder l'historique
-    if (!this.$fire.auth.currentUser.isAnonymous) {
-      this.historyRef = this.$fire.database.ref(
-        'history/' + this.$fire.auth.currentUser.uid
-      )
-    }
     // On recupere les positions dans la bdd de l'utilisateur et de son adversaire
     if (
       this.lobbyInfo &&
@@ -394,14 +388,6 @@ export default {
         this.lobbyRef.child('players/' + this.userNumber).update({
           score: this.gameInfo.score,
         })
-        // On le sauvegarde dans l'historique
-        if (!this.$fire.auth.currentUser.isAnonymous) {
-          // On l'enregistre dans la base de données
-          this.historyRef.child(this.gameKey).update({
-            score: this.gameInfo.score,
-            answers: this.gameInfo.answers,
-          })
-        }
       } else {
         // Mauvaise réponse
         // On met la réponse en rouge
@@ -452,7 +438,20 @@ export default {
         )
         this.timer = 20
         this.intervalId = setInterval(this.countdown, 1000)
-      } else clearInterval(this.intervalId)
+      } else {
+        clearInterval(this.intervalId)
+        // On se connecte à la base de données pour sauvegarder l'historique
+        if (!this.$fire.auth.currentUser.isAnonymous) {
+          this.historyRef = this.$fire.database.ref(
+            'history/' + this.$fire.auth.currentUser.uid
+          )
+          // On l'enregistre dans la base de données
+          this.historyRef.child(this.gameKey).update({
+            score: this.gameInfo.score,
+            answers: this.gameInfo.answers,
+          })
+        }
+      }
     },
     countdown() {
       // On decremente le compteur
