@@ -23,7 +23,7 @@
                 </td>
                 <td class="px-1 py-1 md:px-6 md:py-3 text-left">
                   <div class="flex items-center">
-                    <span>{{ lobby.theme }}</span>
+                    <span>{{ lobby.theme.name }}</span>
                   </div>
                 </td>
                 <td class="px-1 py-1 md:px-6 md:py-3 text-center">
@@ -138,6 +138,7 @@ export default {
       fetchedThemes: null,
       selectedTheme: null,
       themeList: [],
+      themeIdDictionary: {},
     }
   },
   created() {
@@ -183,6 +184,8 @@ export default {
         this.lobbiesRef.child(lobbyId + '/players/1').set({
           name: this.$fire.auth.currentUser.displayName,
           uid: this.$fire.auth.currentUser.uid,
+          isReady: false,
+          isDone: false,
         })
         this.$router.push('/lobby/' + lobbyId)
       }
@@ -203,12 +206,17 @@ export default {
             name: this.$fire.auth.currentUser.displayName,
             uid: this.$fire.auth.currentUser.uid,
           },
-          theme: themeName,
+          theme: {
+            name: themeName,
+            id: this.themeIdDictionary[themeName],
+          },
           state: 'pending',
           players: [
             {
               name: this.$fire.auth.currentUser.displayName,
               uid: this.$fire.auth.currentUser.uid,
+              isReady: false,
+              isDone: false,
             },
           ],
         }
@@ -227,6 +235,7 @@ export default {
         // On reformatte le nom de chaque theme pour l'inserer dans la liste des suggestions de la barre de recherche
         this.fetchedThemes.forEach((theme) => {
           this.themeList.push(this.format(theme.name))
+          this.themeIdDictionary[this.format(theme.name)] = theme.id
         })
       } catch (err) {
         console.log(err)
