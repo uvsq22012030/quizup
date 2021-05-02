@@ -169,20 +169,10 @@
             ref="buttons1"
             class="block w-full h-1/4 items-stretch justify-between text-center space-x-8"
           >
-            <button
-              :disabled="done"
-              type="submit"
-              :class="defaultButtonClass"
-              @click="play"
-            >
+            <button type="submit" :class="defaultButtonClass" @click="play">
               {{ randomQuestions[currentQuestionNumber].propositions[0] }}
             </button>
-            <button
-              :disabled="done"
-              type="submit"
-              :class="defaultButtonClass"
-              @click="play"
-            >
+            <button type="submit" :class="defaultButtonClass" @click="play">
               {{ randomQuestions[currentQuestionNumber].propositions[1] }}
             </button>
           </div>
@@ -191,20 +181,10 @@
             ref="buttons2"
             class="block w-full h-1/4 items-stretch justify-between text-center space-x-8 mb-5"
           >
-            <button
-              :disabled="done"
-              type="submit"
-              :class="defaultButtonClass"
-              @click="play"
-            >
+            <button type="submit" :class="defaultButtonClass" @click="play">
               {{ randomQuestions[currentQuestionNumber].propositions[2] }}
             </button>
-            <button
-              :disabled="done"
-              type="submit"
-              :class="defaultButtonClass"
-              @click="play"
-            >
+            <button type="submit" :class="defaultButtonClass" @click="play">
               {{ randomQuestions[currentQuestionNumber].propositions[3] }}
             </button>
           </div>
@@ -391,6 +371,11 @@ export default {
       // On stop et cache le timer
       clearInterval(this.intervalId)
       this.$refs.timeBar.className += 'hidden'
+      // On desactive les boutons
+      const buttons1 = this.$refs.buttons1.children
+      const buttons2 = this.$refs.buttons2.children
+      buttons1.forEach((b) => (b.disabled = true))
+      buttons2.forEach((b) => (b.disabled = true))
       // On récupere la réponse cliquée
       const userAnswer = e.target.innerText
       const rightAnswer = this.randomQuestions[this.currentQuestionNumber]
@@ -447,6 +432,11 @@ export default {
       })
     },
     nextQuestion() {
+      // On reactive les boutons
+      const buttons1 = this.$refs.buttons1.children
+      const buttons2 = this.$refs.buttons2.children
+      buttons1.forEach((b) => (b.disabled = false))
+      buttons2.forEach((b) => (b.disabled = false))
       // On passe à la prochaine question
       this.currentQuestionNumber++
       if (this.currentQuestionNumber < 10) {
@@ -469,12 +459,15 @@ export default {
       this.timer -= 1
       // Fin du chronometre
       if (!this.timer) {
+        // On desactive les boutons
+        const buttons1 = this.$refs.buttons1.children
+        const buttons2 = this.$refs.buttons2.children
+        buttons1.forEach((b) => (b.disabled = true))
+        buttons2.forEach((b) => (b.disabled = true))
         clearInterval(this.intervalId)
         // On met la bonne réponse en vert
         const rightAnswer = this.randomQuestions[this.currentQuestionNumber]
           .réponse
-        const buttons1 = this.$refs.buttons1.children
-        const buttons2 = this.$refs.buttons2.children
         buttons1.forEach(function (b) {
           if (b.innerText === rightAnswer) {
             b.className = b.className
