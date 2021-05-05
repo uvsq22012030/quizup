@@ -107,6 +107,7 @@
               >
                 <v-select
                   id="search"
+                  v-model="selectedTheme"
                   :options="searchSuggestions"
                   class="bg-gray-100 border-0 rounded-l-2xl md:rounded-l-full w-full py-4 px-6 text-gray-700 leading-tight focus:outline-none"
                   label="theme"
@@ -117,6 +118,7 @@
                 <div class="p-4">
                   <button
                     class="bg-red-400 text-white rounded-full p-2 hover:bg-red-500 focus:outline-none h-8 w-8 md:w-12 md:h-12 flex items-center justify-center"
+                    @click="soloPopup(selectedTheme)"
                   >
                     <img
                       class="object-fill h-3 w-3 md:h-7 md:w-7"
@@ -374,6 +376,7 @@ export default {
       themeIdDictionary: {},
       historyRef: null,
       gamesHistory: [],
+      selectedTheme: null,
     }
   },
   created() {
@@ -413,6 +416,8 @@ export default {
         // On reformatte le nom de chaque theme pour l'inserer dans la liste des suggestions de la barre de recherche
         this.fetchedThemes.forEach((theme) => {
           this.searchSuggestions.push(this.format(theme.name))
+          const formattedName = this.format(theme.name)
+          this.themeIdDictionary[formattedName] = theme.id
         })
         // On récupere 15 thèmes à la une
         const randomNumbers = []
@@ -423,7 +428,6 @@ export default {
           randomNumbers.push(random)
           const formattedName = this.format(this.fetchedThemes[random].name)
           this.popularThemes.push(formattedName)
-          this.themeIdDictionary[formattedName] = this.fetchedThemes[random].id
         }
       } catch (err) {
         console.log(err)
@@ -448,6 +452,10 @@ export default {
     },
     // Affichage du menu d'options de partie
     async soloPopup(themeName) {
+      if (!themeName) {
+        alert('Selectionner un theme !')
+        return
+      }
       // Recuperation du nom du theme
       this.themeName = themeName
       // On récupere l'id du theme choisi

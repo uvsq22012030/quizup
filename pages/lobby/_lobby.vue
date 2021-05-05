@@ -187,7 +187,47 @@
           </div>
         </div>
         <!-- Si l'adversaire quitte ou abandonne -->
-        <div v-else>L'adversaire a quitté GG!</div>
+        <div v-else class="block h-full w-full py-10 md:py-30">
+          <img
+            class="block mr-auto ml-auto object-fill h-20 w-20 md:h-50 md:w-50"
+            src="~/assets/img/wreath.png"
+          />
+          <!-- Partie terminée -->
+          <p
+            class="block text-center bottom-0 w-full mt-5 text-xl md:text-6xl font-bold tracking-wide text-gray-600"
+          >
+            Partie terminée !
+          </p>
+          <!-- Message de fin -->
+          <p
+            class="block text-center bottom-0 w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
+          >
+            L'adversaire a quitté
+          </p>
+          <p
+            class="block text-center bottom-0 w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
+          >
+            Vous avez gagné !
+          </p>
+          <!-- Score -->
+          <p
+            class="block text-center bottom-0 w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
+          >
+            Score : {{ gameInfo.score }} points
+          </p>
+          <!-- Bouton retour au menu -->
+          <div
+            class="flex w-full h-1/4 items-stretch justify-center text-center space-x-8 mt-5"
+          >
+            <button
+              class="h-1/2 w-1/3 p-2 text-sm md:text-lg font-bold tracking-wider text-white bg-red-400 border-0 rounded-2xl shadow-2xl focus:outline-none hover:bg-red-600 md:hover:text-xl"
+              type="submit"
+              @click="$router.push('/lobby')"
+            >
+              Revenir au menu des lobbies
+            </button>
+          </div>
+        </div>
       </div>
     </section>
   </div>
@@ -332,6 +372,12 @@ export default {
           // Si l'adversaire abandonne
           this.opponentSurrendered = 1
           clearInterval(this.intervalId)
+          // On donne un bonus de score à l'utilisateur
+          this.gameInfo.score += 600
+          // On met à jour le score dans le lobby
+          this.lobbyRef.child('players/' + this.userNumber).update({
+            score: this.gameInfo.score,
+          })
         } else {
           // On verifie si les deux utilisateurs ont terminé
           this.done =
