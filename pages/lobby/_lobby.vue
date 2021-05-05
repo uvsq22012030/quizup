@@ -130,25 +130,19 @@
             </p>
             <!-- Gagné/Perdu/Egalité -->
             <p
-              v-if="
-                lobbyInfo.players[userNumber].score >
-                lobbyInfo.players[opponentNumber].score
-              "
+              v-if="result === 1"
               class="block text-center bottom-0 w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
             >
               Vous avez gagné :D !
             </p>
             <p
-              v-else-if="
-                lobbyInfo.players[userNumber].score <
-                lobbyInfo.players[opponentNumber].score
-              "
+              v-else-if="result === 2"
               class="block text-center bottom-0 w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
             >
               Vous avez perdu :(
             </p>
             <p
-              v-else
+              v-else-if="result === 3"
               class="block text-center bottom-0 w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
             >
               Egalité
@@ -275,6 +269,7 @@ export default {
       gameReady: false, // Booléen indiquant si la partie est prete à etre lancée ou non
       gameStarted: false, // Booléen indiquant si la partie a commencé ou non
       opponentSurrendered: false, // Booléen indiquant si l'adversaire a quitté ou abandonné
+      result: null, // Booléen indiquant le résultat de la partie (1: Gagné, 2: Perdu, 3:Egalité)
     }
   },
   beforeCreate() {
@@ -504,7 +499,22 @@ export default {
         this.timer = 20
         this.intervalId = setInterval(this.countdown, 1000)
       } else {
+        // Arret du chronometre
         clearInterval(this.intervalId)
+        // Determination du résultat
+        if (
+          this.lobbyInfo.players[this.userNumber].score >
+          this.lobbyInfo.players[this.opponentNumber].score
+        ) {
+          this.result = 1
+        } else if (
+          this.lobbyInfo.players[this.userNumber].score <
+          this.lobbyInfo.players[this.opponentNumber].score
+        ) {
+          this.result = 2
+        } else {
+          this.result = 3
+        }
         // On se connecte à la base de données pour sauvegarder l'historique
         if (!this.$fire.auth.currentUser.isAnonymous) {
           console.log('finito')
