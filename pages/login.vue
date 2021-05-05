@@ -2,41 +2,33 @@
   <div class="bg-local" style="background-image: url(background.jpg)">
     <!-- component -->
     <section class="flex flex-col min-h-screen">
-      <div class="flex items-center justify-center flex-1">
+      <div class="flex flex-1 items-center justify-center">
         <div
-          class="w-full px-4 py-16 text-center bg-white rounded-lg sm:border-2 lg:px-24 lg:max-w-xl sm:max-w-md"
+          class="bg-white rounded-xl text-center w-full py-16 px-4 shadow-2xl sm:max-w-md lg:max-w-2xl lg:px-24"
         >
           <form class="text-center">
-            <div class="flex items-center justify-center flex-1">
-              <img
-                class="object-fill h-50 w-55"
-                src="~/assets/img/question-mark.png"
-              />
+            <div class="flex flex-1 items-center justify-center">
+              <img class="object-fill h-50 w-55" src="~/assets/img/logo.svg" />
             </div>
-            <h1
-              class="w-full mb-8 text-3xl font-bold tracking-wider text-gray-600"
-            >
-              Connexion
-            </h1>
-            <div class="py-2 text-left">
+            <div class="text-left py-5">
               <input
                 v-model="email"
                 type="email"
-                class="block w-full px-4 py-2 bg-gray-100 bg-gray-200 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700"
+                class="rounded-lg bg-gray-50 shadow-xl w-full py-5 px-4 block focus:outline-none focus:border-gray-700"
                 placeholder="Email"
               />
             </div>
-            <div class="py-2 text-left">
+            <div class="text-left py-5">
               <input
                 v-model="password"
                 type="password"
-                class="block w-full px-4 py-2 bg-gray-100 bg-gray-200 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700"
+                class="rounded-lg bg-gray-50 shadow-xl w-full py-5 px-4 block focus:outline-none focus:border-gray-700"
                 placeholder="Mot de passe"
               />
             </div>
-            <div class="py-2">
+            <div class="py-5">
               <button
-                class="block w-full p-2 font-bold tracking-wider text-white uppercase bg-red-400 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700 hover:bg-red-600"
+                class="rounded-lg font-bold bg-red-600 shadow-xl text-white tracking-wider w-full p-5 block hover:bg-red-800 focus:outline-none focus:border-gray-700"
                 @click="signInUser"
               >
                 Connexion
@@ -52,7 +44,7 @@
             <span> Pas de compte? </span>
             <NuxtLink
               to="/signup"
-              class="font-light font-semibold text-red-400 underline text-md hover:text-red-600"
+              class="font-light font-semibold text-md text-red-600 underline hover:text-red-600"
               >En créer un</NuxtLink
             >
           </div>
@@ -60,7 +52,7 @@
             <span> Sinon </span>
             <a
               href="#"
-              class="font-light font-semibold text-red-400 underline text-md hover:text-red-600"
+              class="font-light font-semibold text-md text-red-600 underline hover:text-red-600"
               @click="signInAnonymous"
               >Cliquer ici</a
             >
