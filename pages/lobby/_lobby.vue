@@ -1,12 +1,13 @@
 <template>
   <div
+    v-if="!isLoading"
     class="bg-local min-h-screen"
     style="background-image: url(../background.jpg)"
   >
     <section v-if="lobbyInfo" class="flex flex-col min-h-screen">
       <div
         v-if="
-          lobbyInfo.players.length < 2 ||
+          (!gameStarted && lobbyInfo.players.length < 2) ||
           !lobbyInfo.players[0].isReady ||
           (lobbyInfo.players[1] && !lobbyInfo.players[1].isReady)
         "
@@ -28,7 +29,9 @@
         v-else-if="gameReady"
         class="flex items-stretch justify-center py-5 sm:py-10 flex-1 lg:px-15 min-h-screen"
       >
+        <!-- L'adversaire n'a pas quitté ou abandonné -->
         <div
+          v-if="!opponentSurrendered"
           class="rounded-lg border-1 shadow-2xl px-1 md:px-5 py-3 sm:border-2 xl:max-w-3/5 sm:w-screen"
         >
           <!-- Informations sur la partie -->
@@ -189,6 +192,8 @@
             </button>
           </div>
         </div>
+        <!-- Si l'adversaire quitte ou abandonne -->
+        <div v-else>L'adversaire a quitté GG!</div>
       </div>
     </section>
   </div>
@@ -226,6 +231,7 @@ export default {
 
   data() {
     return {
+      isLoading: false, // Booleen indiquant si l'on doit afficher l'ecran de chargement ou pas
       historyRef: null, // Reference sur l'historique dans la base de données
       intervalId: null, // Identifiant pour la fonction setInterval du chronometre
       timer: 20, // Temps donné pour chaque question
@@ -252,6 +258,7 @@ export default {
       initialCountdown: 3, // Decompte initial avant le debut de la partie
       gameReady: false, // Booléen indiquant si la partie est prete à etre lancée ou non
       gameStarted: false, // Booléen indiquant si la partie a commencé ou non
+      opponentSurrendered: false, // Booléen indiquant si l'adversaire a quitté ou abandonné
     }
   },
   created() {
@@ -284,6 +291,10 @@ export default {
             this.gameStarted = true
             this.intervalId = setInterval(this.countdown, 1000)
           }
+        } else if (this.lobbyInfo.players.length === 1) {
+          // Si l'adversaire abandonne
+          this.opponentSurrendered = 1
+          clearInterval(this.intervalId)
         } else {
           // On verifie si les deux utilisateurs ont terminé
           this.done =
@@ -326,6 +337,8 @@ export default {
         'Etes-vous sûr de vouloir quitter cette page? Vous quitterez le lobby'
       )
       if (answer) {
+        // On lance l'ecran de chargement
+        this.isLoading = true
         // Si l'utilisateur est le createur du lobby alors on supprime le lobby
         if (this.lobbyInfo.creator.uid === this.$fire.auth.currentUser.uid) {
           this.$fire.database
@@ -339,7 +352,7 @@ export default {
           this.$fire.database
             .ref('lobbies/' + this.$route.params.lobby)
             .update({
-              state: 'pending',
+              state: 'finished',
             })
         }
         clearInterval(this.intervalId)

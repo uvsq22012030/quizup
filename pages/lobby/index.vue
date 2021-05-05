@@ -34,12 +34,16 @@
                   </span>
                 </td>
                 <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                  <div class="flex item-center justify-center font-bold">
+                  <div
+                    v-if="lobby.state !== 'finished'"
+                    class="flex item-center justify-center font-bold"
+                  >
                     {{ Object.keys(lobby.players).length }} / 2
                   </div>
                 </td>
                 <td class="px-1 py-1 md:px-6 md:py-3 text-center">
                   <button
+                    v-if="lobby.state !== 'finished'"
                     type="submit"
                     class="hover:bg-red-600 rounded-full py-2 px-3 font-semibold hover:text-white bg-red-400 text-white"
                     @click="
