@@ -8,7 +8,7 @@
       <div
         v-if="
           (!gameStarted && lobbyInfo.players.length < 2) ||
-          !lobbyInfo.players[0].isReady ||
+          (lobbyInfo.players[0] && !lobbyInfo.players[0].isReady) ||
           (lobbyInfo.players[1] && !lobbyInfo.players[1].isReady)
         "
       >
@@ -270,14 +270,18 @@ export default {
     this.lobbyRef.on('value', (snapshot) => {
       // Si le createur supprime le lobby on redirige l'autre joueur vers la liste des lobbies
       if (!snapshot.val()) {
-        this.$router.push({
-          name: 'lobby',
-          params: {
-            force: true,
-          },
-        })
+        // this.$router.push({
+        //   name: 'lobby',
+        //   params: {
+        //     force: true,
+        //   },
+        // })
+        this.opponentSurrendered = true
+        clearInterval(this.intervalId)
       }
       this.lobbyInfo = snapshot.val()
+      console.log(this.lobbyInfo)
+      console.log(!this.lobbyInfo.players[this.opponentNumber])
       // Si les infos existent et que la partie n'a pas commencé
       if (this.lobbyInfo) {
         if (!this.gameStarted) {
@@ -291,7 +295,10 @@ export default {
             this.gameStarted = true
             this.intervalId = setInterval(this.countdown, 1000)
           }
-        } else if (this.lobbyInfo.players.length === 1) {
+        } else if (
+          this.lobbyInfo.players.length === 1 ||
+          !this.lobbyInfo.players[this.opponentNumber]
+        ) {
           // Si l'adversaire abandonne
           this.opponentSurrendered = 1
           clearInterval(this.intervalId)
@@ -340,14 +347,22 @@ export default {
         // On lance l'ecran de chargement
         this.isLoading = true
         // Si l'utilisateur est le createur du lobby alors on supprime le lobby
-        if (this.lobbyInfo.creator.uid === this.$fire.auth.currentUser.uid) {
+        if (
+          !this.gameStarted &&
+          this.lobbyInfo.creator.uid === this.$fire.auth.currentUser.uid
+        ) {
           this.$fire.database
             .ref('lobbies/' + this.$route.params.lobby)
             .remove()
         } else {
           // Sinon on supprime l'utilisateur qui s'est deconnecté de la base de données
           this.$fire.database
-            .ref('lobbies/' + this.$route.params.lobby + '/players/1')
+            .ref(
+              'lobbies/' +
+                this.$route.params.lobby +
+                '/players/' +
+                this.userNumber
+            )
             .remove()
           this.$fire.database
             .ref('lobbies/' + this.$route.params.lobby)
