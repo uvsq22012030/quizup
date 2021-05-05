@@ -280,8 +280,6 @@ export default {
         clearInterval(this.intervalId)
       }
       this.lobbyInfo = snapshot.val()
-      console.log(this.lobbyInfo)
-      console.log(!this.lobbyInfo.players[this.opponentNumber])
       // Si les infos existent et que la partie n'a pas commencé
       if (this.lobbyInfo) {
         if (!this.gameStarted) {
@@ -295,10 +293,7 @@ export default {
             this.gameStarted = true
             this.intervalId = setInterval(this.countdown, 1000)
           }
-        } else if (
-          this.lobbyInfo.players.length === 1 ||
-          !this.lobbyInfo.players[this.opponentNumber]
-        ) {
+        } else if (Object.keys(this.lobbyInfo.players).length) {
           // Si l'adversaire abandonne
           this.opponentSurrendered = 1
           clearInterval(this.intervalId)
