@@ -83,14 +83,14 @@
             </div>
             <!-- Hourglass -->
             <img
-              v-if="currentQuestionNumber + 1 <= 10"
+              v-if="currentQuestionNumber < 10"
               class="flex bg-none right-5 object-fill h-5 w-10 md:h-12 md:w-20"
               src="~/assets/img/hourglass.gif"
             />
           </div>
           <!-- Question -->
           <div
-            v-if="currentQuestionNumber + 1 <= 10"
+            v-if="currentQuestionNumber < 10"
             class="block h-1/6 w-full mb-2"
           >
             <p
@@ -265,15 +265,13 @@ export default {
       gameInfo: {
         // Informations de la partie qui seront stockées dans l'historique
         date: new Date().toLocaleDateString(),
-        theme: this.$route.params.themeName,
+        theme: null,
         type: 'Multijoueur',
         score: 0,
         answers: 0,
       },
-      gameKey: null, // Clé de la partie dans la base de données
       userNumber: null, // Position de l'utilisateur dans la base de données
       opponentNumber: null, // Position de l'adversaire dans la base de données
-      initialCountdown: 3, // Decompte initial avant le debut de la partie
       gameReady: false, // Booléen indiquant si la partie est prete à etre lancée ou non
       gameStarted: false, // Booléen indiquant si la partie a commencé ou non
       opponentSurrendered: false, // Booléen indiquant si l'adversaire a quitté ou abandonné
@@ -332,7 +330,10 @@ export default {
             this.gameStarted = true
             this.intervalId = setInterval(this.countdown, 1000)
           }
-        } else if (Object.keys(this.lobbyInfo.players).length === 1) {
+        } else if (
+          Object.keys(this.lobbyInfo.players).length === 1 &&
+          this.currentQuestionNumber < 10
+        ) {
           // Si l'adversaire abandonne
           this.opponentSurrendered = 1
           clearInterval(this.intervalId)
@@ -357,8 +358,11 @@ export default {
         }
       }
     })
-    // On recupere les questions du theme choisi
-    if (this.lobbyInfo) this.randomQuestions = this.lobbyInfo.questions
+    // On recupere les questions du theme choisi et son nom
+    if (this.lobbyInfo) {
+      this.randomQuestions = this.lobbyInfo.questions
+      this.gameInfo.theme = this.lobbyInfo.theme.name
+    }
     // On recupere les positions dans la bdd de l'utilisateur et de son adversaire
     if (
       this.lobbyInfo &&
@@ -503,15 +507,11 @@ export default {
         clearInterval(this.intervalId)
         // On se connecte à la base de données pour sauvegarder l'historique
         if (!this.$fire.auth.currentUser.isAnonymous) {
-          this.gameKey = this.historyRef.push(this.gameInfo).key
+          console.log('finito')
           this.historyRef = this.$fire.database.ref(
             'history/' + this.$fire.auth.currentUser.uid
           )
-          // On l'enregistre dans la base de données
-          this.historyRef.child(this.gameKey).update({
-            score: this.gameInfo.score,
-            answers: this.gameInfo.answers,
-          })
+          this.historyRef.push(this.gameInfo)
         }
       }
     },
