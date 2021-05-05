@@ -201,34 +201,52 @@
 
 <script>
 export default {
-  beforeCreate() {
-    // On redirige l'utilisateur si le lobby n'existe pas
-    this.$fire.database
-      .ref('lobbies/')
-      .get()
-      .then((snapshot) => {
-        // Il n'y aucun lobby
-        if (!snapshot.val()) {
-          this.$router.push({
-            name: 'lobby',
-            params: {
-              force: true,
-            },
-          })
-        } else if (
-          !Object.keys(snapshot.val()).includes(this.$route.params.lobby)
+  beforeRouteLeave(to, from, next) {
+    if (!to.params.force) {
+      // L'utilisateur essaie de quitter le lobby
+      const answer = confirm(
+        'Etes-vous sûr de vouloir quitter cette page? Vous quitterez le lobby'
+      )
+      if (answer) {
+        // On lance l'ecran de chargement
+        this.isLoading = true
+        // Si l'utilisateur est le createur du lobby alors on supprime le lobby
+        if (
+          !this.gameStarted &&
+          this.lobbyInfo.creator.uid === this.$fire.auth.currentUser.uid
         ) {
-          // Le lobby est inexistant
-          this.$router.push({
-            name: 'lobby',
-            params: {
-              force: true,
-            },
-          })
+          this.$fire.database
+            .ref('lobbies/' + this.$route.params.lobby)
+            .remove()
+        } else if (Object.keys(this.lobbyInfo.players).length === 1) {
+          // Si c'est le dernier utilisateur connecté alors la partie est finie donc on supprime le lobby
+          this.$fire.database
+            .ref('lobbies/' + this.$route.params.lobby)
+            .remove()
+        } else {
+          // Sinon on supprime l'utilisateur qui s'est deconnecté de la base de données
+          this.$fire.database
+            .ref(
+              'lobbies/' +
+                this.$route.params.lobby +
+                '/players/' +
+                this.userNumber
+            )
+            .remove()
+          this.$fire.database
+            .ref('lobbies/' + this.$route.params.lobby)
+            .update({
+              state: 'finished',
+            })
         }
-      })
+        clearInterval(this.intervalId)
+        next()
+      } else next(false)
+    } else {
+      clearInterval(this.intervalId)
+      next()
+    }
   },
-
   data() {
     return {
       isLoading: false, // Booleen indiquant si l'on doit afficher l'ecran de chargement ou pas
@@ -261,6 +279,33 @@ export default {
       opponentSurrendered: false, // Booléen indiquant si l'adversaire a quitté ou abandonné
     }
   },
+  beforeCreate() {
+    // On redirige l'utilisateur si le lobby n'existe pas
+    this.$fire.database
+      .ref('lobbies/')
+      .get()
+      .then((snapshot) => {
+        // Il n'y aucun lobby
+        if (!snapshot.val()) {
+          this.$router.push({
+            name: 'lobby',
+            params: {
+              force: true,
+            },
+          })
+        } else if (
+          !Object.keys(snapshot.val()).includes(this.$route.params.lobby)
+        ) {
+          // Le lobby est inexistant
+          this.$router.push({
+            name: 'lobby',
+            params: {
+              force: true,
+            },
+          })
+        }
+      })
+  },
   created() {
     // On recupere la reference des lobbies dans la base de données
     this.lobbyRef = this.$fire.database.ref(
@@ -270,12 +315,6 @@ export default {
     this.lobbyRef.on('value', (snapshot) => {
       // Si le createur supprime le lobby on redirige l'autre joueur vers la liste des lobbies
       if (!snapshot.val()) {
-        // this.$router.push({
-        //   name: 'lobby',
-        //   params: {
-        //     force: true,
-        //   },
-        // })
         this.opponentSurrendered = true
         clearInterval(this.intervalId)
       }
@@ -293,7 +332,7 @@ export default {
             this.gameStarted = true
             this.intervalId = setInterval(this.countdown, 1000)
           }
-        } else if (Object.keys(this.lobbyInfo.players).length) {
+        } else if (Object.keys(this.lobbyInfo.players).length === 1) {
           // Si l'adversaire abandonne
           this.opponentSurrendered = 1
           clearInterval(this.intervalId)
@@ -319,7 +358,7 @@ export default {
       }
     })
     // On recupere les questions du theme choisi
-    this.randomQuestions = this.lobbyInfo.questions
+    if (this.lobbyInfo) this.randomQuestions = this.lobbyInfo.questions
     // On recupere les positions dans la bdd de l'utilisateur et de son adversaire
     if (
       this.lobbyInfo &&
@@ -332,48 +371,50 @@ export default {
       this.opponentNumber = 0
     }
   },
-  beforeRouteLeave(to, from, next) {
-    if (!to.params.force) {
-      // L'utilisateur essaie de quitter le lobby
-      const answer = confirm(
-        'Etes-vous sûr de vouloir quitter cette page? Vous quitterez le lobby'
-      )
-      if (answer) {
-        // On lance l'ecran de chargement
-        this.isLoading = true
-        // Si l'utilisateur est le createur du lobby alors on supprime le lobby
-        if (
-          !this.gameStarted &&
-          this.lobbyInfo.creator.uid === this.$fire.auth.currentUser.uid
-        ) {
-          this.$fire.database
-            .ref('lobbies/' + this.$route.params.lobby)
-            .remove()
-        } else {
-          // Sinon on supprime l'utilisateur qui s'est deconnecté de la base de données
-          this.$fire.database
-            .ref(
-              'lobbies/' +
-                this.$route.params.lobby +
-                '/players/' +
-                this.userNumber
-            )
-            .remove()
-          this.$fire.database
-            .ref('lobbies/' + this.$route.params.lobby)
-            .update({
-              state: 'finished',
-            })
-        }
-        clearInterval(this.intervalId)
-        next()
-      } else next(false)
-    } else {
-      clearInterval(this.intervalId)
-      next()
-    }
+  beforeMount() {
+    // On ajoute un ecouteur d'evenements pour voir si l'utilisateur est encore sur la page
+    window.addEventListener('beforeunload', this.preventNav)
+    window.addEventListener('unload', this.browserClosedHandler)
+  },
+  beforeDestroy() {
+    // On supprime l'ecouteur d'evenements
+    window.removeEventListener('beforeunload', this.preventNav)
+    window.removeEventListener('unload', this.browserClosedHandler)
   },
   methods: {
+    browserClosedHandler(event) {
+      // On lance l'ecran de chargement
+      this.isLoading = true
+      // Si l'utilisateur est le createur du lobby alors on supprime le lobby
+      if (
+        !this.gameStarted &&
+        this.lobbyInfo.creator.uid === this.$fire.auth.currentUser.uid
+      ) {
+        this.$fire.database.ref('lobbies/' + this.$route.params.lobby).remove()
+      } else if (Object.keys(this.lobbyInfo.players).length === 1) {
+        // Si c'est le dernier utilisateur connecté alors la partie est finie donc on supprime le lobby
+        this.$fire.database.ref('lobbies/' + this.$route.params.lobby).remove()
+      } else {
+        // Sinon on supprime l'utilisateur qui s'est deconnecté de la base de données
+        this.$fire.database
+          .ref(
+            'lobbies/' +
+              this.$route.params.lobby +
+              '/players/' +
+              this.userNumber
+          )
+          .remove()
+        this.$fire.database.ref('lobbies/' + this.$route.params.lobby).update({
+          state: 'finished',
+        })
+      }
+      clearInterval(this.intervalId)
+    },
+    // Fonction qui s'execute apres l'evenement beforeunload
+    preventNav(event) {
+      event.preventDefault()
+      event.returnValue = ''
+    },
     // Methode qui permet à l'utilisateur de se mettre pret
     getReady() {
       this.lobbyRef.child('players/' + this.userNumber).update({
