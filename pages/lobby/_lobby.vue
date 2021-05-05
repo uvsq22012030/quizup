@@ -403,7 +403,7 @@ export default {
         // On augmente le nombre de bonne réponses
         this.gameInfo.answers += 1
         // On calcule le score de la question
-        this.gameInfo.score += Math.max(0, this.timer) * 20
+        this.gameInfo.score += Math.max(0, this.timer) * 5
         // On met à jour le score dans le lobby
         this.lobbyRef.child('players/' + this.userNumber).update({
           score: this.gameInfo.score,
