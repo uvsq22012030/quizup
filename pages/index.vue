@@ -361,14 +361,23 @@
                     class="w-1/3 px-3 py-2 m-auto font-semibold text-white bg-red-400 rounded-full hover:bg-red-600 hover:text-white"
                     @click="playSolo"
                   >
-                    Jouer »
-                  </button>
+                    Chrono
+                  </label>
                 </div>
+              </fieldset>
+              <div class="flex items-center mt-5 text-center">
+                <button
+                  type="submit"
+                  class="w-1/3 px-3 py-2 m-auto font-semibold text-white bg-red-400 rounded-full hover:bg-red-600 hover:text-white"
+                  @click="playSolo"
+                >
+                  Jouer »
+                </button>
               </div>
             </div>
           </div>
-        </template>
-      </div>
+        </div>
+      </template>
     </section>
   </div>
 </template>
@@ -419,6 +428,7 @@ export default {
         themeName[0].toUpperCase() + themeName.slice(1).replaceAll('_', ' ')
       )
     },
+
     // Recuperation des theme à partir de l'API
     async fetchThemes() {
       try {
@@ -447,6 +457,7 @@ export default {
         console.log(err)
       }
     },
+
     // Deconnexion
     async signOut() {
       try {
@@ -464,6 +475,7 @@ export default {
         alert(e)
       }
     },
+
     // Affichage du menu d'options de partie
     async soloPopup(themeName) {
       if (!themeName) {
