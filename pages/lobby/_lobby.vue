@@ -372,6 +372,8 @@ export default {
           // Si l'adversaire abandonne
           this.opponentSurrendered = 1
           clearInterval(this.intervalId)
+          // On arrete d'écouter les evenements
+          this.lobbyRef.off('value')
           // On donne un bonus de score à l'utilisateur
           this.gameInfo.score += 600
           // On met à jour le score dans le lobby
