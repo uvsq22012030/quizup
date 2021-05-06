@@ -39,7 +39,7 @@
             <input
               type="text"
               class="w-150 border-black border-2"
-              :value="$route.fullPath"
+              :value="url"
               readonly
             />
             <button
@@ -49,7 +49,7 @@
               Copier l'url
             </button>
           </div>
-          <vue-qr :text="$route.fullPath"></vue-qr>
+          <vue-qr :text="url"></vue-qr>
         </div>
       </div>
       <div
@@ -313,7 +313,8 @@ export default {
   },
   data() {
     return {
-      shareLobby: false,
+      url: '', // URL de la page courante
+      shareLobby: false, // Booleen indiquant si l'on doit afficher les options de partage de lobby
       isLoading: false, // Booleen indiquant si l'on doit afficher l'ecran de chargement ou pas
       historyRef: null, // Reference sur l'historique dans la base de données
       intervalId: null, // Identifiant pour la fonction setInterval du chronometre
@@ -450,6 +451,8 @@ export default {
     }
   },
   beforeMount() {
+    // On recupere l'url de la page courante
+    this.url = window.location.href
     // On ajoute un ecouteur d'evenements pour voir si l'utilisateur est encore sur la page
     window.addEventListener('beforeunload', this.preventNav)
     window.addEventListener('unload', this.browserClosedHandler)
