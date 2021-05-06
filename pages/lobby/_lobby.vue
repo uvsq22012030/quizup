@@ -11,19 +11,46 @@
           (lobbyInfo.players[0] && !lobbyInfo.players[0].isReady) ||
           (lobbyInfo.players[1] && !lobbyInfo.players[1].isReady)
         "
+        class="block"
       >
         Utilisateur dans le lobby :
         <div v-for="(player, idx) in lobbyInfo.players" :key="idx">
-          <h1>{{ player.name }} : {{ player.isReady }}</h1>
+          <h1>
+            {{ player.name }} : {{ player.isReady ? 'Prêt' : 'Pas prêt' }}
+          </h1>
         </div>
         <button
           v-if="!lobbyInfo.players[userNumber].isReady"
           type="submit"
-          class="md:pl-2 flex items-center bg-red-400 hover:bg-red-600 text-white text-lg font-bold md:w-7 border mr-2 rounded-full focus:outline-none"
+          class="px-auto flex items-center bg-red-400 hover:bg-red-600 text-white text-lg font-bold w-40 border rounded-xl focus:outline-none"
           @click="getReady()"
         >
-          I'm ready!
+          Je suis pret !
         </button>
+        <button
+          type="submit"
+          class="px-auto flex items-center bg-red-400 hover:bg-red-600 text-white text-lg font-bold w-40 border rounded-xl focus:outline-none"
+          @click="shareLobby = shareLobby ? false : true"
+        >
+          Partager ce lobby
+        </button>
+        <div v-if="shareLobby">
+          <div class="flex items-center">
+            <input
+              type="text"
+              class="w-150 border-black border-2"
+              :value="$route.fullPath"
+              readonly
+            />
+            <button
+              type="submit"
+              class="pl-2 flex items-center bg-red-400 hover:bg-red-600 text-white text-md font-bold w-40 border rounded-xl focus:outline-none"
+            >
+              Copier l'url
+            </button>
+          </div>
+          <vue-qr :text="$route.fullPath"></vue-qr>
+        </div>
       </div>
       <div
         v-else-if="gameReady"
@@ -234,7 +261,10 @@
 </template>
 
 <script>
+import VueQr from 'vue-qr'
+
 export default {
+  components: { VueQr },
   beforeRouteLeave(to, from, next) {
     if (!to.params.force) {
       // L'utilisateur essaie de quitter le lobby
@@ -283,6 +313,7 @@ export default {
   },
   data() {
     return {
+      shareLobby: false,
       isLoading: false, // Booleen indiquant si l'on doit afficher l'ecran de chargement ou pas
       historyRef: null, // Reference sur l'historique dans la base de données
       intervalId: null, // Identifiant pour la fonction setInterval du chronometre
