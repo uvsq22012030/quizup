@@ -20,7 +20,7 @@
           </h1>
         </div>
         <button
-          v-if="!lobbyInfo.players[userNumber].isReady"
+          v-if="userNumber !== null && !lobbyInfo.players[userNumber].isReady"
           type="submit"
           class="px-auto flex items-center bg-red-400 hover:bg-red-600 text-white text-lg font-bold w-40 border rounded-xl focus:outline-none"
           @click="getReady()"
@@ -297,11 +297,6 @@ export default {
                 this.userNumber
             )
             .remove()
-          this.$fire.database
-            .ref('lobbies/' + this.$route.params.lobby)
-            .update({
-              state: 'finished',
-            })
         }
         clearInterval(this.intervalId)
         next()
@@ -377,11 +372,25 @@ export default {
       'lobbies/' + this.$route.params.lobby
     )
     // On recupere les informations du lobby
+    this.lobbyRef.get().then((snapshot) => {
+      // On recupere les questions du theme choisi et son nom
+      this.randomQuestions = this.lobbyInfo.questions
+      this.gameInfo.theme = this.lobbyInfo.theme.name
+      this.userNumber =
+        this.lobbyInfo.creator.uid === this.$fire.auth.currentUser.uid ? 0 : 1
+      this.opponentNumber =
+        this.lobbyInfo.creator.uid === this.$fire.auth.currentUser.uid ? 1 : 0
+    })
+    // On ecoute les evenement du serveur
     this.lobbyRef.on('value', (snapshot) => {
       // Si le createur supprime le lobby on redirige l'autre joueur vers la liste des lobbies
       if (!snapshot.val()) {
-        this.opponentSurrendered = true
-        clearInterval(this.intervalId)
+        this.$router.push({
+          name: 'lobby',
+          params: {
+            force: true,
+          },
+        })
       }
       this.lobbyInfo = snapshot.val()
       // Si les infos existent et que la partie n'a pas commencé
@@ -412,7 +421,13 @@ export default {
           this.lobbyRef.child('players/' + this.userNumber).update({
             score: this.gameInfo.score,
           })
-        } else {
+          // On change l'état de la partie à 'Terminée'
+          this.$fire.database
+            .ref('lobbies/' + this.$route.params.lobby)
+            .update({
+              state: 'finished',
+            })
+        } else if (this.currentQuestionNumber < 10) {
           // On verifie si les deux utilisateurs ont terminé
           this.done =
             this.lobbyInfo.players[0].isDone && this.lobbyInfo.players[1].isDone
@@ -427,28 +442,12 @@ export default {
               function () {
                 this.nextQuestion()
               }.bind(this),
-              5000
+              1000
             )
           }
         }
       }
     })
-    // On recupere les questions du theme choisi et son nom
-    if (this.lobbyInfo) {
-      this.randomQuestions = this.lobbyInfo.questions
-      this.gameInfo.theme = this.lobbyInfo.theme.name
-    }
-    // On recupere les positions dans la bdd de l'utilisateur et de son adversaire
-    if (
-      this.lobbyInfo &&
-      this.lobbyInfo.creator.uid === this.$fire.auth.currentUser.uid
-    ) {
-      this.userNumber = 0
-      this.opponentNumber = 1
-    } else {
-      this.userNumber = 1
-      this.opponentNumber = 0
-    }
   },
   beforeMount() {
     // On recupere l'url de la page courante
@@ -485,9 +484,6 @@ export default {
               this.userNumber
           )
           .remove()
-        this.$fire.database.ref('lobbies/' + this.$route.params.lobby).update({
-          state: 'finished',
-        })
       }
       clearInterval(this.intervalId)
     },
@@ -597,9 +593,12 @@ export default {
         } else {
           this.result = 3
         }
+        // On met l'état de la partie à terminer
+        this.$fire.database.ref('lobbies/' + this.$route.params.lobby).update({
+          state: 'finished',
+        })
         // On se connecte à la base de données pour sauvegarder l'historique
         if (!this.$fire.auth.currentUser.isAnonymous) {
-          console.log('finito')
           this.historyRef = this.$fire.database.ref(
             'history/' + this.$fire.auth.currentUser.uid
           )

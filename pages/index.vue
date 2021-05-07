@@ -39,7 +39,7 @@
                     <img
                       class="border-gray-500 border-2 rounded-lg h-8 w-8 md:h-13 md:w-13"
                       :src="
-                        'https://avatars.dicebear.com/api/male/' +
+                        'https://avatars.dicebear.com/api/avataaars/' +
                         $fire.auth.currentUser.displayName +
                         '.svg'
                       "
@@ -76,7 +76,7 @@
                   <img
                     class="border-gray-500 border-2 rounded-lg h-13 w-13"
                     :src="
-                      'https://avatars.dicebear.com/api/male/' +
+                      'https://avatars.dicebear.com/api/avataaars/' +
                       $fire.auth.currentUser.displayName +
                       '.svg'
                     "
@@ -163,6 +163,15 @@
                         >
                           Jouer en solo
                         </button>
+                        <!--
+                        <button
+                          type="submit"
+                          class="hover:bg-red-600 rounded-full py-2 px-3 font-semibold hover:text-white bg-red-400 text-white"
+                          @click="matchMaking(popularThemes[0])"
+                        >
+                          Matchmaking
+                        </button>
+                        -->
                       </div>
                     </div>
                   </div>
@@ -377,11 +386,15 @@ export default {
       historyRef: null,
       gamesHistory: [],
       selectedTheme: null,
+      lobbiesRef: null,
+      searchingForMatch: false,
     }
   },
   created() {
     // On recupere les theme de l'API
     this.fetchThemes()
+    // On recupere la reference des lobbies dans la base de données
+    this.lobbiesRef = this.$fire.database.ref('lobbies/')
     // On recupere l'historique si l'utilisateur n'est pas anonyme
     if (!this.$fire.auth.currentUser.isAnonymous) {
       // On recupere la reference de l'historique dans la base de données
@@ -465,6 +478,143 @@ export default {
       )
       // On affiche le menu d'options de partie
       this.optionsPopup = true
+    },
+    // Creation du lobby pour le matchmaking
+    async createLobby(themeName, queueId) {
+      // On recupere le theme
+      let fetchedQuestions = await this.$axios.get(
+        'https://enigmatic-stream-69193.herokuapp.com/categories/' +
+          String(this.themeIdDictionary[themeName])
+      )
+      // On prend 10 questions au hasard parmis les 30
+      fetchedQuestions = this.shuffleJsonArray(
+        fetchedQuestions.data.questions
+      ).slice(0, 10)
+      // Informations du lobby
+      const lobbyInfo = {
+        creator: {
+          name: this.$fire.auth.currentUser.displayName,
+          uid: this.$fire.auth.currentUser.uid,
+        },
+        theme: {
+          name: themeName,
+          id: this.themeIdDictionary[themeName],
+        },
+        state: 'matchmaking',
+        players: [
+          {
+            name: this.$fire.auth.currentUser.displayName,
+            uid: this.$fire.auth.currentUser.uid,
+            isReady: false,
+            isDone: false,
+            score: 0,
+          },
+        ],
+        questions: fetchedQuestions,
+      }
+      const lobbyId = this.lobbiesRef.push(lobbyInfo).key
+      // On indique au serveur qu'un joueur est disponible
+      this.$fire.database.ref('queues/' + queueId).update({
+        state: 'found',
+        lobbyKey: lobbyId,
+      })
+      this.$router.push('/lobby/' + lobbyId)
+    },
+    shuffleJsonArray(array) {
+      // Implementation du Fisher Yates shuffle
+      // https://bost.ocks.org/mike/shuffle
+      let currentIndex = array.length
+      let temporaryValue
+      let randomIndex
+      // While there remain elements to shuffle...
+      while (currentIndex !== 0) {
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex)
+        currentIndex -= 1
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex]
+        array[currentIndex] = array[randomIndex]
+        array[randomIndex] = temporaryValue
+      }
+      return array
+    },
+    matchMaking(themeName) {
+      // On recupere l'identifiant du theme
+      const themeId = this.themeIdDictionary[themeName]
+      // On indique qu'on est en train de chercher un adversaire
+      this.searchingForMatch = true
+      // On cherche dans la liste de recherche en cours si un adversaire ayant choisi le meme theme est en train de chercher une partie
+      this.$fire.database
+        .ref('queues/')
+        .get()
+        .then((snapshot) => {
+          let found = false
+          // Si il y a déjà des recherches en cours
+          if (snapshot.val()) {
+            const queueObject = snapshot.val()
+            const queues = Object.keys(queueObject)
+            // On parcours les recherches en cours jusqu'à trouver le theme correspondant à celui choisi par l'utilisateur
+            for (let i = 0; i < queues.length; i++) {
+              // Si on trouve un match on crée un lobby et on redirige l'utilisateur dans le lobby
+              if (queueObject[queues[i]].theme.id === themeId) {
+                // On a trouvé un joueur
+                found = true
+                // On indique que la recherche est terminée
+                this.searchingForMatch = false
+                // On crée un lobby et on redirige l'utilisateur
+                this.createLobby(themeName, queues[i])
+              }
+            }
+          }
+          if (!found) {
+            // Si on ne trouve aucune recherche correspondante
+            // On indique au serveur qu'on est en attente de joueur
+            const queueInfo = {
+              opponent: {
+                name: this.$fire.auth.currentUser.displayName,
+                uid: this.$fire.auth.currentUser.uid,
+              },
+              theme: {
+                name: themeName,
+                id: themeId,
+              },
+              state: 'searching',
+            }
+            const queueId = this.$fire.database.ref('queues/').push(queueInfo)
+              .key
+            // On écoute les evenements pour voir si un joueur a rejoint
+            this.$fire.database
+              .ref('queues/' + queueId)
+              .on('value', (snapshot) => {
+                const lobbyKey =
+                  snapshot.val() !== null ? snapshot.val().lobbyKey : null
+                if (lobbyKey) {
+                  // On met à jour l'état de la partie
+                  this.$fire.database.ref('lobbies/').child(lobbyKey).update({
+                    state: 'ongoing',
+                  })
+                  // On envoit au serveur les informations du joueur
+                  this.$fire.database
+                    .ref('lobbies/')
+                    .child(lobbyKey + '/players/1')
+                    .set({
+                      name: this.$fire.auth.currentUser.displayName,
+                      uid: this.$fire.auth.currentUser.uid,
+                      isReady: false,
+                      isDone: false,
+                      score: 0,
+                    })
+                  // On arrête et on supprime la recherche
+                  this.searchingForMatch = false
+                  this.$fire.database.ref('queues/' + queueId).remove()
+                  // On arrête d'écouter les evenements
+                  this.$fire.database.ref('queues/' + queueId).off('value')
+                  // On renvoit l'utilisateur vers le lobby
+                  this.$router.push('/lobby/' + lobbyKey)
+                }
+              })
+          }
+        })
     },
     // Lancement du jeu solo
     playSolo(e) {
