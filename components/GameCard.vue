@@ -1,16 +1,10 @@
 <template>
-  <div>
-    <div
-      class="inline-block px-8 py-8 transition duration-150 transform scale-100 hover:scale-105"
-    >
-      <div
-        class="max-w-xs p-5 overflow-hidden transition-shadow duration-300 ease-in-out bg-white rounded-lg shadow-xl cursor-pointer h-128 w-128 hover:shadow-2xl"
-      >
-        <h2 class="text-4xl font-bold text-red-500 capitalize">
-          {{ label.split('_').join(' ') }}
-        </h2>
-      </div>
-    </div>
+  <div
+    class="flex items-center justify-center w-full p-3 my-3 transition duration-300 ease-in-out transform scale-95 bg-indigo-900 rounded-lg shadow-xl cursor-pointer hover:bg-indigo-600 hover:scale-100 border-1 hover:border-bg-indigo-400 lg:h-25 hover:shadow-2xl"
+  >
+    <h2 class="font-bold text-center text-gray-100 capitalize lg:text-2xl">
+      {{ label.split('_').join(' ') }}
+    </h2>
   </div>
 </template>
 

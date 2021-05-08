@@ -1,66 +1,119 @@
 <template>
-  <div class="bg-local" style="background-image: url(background.jpg)">
-    <!-- component -->
-    <section class="flex flex-col min-h-screen">
-      <div class="flex flex-1 items-center justify-center">
-        <div
-          class="bg-white rounded-xl text-center w-full py-16 px-4 shadow-2xl sm:max-w-md lg:max-w-2xl lg:px-24"
-        >
-          <form class="text-center">
-            <div class="flex flex-1 items-center justify-center">
-              <img class="object-fill h-50 w-55" src="~/assets/img/logo.svg" />
-            </div>
-            <div class="text-left py-5">
-              <input
-                v-model="email"
-                type="email"
-                class="rounded-lg bg-gray-50 shadow-xl w-full py-5 px-4 block focus:outline-none focus:border-gray-700"
-                placeholder="Email"
-              />
-            </div>
-            <div class="text-left py-5">
-              <input
-                v-model="password"
-                type="password"
-                class="rounded-lg bg-gray-50 shadow-xl w-full py-5 px-4 block focus:outline-none focus:border-gray-700"
-                placeholder="Mot de passe"
-              />
-            </div>
-            <div class="py-5">
-              <button
-                class="rounded-lg font-bold bg-red-600 shadow-xl text-white tracking-wider w-full p-5 block hover:bg-red-800 focus:outline-none focus:border-gray-700"
-                @click="signInUser"
-              >
-                Connexion
-              </button>
-            </div>
-          </form>
-          <div class="text-center">
-            <NuxtLink to="/forgot-pass" class="hover:underline"
-              >Mot de passe oublié?</NuxtLink
-            >
-          </div>
-          <div class="mt-12 text-center">
-            <span> Pas de compte? </span>
-            <NuxtLink
-              to="/signup"
-              class="font-light font-semibold text-md text-red-600 underline hover:text-red-600"
-              >En créer un</NuxtLink
-            >
-          </div>
-          <div class="mt-2 text-center">
-            <span> Sinon </span>
-            <a
-              href="#"
-              class="font-light font-semibold text-md text-red-600 underline hover:text-red-600"
-              @click="signInAnonymous"
-              >Cliquer ici</a
-            >
-            <span> pour se connecter en tant qu'invité. </span>
+  <div class="relative h-screen overflow-hidden bg-indigo-900">
+    <img
+      src="~/assets/img/Rose-Petals.svg"
+      class="absolute object-cover w-full h-full"
+    />
+    <div
+      class="absolute inset-0 opacity-25 bg-gradient-to-tr from-indigo-400 via-indigo-600 to-black"
+    ></div>
+    <div
+      class="container relative h-full px-1 py-1 mx-auto md:px-12 md:py-12 z-1"
+    >
+      <div
+        class="w-full h-full p-3 border-indigo-900 shadow-xl md:p-8 border-3 md:border-12 rounded-xl"
+      >
+        <div class="flex items-center justify-center w-full">
+          <n-link to="/">
+            <img
+              class="object-fill w-10 h-10 md:h-15 md:w-15"
+              src="~/assets/img/logo.svg"
+            />
+          </n-link>
+          <p
+            class="mx-3 text-xl font-bold tracking-widest text-gray-200 md:text-4xl"
+          >
+            LOGIN
+          </p>
+        </div>
+        <div class="flex h-full mt-5">
+          <div
+            class="flex justify-center w-full h-full p-5 overflow-y-auto bg-indigo-900 rounded-md shadow-xl align-center"
+            style="height: 90%"
+          >
+            <form class="w-full mt-8 text-center lg:w-1/2">
+              <div class="py-5 text-left">
+                <input
+                  v-model="email"
+                  type="email"
+                  class="block w-full px-4 py-5 text-xl text-center text-white bg-indigo-600 rounded-lg shadow-2xl md:text-2xl focus:outline-none focus:border-indigo-700"
+                  placeholder="Email"
+                />
+              </div>
+              <div class="py-5 text-left">
+                <input
+                  v-model="password"
+                  type="password"
+                  class="block w-full px-4 py-5 text-xl text-center text-white bg-indigo-600 rounded-lg shadow-2xl md:text-2xl focus:outline-none focus:border-indigo-700"
+                  placeholder="Mot de passe"
+                />
+              </div>
+              <div class="py-5">
+                <button
+                  class="block w-full p-5 text-xl font-bold tracking-wider text-white bg-red-600 rounded-lg shadow-xl md:text-2xl hover:bg-red-800 focus:outline-none focus:border-gray-700"
+                  @click="signInUser"
+                >
+                  Connexion
+                </button>
+              </div>
+              <div class="flex flex-wrap items-center justify-center">
+                <n-link
+                  to="signup"
+                  class="flex items-center justify-center w-full p-3 mx-2 mt-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl md:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+                >
+                  <div class="mr-3">
+                    <img
+                      class="object-fill w-10 p-1"
+                      src="~/assets/img/checklist.svg"
+                    />
+                  </div>
+                  <div>
+                    <div class="text-xs text-left">PAS DE COMPTE</div>
+                    <div class="-mt-1 font-sans text-xl font-semibold">
+                      S'INSCRIRE
+                    </div>
+                  </div>
+                </n-link>
+                <button
+                  class="flex items-center justify-center w-full p-3 mx-2 mt-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl md:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+                  @click="signInAnonymous"
+                >
+                  <div class="mr-3">
+                    <img
+                      class="object-fill w-10 p-1"
+                      src="~/assets/img/anonymous.svg"
+                    />
+                  </div>
+                  <div>
+                    <div class="text-xs text-left">CONNEXION</div>
+                    <div class="-mt-1 font-sans text-xl font-semibold">
+                      ANONYME
+                    </div>
+                  </div>
+                </button>
+                <n-link
+                  to="forgot-pass"
+                  class="flex items-center justify-center w-full p-3 mx-2 mt-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl md:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+                >
+                  <div class="mr-3">
+                    <img
+                      class="object-fill w-10 p-1"
+                      src="~/assets/img/forgot.svg"
+                    />
+                  </div>
+                  <div>
+                    <div class="text-xs text-left">MOT DE PASSE</div>
+                    <div class="-mt-1 font-sans text-xl font-semibold">
+                      OUBLIE
+                    </div>
+                  </div>
+                </n-link>
+              </div>
+            </form>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   </div>
 </template>
 

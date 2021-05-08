@@ -4,3 +4,22 @@
   font-family: 'Open Sans', sans-serif;
   transition: all 0.2s ease-out;
 }
+
+body {
+  background: -webkit-linear-gradient(
+    to right,
+    #642b73,
+    #691b88
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #642b73, #691b88);
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.5s;
+}
+.page-enter,
+.page-leave-to {
+  opacity: 0.01;
+  zoom: 1;
+}
