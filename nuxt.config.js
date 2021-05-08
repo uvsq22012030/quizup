@@ -15,7 +15,7 @@ export default {
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [],
+  css: ['@/assets/main.scss'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [],
@@ -54,6 +54,7 @@ export default {
           messagingSenderId: '737504622882',
           appId: '1:737504622882:web:9c7d18b64d1e06884e4d7b',
           measurementId: 'G-BZXCQ7M42Q',
+          databaseURL: 'https://quizup-91757-default-rtdb.europe-west1.firebasedatabase.app',
         },
         services: {
           auth: {
@@ -64,6 +65,7 @@ export default {
             },
             ssr: false, // default
           },
+          database: true,
         },
         onFirebaseHosting: true,
       },
