@@ -361,23 +361,14 @@
                     class="w-1/3 px-3 py-2 m-auto font-semibold text-white bg-red-400 rounded-full hover:bg-red-600 hover:text-white"
                     @click="playSolo"
                   >
-                    Chrono
-                  </label>
+                    Jouer »
+                  </button>
                 </div>
-              </fieldset>
-              <div class="flex items-center mt-5 text-center">
-                <button
-                  type="submit"
-                  class="w-1/3 px-3 py-2 m-auto font-semibold text-white bg-red-400 rounded-full hover:bg-red-600 hover:text-white"
-                  @click="playSolo"
-                >
-                  Jouer »
-                </button>
               </div>
             </div>
           </div>
-        </div>
-      </template>
+        </template>
+      </div>
     </section>
   </div>
 </template>
