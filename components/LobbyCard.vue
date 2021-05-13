@@ -7,10 +7,27 @@
         {{ label.split('_').join(' ') }} -
         <span class="text-indigo-400">HOST: {{ user }}</span>
       </h2>
-      <p class="text-gray-100 text">{{ players }} Joueurs</p>
+      <p class="text-gray-100 text">{{ players }} Joueur(s)</p>
     </div>
     <div>
-      <p>status</p>
+      <p class="text-gray-100 text">{{ status }}</p>
+    </div>
+    <div>
+      <button
+        type="button"
+        class="flex items-center justify-center w-full text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+        @click="$emit('click')"
+      >
+        <div class="mr-3">
+          <img
+            class="object-fill w-10 p-1"
+            src="~/assets/img/play-button.svg"
+          />
+        </div>
+        <div>
+          <div class="-mt-1 font-sans font-semibold lg:text-xl">REJOINDRE</div>
+        </div>
+      </button>
     </div>
   </div>
 </template>
@@ -27,9 +44,19 @@ export default {
       type: String,
       default: 'hello',
     },
+    status: {
+      type: String,
+      default: 'hello',
+    },
     players: {
       type: [String, Number],
       default: '19',
+    },
+    buttonFunction: {
+      type: Function,
+      default() {
+        console.log('Hello World')
+      },
     },
   },
 }
