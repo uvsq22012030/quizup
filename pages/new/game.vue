@@ -20,52 +20,6 @@
             <n-link to="/">
               <img src="~/assets/img/back.svg" class="object-fill w-5 h-5" />
             </n-link>
-
-            <div class="flex items-center justify-center">
-              <div class="flex -space-x-1 overflow-x-scroll">
-                <img
-                  class="inline-block w-5 h-5 rounded-full ring-1"
-                  src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt=""
-                />
-                <img
-                  class="inline-block w-5 h-5 rounded-full ring-1"
-                  src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt=""
-                />
-                <img
-                  class="inline-block w-5 h-5 rounded-full ring-1"
-                  src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt=""
-                />
-                <img
-                  class="inline-block w-5 h-5 rounded-full ring-1"
-                  src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt=""
-                />
-                <img
-                  class="inline-block w-5 h-5 rounded-full ring-1"
-                  src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt=""
-                />
-                <img
-                  class="inline-block w-5 h-5 rounded-full ring-1"
-                  src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt=""
-                />
-                <img
-                  class="inline-block w-5 h-5 rounded-full ring-1"
-                  src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80"
-                  alt=""
-                />
-                <img
-                  class="inline-block w-5 h-5 rounded-full ring-1"
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt=""
-                />
-              </div>
-            </div>
-
             <p
               class="mx-3 text-xl font-bold tracking-widest text-yellow-400 md:text-4xl"
             >
@@ -82,7 +36,7 @@
           <div v-if="isTimed" ref="timeBar">
             <!-- Progressbar -->
             <div
-              v-if="currentQuestionNumber + 1 <= 10"
+              v-if="currentQuestionNumber < 10"
               class="flex h-4 bg-white w-5/6 bg-grey-light float-left rounded-full shadow-2xl md:mt-3"
             >
               <div
@@ -92,7 +46,7 @@
             </div>
             <!-- Hourglass -->
             <img
-              v-if="currentQuestionNumber + 1 <= 10"
+              v-if="currentQuestionNumber < 10"
               class="flex bg-none right-5 object-fill h-5 w-10 md:h-12 md:w-20"
               src="~/assets/img/hourglass.gif"
             />
