@@ -66,7 +66,7 @@
                 <button
                   type="button"
                   class="flex items-center justify-center w-full p-3 mx-2 mt-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
-                  @click="optionsPopup = true"
+                  @click="randomTheme()"
                 >
                   <div class="mr-3">
                     <img
@@ -205,6 +205,14 @@ export default {
     this.lobbiesRef = this.$fire.database.ref('lobbies/')
   },
   methods: {
+    // Methode qui renvoit un theme aléatoire
+    randomTheme() {
+      this.searchQuery = this.fetchedThemes[
+        Math.floor(Math.random() * this.fetchedThemes.length)
+      ].name
+        .split('_')
+        .join(' ')
+    },
     // Methode qui redirige vers la page des lobbies
     browseLobbies() {
       this.$router.push('/lobby')
