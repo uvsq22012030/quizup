@@ -8,9 +8,11 @@
       <div
         class="absolute inset-0 opacity-25 bg-gradient-to-tr from-indigo-400 via-indigo-600 to-black"
       ></div>
-      <div class="container relative h-full px-12 py-12 mx-auto z-1">
+      <div
+        class="container relative h-full px-1 py-1 mx-auto md:px-12 md:py-12 z-1"
+      >
         <div
-          class="w-full h-full p-8 border-indigo-900 shadow-xl border-12 rounded-xl"
+          class="w-full h-full p-2 border-indigo-900 shadow-xl md:p-8 border-5 lg:border-12 rounded-xl"
         >
           <div class="flex items-center justify-center w-full">
             <img
@@ -24,7 +26,7 @@
           <div class="flex flex-wrap items-center h-full">
             <div class="flex flex-col items-center w-full p-5 lg:w-1/2">
               <img
-                class="bg-indigo-800 border-indigo-900 rounded-full shadow-2xl w-30 h-30 border-10 lg:h-80 lg:w-80"
+                class="w-20 h-20 bg-indigo-800 border-indigo-900 rounded-full shadow-2xl border-10 lg:h-80 lg:w-80"
                 :src="
                   'https://avatars.dicebear.com/api/bottts/' +
                   $fire.auth.currentUser.displayName +
@@ -32,7 +34,7 @@
                 "
               />
               <p
-                class="mt-2 mb-2 text-xl font-bold tracking-tight text-white lg:mt-8 lg:text-4xl"
+                class="mt-2 mb-2 text-base font-bold tracking-tight text-white lg:mt-8 lg:text-4xl"
               >
                 {{ $fire.auth.currentUser.displayName }}
               </p>
@@ -42,10 +44,10 @@
                 >Déconnexion</span
               >
 
-              <div class="flex items-center mt-2">
+              <div class="flex flex-wrap items-center mt-2">
                 <button
                   type="button"
-                  class="flex items-center p-3 mx-2 mt-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+                  class="flex items-center justify-center w-full p-3 mx-2 mt-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
                 >
                   <div class="mr-3">
                     <img
@@ -62,7 +64,8 @@
                 </button>
                 <button
                   type="button"
-                  class="flex items-center p-3 mx-2 mt-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+                  class="flex items-center justify-center w-full p-3 mx-2 mt-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+                  @click="openSelectPopup = true"
                 >
                   <div class="mr-3">
                     <img
@@ -102,6 +105,51 @@
         </div>
       </div>
     </div>
+
+    <vue-final-modal
+      v-model="openSelectPopup"
+      :ssr="true"
+      :classes="['glasso', 'modal-container']"
+      content-class="modal-content"
+    >
+      <div class="flex flex-col items-center">
+        <img
+          class="object-fill w-8 h-8 lg:h-15 lg:w-15 animate-bounce"
+          src="~/assets/img/mental-health.svg"
+        />
+        <p class="my-2 text-center">
+          Mets ton contenu de popup ici Nassim. Mdrr essaie de respecter le
+          style de design. j'ai commencé avec les boutons pour toi
+        </p>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-center mt-2">
+        <button
+          type="button"
+          class="flex items-center justify-center w-full p-3 mx-2 mt-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+        >
+          <div class="mr-3">
+            <img class="object-fill w-10 p-1" src="~/assets/img/bulb.svg" />
+          </div>
+          <div>
+            <div class="text-xs text-left">MODE</div>
+            <div class="-mt-1 font-sans font-semibold lg:text-xl">NORMAL</div>
+          </div>
+        </button>
+        <button
+          type="button"
+          class="flex items-center justify-center w-full p-3 mx-2 mt-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+        >
+          <div class="mr-3">
+            <img class="object-fill w-10 p-1" src="~/assets/img/deadline.svg" />
+          </div>
+          <div>
+            <div class="text-xs text-left">MODE</div>
+            <div class="-mt-1 font-sans font-semibold lg:text-xl">CHRONO</div>
+          </div>
+        </button>
+      </div>
+    </vue-final-modal>
   </div>
 </template>
 
@@ -111,6 +159,7 @@ export default {
     return {
       searchQuery: '',
       fetchedThemes: [],
+      openSelectPopup: false,
     }
   },
   computed: {
@@ -169,4 +218,25 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.speech-bubble {
+  position: relative;
+  background: #28585c;
+  border-radius: 0.4em;
+}
+
+.speech-bubble:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border: 56px solid transparent;
+  border-right-color: #28585c;
+  border-left: 0;
+  border-top: 0;
+  margin-top: -28px;
+  margin-left: -56px;
+}
+</style>

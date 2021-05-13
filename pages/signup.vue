@@ -67,7 +67,7 @@
               <div class="flex flex-wrap items-center justify-center">
                 <n-link
                   to="login"
-                  class="flex items-center justify-center w-full p-3 mx-2 mt-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl md:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+                  class="flex items-center justify-center w-full p-3 mx-2 mt-3 text-white no-underline transform scale-100 bg-indigo-800 rounded-lg shadow-xl md:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
                 >
                   <div class="mr-3">
                     <img
