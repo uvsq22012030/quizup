@@ -17,4 +17,8 @@ $ npm run start
 $ npm run generate
 ```
 
+<https://codepen.io/suez/pen/dXbBGp> - loading
+<https://codepen.io/MaciejCaputa/pen/mEGzJX> - playcount down
+<https://epic-spinners.epicmax.co/> - vue spin count down
+
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).

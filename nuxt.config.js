@@ -18,7 +18,7 @@ export default {
   css: ['@/assets/main.scss'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: ['~plugins/vue-final-modal.js'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -54,7 +54,8 @@ export default {
           messagingSenderId: '737504622882',
           appId: '1:737504622882:web:9c7d18b64d1e06884e4d7b',
           measurementId: 'G-BZXCQ7M42Q',
-          databaseURL: 'https://quizup-91757-default-rtdb.europe-west1.firebasedatabase.app',
+          databaseURL:
+            'https://quizup-91757-default-rtdb.europe-west1.firebasedatabase.app',
         },
         services: {
           auth: {
@@ -83,5 +84,7 @@ export default {
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {},
+  build: {
+    transpile: ['vue-final-modal'],
+  },
 }
