@@ -3,41 +3,42 @@
     <section class="flex flex-col min-h-screen">
       <div class="flex items-center justify-center flex-1">
         <div
-          class="w-full h-full text-center bg-white border-0 bg-gradient-to-b from-red-400 via-red-200 via-gray-100 via-gray-300 via-red-200 via-gray-100 to-red-400"
+          class="w-full h-full text-center bg-white border-0 bg-gradient-to-b from-red-400 via-red-200 via-gray-100 via-gray-300 to-red-400"
         >
           <!-- Navbar -->
           <nav
-            class="flex justify-between flex-wrap bg-white py-4 lg:px-12 shadow-2xl border-solid border-1"
+            class="flex flex-wrap justify-between py-4 bg-white border-solid shadow-2xl border-1 lg:px-12"
           >
             <div
-              class="left-0 flex justify-between lg:w-auto w-full lg:border-b-0 px-2 sm:pl-6 sm:pr-2 border-solid border-0 pb-5 lg:pb-0"
+              class="left-0 flex justify-between w-full px-2 pb-5 border-0 border-solid sm:pr-2 sm:pl-6 lg:border-b-0 lg:w-auto lg:pb-0"
             >
               <div
-                class="flex items-center flex-shrink-0 text-gray-800 mr-auto"
+                class="flex items-center flex-shrink-0 mr-auto text-gray-800"
               >
                 <img
-                  class="object-fill h-10 w-10 md:h-15 md:w-15"
-                  src="~/assets/img/question-mark.png"
+                  class="object-fill w-10 h-10 md:h-15 md:w-15"
+                  src="~/assets/img/logo.svg"
                 />
                 <span
-                  class="font-semibold text-base font-mono md:text-2xl tracking-tight"
+                  class="ml-6 text-base font-bold tracking-tight md:text-2xl"
                 >
-                  QuizUp
+                  usvQuiz
                 </span>
               </div>
+
               <!-- Avatar (mobile) -->
               <div class="flex items-center space-x-2">
                 <span
-                  class="text-gray-500 font-bold font-mono pl-10 tracking-tight text-xs sm:text-sm sm:flex lg:hidden"
+                  class="pl-10 font-mono text-xs font-bold tracking-tight text-gray-500 sm:flex sm:text-sm lg:hidden"
                 >
                   {{ $fire.auth.currentUser.displayName }}
                 </span>
-                <div class="group border-0 lg:hidden">
+                <div class="border-0 group lg:hidden">
                   <button
-                    class="outline-none focus:outline-none bg-white border-0 rounded-sm flex items-center"
+                    class="flex items-center bg-white border-0 rounded-sm outline-none focus:outline-none"
                   >
                     <img
-                      class="border-gray-500 border-2 rounded-lg h-8 w-8 md:h-13 md:w-13"
+                      class="w-8 h-8 border-2 border-gray-500 rounded-lg md:h-13 md:w-13"
                       :src="
                         'https://avatars.dicebear.com/api/avataaars/' +
                         $fire.auth.currentUser.displayName +
@@ -46,12 +47,12 @@
                     />
                   </button>
                   <ul
-                    class="w-7 md:w-12 bg-white border-0 transform scale-0 group-hover:scale-100 absolute transition duration-150 ease-in-out origin-top"
+                    class="absolute transition duration-150 ease-in-out origin-top transform scale-0 bg-white border-0 w-7 md:w-12 group-hover:scale-100"
                   >
-                    <li class="w-full h-5 border-1 rounded-md border-red-400">
+                    <li class="w-full h-5 border-red-400 rounded-md border-1">
                       <input
                         id="image"
-                        class="object-cover h-full w-full"
+                        class="object-cover w-full h-full"
                         type="image"
                         alt="Logout"
                         src="exit.png"
@@ -64,17 +65,17 @@
             </div>
             <!-- Avatar -->
             <div
-              class="flex items-center flex-shrink-0 hidden lg:flex space-x-2"
+              class="flex items-center flex-shrink-0 hidden space-x-2 lg:flex"
             >
-              <span class="text-gray-500 font-bold pl-10 tracking-tight">
+              <span class="pl-10 font-bold tracking-tight text-gray-500">
                 {{ $fire.auth.currentUser.displayName }}
               </span>
-              <div class="group border-0">
+              <div class="border-0 group">
                 <button
-                  class="outline-none focus:outline-none bg-white border-0 rounded-sm flex items-center min-w-13"
+                  class="flex items-center bg-white border-0 rounded-sm outline-none min-w-13 focus:outline-none"
                 >
                   <img
-                    class="border-gray-500 border-2 rounded-lg h-13 w-13"
+                    class="border-2 border-gray-500 rounded-lg h-13 w-13"
                     :src="
                       'https://avatars.dicebear.com/api/avataaars/' +
                       $fire.auth.currentUser.displayName +
@@ -83,12 +84,12 @@
                   />
                 </button>
                 <ul
-                  class="w-10 bg-white border-0 transform scale-0 group-hover:scale-100 absolute transition duration-150 ease-in-out origin-top min-w-13"
+                  class="absolute w-10 transition duration-150 ease-in-out origin-top transform scale-0 bg-white border-0 min-w-13 group-hover:scale-100"
                 >
-                  <li class="w-full h-8 border-1 rounded-md border-red-400">
+                  <li class="w-full h-8 border-red-400 rounded-md border-1">
                     <input
                       id="image"
-                      class="object-cover h-full w-full"
+                      class="object-cover w-full h-full"
                       type="image"
                       alt="Logout"
                       src="exit.png"
@@ -99,17 +100,17 @@
               </div>
             </div>
           </nav>
-          <div class="block justify-center min-h-full bg-white md:mx-20 my-0">
+          <div class="justify-center block min-h-full my-0 bg-white">
             <!--Search Bar -->
             <div class="p-8">
               <div
-                class="bg-gray-100 flex items-center rounded-2xl md:rounded-full shadow-lg w-2/3 lg:w-1/3 mx-auto"
+                class="flex items-center w-2/3 mx-auto bg-gray-100 shadow-lg rounded-2xl md:rounded-full lg:w-1/3"
               >
                 <v-select
                   id="search"
                   v-model="selectedTheme"
                   :options="searchSuggestions"
-                  class="bg-gray-100 border-0 rounded-l-2xl md:rounded-l-full w-full py-4 px-6 text-gray-700 leading-tight focus:outline-none"
+                  class="w-full px-6 py-4 leading-tight text-gray-700 bg-gray-100 border-0 rounded-l-2xl md:rounded-l-full focus:outline-none"
                   label="theme"
                   type="text"
                   placeholder="Chercher un thème..."
@@ -117,11 +118,11 @@
                 </v-select>
                 <div class="p-4">
                   <button
-                    class="bg-red-400 text-white rounded-full p-2 hover:bg-red-500 focus:outline-none h-8 w-8 md:w-12 md:h-12 flex items-center justify-center"
+                    class="flex items-center justify-center w-8 h-8 p-2 text-white bg-red-400 rounded-full hover:bg-red-500 focus:outline-none md:w-12 md:h-12"
                     @click="soloPopup(selectedTheme)"
                   >
                     <img
-                      class="object-fill h-3 w-3 md:h-7 md:w-7"
+                      class="object-fill w-3 h-3 md:h-7 md:w-7"
                       src="~/assets/img/search.png"
                     />
                   </button>
@@ -129,18 +130,18 @@
               </div>
             </div>
             <!-- Themes -->
-            <div class="mx-auto w-full lg:w-5/6 mb-5">
+            <div class="w-full mx-auto mb-5 lg:w-5/6">
               <h1
-                class="static left-0 text-base md:w-max-100 font-bold font-mono md:text-4xl mb-3"
+                class="static left-0 mb-3 font-mono text-base font-bold md:text-4xl md:w-max-100"
               >
                 Thèmes à la une
               </h1>
               <div class="relative items-center justify-center">
                 <!-- All Themes Container -->
-                <div class="lg:flex items-center container mx-auto my-auto">
+                <div class="container items-center mx-auto my-auto lg:flex">
                   <!-- Theme 1 -->
                   <div
-                    class="lg:m-4 shadow-md hover:shadow-lg hover:bg-gray-100 rounded-lg bg-white my-12 mx-8"
+                    class="mx-8 my-12 bg-white rounded-lg shadow-md lg:m-4 hover:bg-gray-100 hover:shadow-lg"
                   >
                     <!-- Theme Image -->
                     <img
@@ -151,14 +152,14 @@
                     <!-- Theme Content -->
                     <div class="p-4">
                       <h3
-                        class="font-medium text-gray-600 text-lg my-2 uppercase"
+                        class="my-2 text-lg font-medium text-gray-600 uppercase"
                       >
                         {{ popularThemes[0] }}
                       </h3>
-                      <div class="group border-0 mt-5">
+                      <div class="mt-5 border-0 group">
                         <button
                           type="submit"
-                          class="hover:bg-red-600 rounded-full py-2 px-3 font-semibold hover:text-white bg-red-400 text-white"
+                          class="px-3 py-2 font-semibold text-white bg-red-400 rounded-full hover:bg-red-600 hover:text-white"
                           @click="soloPopup(popularThemes[0])"
                         >
                           Jouer en solo
@@ -168,7 +169,7 @@
                   </div>
                   <!-- Theme 2 -->
                   <div
-                    class="lg:m-4 shadow-md hover:shadow-lg hover:bg-gray-100 rounded-lg bg-white my-12 mx-8"
+                    class="mx-8 my-12 bg-white rounded-lg shadow-md lg:m-4 hover:bg-gray-100 hover:shadow-lg"
                   >
                     <!-- Theme Image -->
                     <img
@@ -179,14 +180,14 @@
                     <!-- Theme Content -->
                     <div class="p-4">
                       <h3
-                        class="font-medium text-gray-600 text-lg my-2 uppercase"
+                        class="my-2 text-lg font-medium text-gray-600 uppercase"
                       >
                         {{ popularThemes[1] }}
                       </h3>
                       <div class="mt-5">
                         <button
                           type="submit"
-                          class="hover:bg-red-600 rounded-full py-2 px-3 font-semibold hover:text-white bg-red-400 text-white"
+                          class="px-3 py-2 font-semibold text-white bg-red-400 rounded-full hover:bg-red-600 hover:text-white"
                           @click="soloPopup(popularThemes[1])"
                         >
                           Jouer en solo
@@ -196,7 +197,7 @@
                   </div>
                   <!-- Theme 3 -->
                   <div
-                    class="lg:m-4 shadow-md hover:shadow-lg hover:bg-gray-100 rounded-lg bg-white my-12 mx-8"
+                    class="mx-8 my-12 bg-white rounded-lg shadow-md lg:m-4 hover:bg-gray-100 hover:shadow-lg"
                   >
                     <!-- Theme Image -->
                     <img
@@ -207,14 +208,14 @@
                     <!-- Theme Content -->
                     <div class="p-4">
                       <h3
-                        class="font-medium text-gray-600 text-lg my-2 uppercase"
+                        class="my-2 text-lg font-medium text-gray-600 uppercase"
                       >
                         {{ popularThemes[2] }}
                       </h3>
                       <div class="mt-5">
                         <button
                           type="submit"
-                          class="hover:bg-red-600 rounded-full py-2 px-3 font-semibold hover:text-white bg-red-400 text-white"
+                          class="px-3 py-2 font-semibold text-white bg-red-400 rounded-full hover:bg-red-600 hover:text-white"
                           @click="soloPopup(popularThemes[2])"
                         >
                           Jouer en solo
@@ -228,7 +229,7 @@
             <div>
               <button
                 type="submit"
-                class="hover:bg-red-600 rounded-full py-2 px-3 font-semibold hover:text-white bg-red-400 text-white"
+                class="px-3 py-2 font-semibold text-white bg-red-400 rounded-full hover:bg-red-600 hover:text-white"
                 @click="browseLobbies()"
               >
                 Parcourir les lobbies
@@ -237,44 +238,44 @@
             <!-- Game history -->
             <div
               v-if="!$fire.auth.currentUser.isAnonymous"
-              class="mx-auto w-full lg:w-5/6"
+              class="w-full mx-auto lg:w-5/6"
             >
               <h1
-                class="text-left w-max-screen lg:w-max-200 font-bold font-mono text-l md:text-4xl mb-3"
+                class="mb-3 font-mono font-bold text-left text-l w-max-screen md:text-4xl lg:w-max-200"
               >
                 Historique des parties
               </h1>
-              <div class="bg-white shadow-md rounded">
+              <div class="bg-white rounded shadow-md">
                 <table
-                  class="max-w-sm md:w-full md:max-w-full table-fixed md:table-auto shadow-2xl"
+                  class="max-w-sm shadow-2xl table-fixed md:max-w-full md:w-full md:table-auto"
                 >
-                  <tbody class="w-full text-gray-600 text-sm font-light">
+                  <tbody class="w-full text-sm font-light text-gray-600">
                     <tr
                       v-for="(game, idx) in gamesHistory"
                       :key="idx"
                       class="w-full h-40 border-b border-gray-200 hover:bg-red-400"
                     >
                       <td
-                        class="px-1 py-1 md:px-6 md:py-3 text-left whitespace-nowrap"
+                        class="px-1 py-1 text-left whitespace-nowrap md:py-3 md:px-6"
                       >
                         <div class="flex items-center">
                           <span class="font-medium">{{ game.date }}</span>
                         </div>
                       </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-left">
+                      <td class="px-1 py-1 text-left md:py-3 md:px-6">
                         <div class="flex items-center">
                           <span>{{ game.theme }}</span>
                         </div>
                       </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
+                      <td class="px-1 py-1 text-center md:py-3 md:px-6">
                         <span
-                          class="bg-red-200 text-gray-800 py-1 px-3 rounded-full text-xs"
+                          class="px-3 py-1 text-xs text-gray-800 bg-red-200 rounded-full"
                         >
                           {{ game.type }}
                         </span>
                       </td>
-                      <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                        <div class="flex item-center justify-center font-bold">
+                      <td class="px-1 py-1 text-center md:py-3 md:px-6">
+                        <div class="flex justify-center font-bold item-center">
                           {{ game.score }} pts
                         </div>
                       </td>
@@ -282,29 +283,29 @@
                   </tbody>
                 </table>
               </div>
-              <footer class="bg-white mt-5 opacity-0"><h1>Footer</h1></footer>
+              <footer class="mt-5 bg-white opacity-0"><h1>Footer</h1></footer>
             </div>
           </div>
         </div>
         <!-- Solo popup -->
         <template v-if="optionsPopup">
           <div
-            class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center"
+            class="fixed top-0 left-0 flex items-center justify-center w-full h-full modal"
           >
             <div
-              class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"
+              class="absolute w-full h-full bg-gray-900 opacity-50 modal-overlay"
             ></div>
             <div
-              class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto"
+              class="z-50 w-11/12 mx-auto overflow-y-auto bg-white rounded shadow-lg modal-container md:max-w-md"
             >
               <div
-                class="bg-gray-100 modal-content border-3 border-gray-600 rouned-xl block pt-2 pb-5 px-4"
+                class="block px-4 pt-2 pb-5 bg-gray-100 border-gray-600 border-3 modal-content rouned-xl"
               >
                 <!-- Bouton retour au menu -->
                 <div class="w-full h-8">
                   <button
                     type="submit"
-                    class="bg-red-400 float-right hover:bg-red-600 text-white text-center text-lg font-bold w-7 border rounded-full focus:outline-none"
+                    class="float-right text-lg font-bold text-center text-white bg-red-400 border rounded-full w-7 hover:bg-red-600 focus:outline-none"
                     @click="optionsPopup = false"
                   >
                     »
@@ -313,7 +314,7 @@
                 <!-- Game mode -->
                 <fieldset class="flex items-center justify-between p-4">
                   <div class="block m-auto">
-                    <legend class="block font-bold mb-2">
+                    <legend class="block mb-2 font-bold">
                       Choisir le mode de jeu :
                     </legend>
                     <input
@@ -325,7 +326,7 @@
                       checked
                     />
                     <label
-                      class="bg-gray-300 hover:bg-red-200 text-gray-800 font-semibold py-2 px-4 cursor-pointer rounded-l"
+                      class="px-4 py-2 font-semibold text-gray-800 bg-gray-300 rounded-l cursor-pointer hover:bg-red-200"
                       for="normal"
                     >
                       Normal
@@ -338,17 +339,17 @@
                       type="radio"
                     />
                     <label
-                      class="bg-gray-300 hover:bg-red-200 text-gray-800 font-semibold py-2 px-4 cursor-pointer rounded-r"
+                      class="px-4 py-2 font-semibold text-gray-800 bg-gray-300 rounded-r cursor-pointer hover:bg-red-200"
                       for="timed"
                     >
                       Chrono
                     </label>
                   </div>
                 </fieldset>
-                <div class="text-center flex items-center mt-5">
+                <div class="flex items-center mt-5 text-center">
                   <button
                     type="submit"
-                    class="hover:bg-red-600 w-1/3 m-auto rounded-full py-2 px-3 font-semibold hover:text-white bg-red-400 text-white"
+                    class="w-1/3 px-3 py-2 m-auto font-semibold text-white bg-red-400 rounded-full hover:bg-red-600 hover:text-white"
                     @click="playSolo"
                   >
                     Jouer »
@@ -409,6 +410,7 @@ export default {
         themeName[0].toUpperCase() + themeName.slice(1).replaceAll('_', ' ')
       )
     },
+
     // Recuperation des theme à partir de l'API
     async fetchThemes() {
       try {
@@ -437,6 +439,7 @@ export default {
         console.log(err)
       }
     },
+
     // Deconnexion
     async signOut() {
       try {
@@ -454,6 +457,7 @@ export default {
         alert(e)
       }
     },
+
     // Affichage du menu d'options de partie
     async soloPopup(themeName) {
       if (!themeName) {

@@ -1,115 +1,93 @@
 <template>
-  <div class="bg-local" style="background-image: url(background.jpg)">
-    <!-- component -->
-    <section class="flex flex-col min-h-screen">
-      <div class="flex items-center justify-center flex-1">
-        <div
-          class="w-full px-4 py-5 text-center bg-white rounded-lg sm:border-2 lg:px-24 lg:max-w-xl sm:max-w-md"
-        >
-          <form class="text-center">
-            <div class="flex items-center justify-center flex-1">
-              <img
-                class="object-fill h-50 w-55"
-                src="~/assets/img/question-mark.png"
-              />
-            </div>
-            <h1
-              class="w-full mb-8 text-3xl font-bold tracking-wider text-gray-600"
-            >
-              Inscription
-            </h1>
-            <div class="py-2 text-left">
-              <input
-                v-model="username"
-                type="text"
-                class="block w-full px-4 py-2 bg-gray-100 bg-gray-200 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700"
-                placeholder="Pseudo"
-              />
-            </div>
-            <div class="py-2 text-left">
-              <input
-                v-model="email"
-                type="email"
-                class="block w-full px-4 py-2 bg-gray-100 bg-gray-200 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700"
-                placeholder="Email"
-              />
-            </div>
-            <div class="py-2 text-left">
-              <input
-                v-model="password"
-                type="password"
-                class="block w-full px-4 py-2 bg-gray-100 bg-gray-200 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700"
-                placeholder="Mot de passe"
-              />
-            </div>
-            <div class="py-2 text-left">
-              <input
-                v-model="confirm_password"
-                type="password"
-                class="block w-full px-4 py-2 bg-gray-100 bg-gray-200 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700"
-                placeholder="Confirmer mot de passe"
-              />
-            </div>
-            <div class="py-2">
-              <button
-                class="block w-full p-2 font-bold tracking-wider text-white bg-red-400 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700 hover:bg-red-600"
-                @click="createUser"
-              >
-                S'inscrire
-              </button>
-            </div>
-          </form>
-          <div class="mt-12 text-center">
-            <span> Vous avez déjà un compte? </span>
-            <NuxtLink
-              to="/login"
-              class="font-light font-semibold text-red-400 underline uppercase text-md hover:text-red-600"
-              >Se connecter</NuxtLink
-            >
+  <div class="relative h-screen overflow-hidden bg-pink-600">
+    <img
+      src="~/assets/img/Rose-Petals.svg"
+      class="absolute object-cover w-full h-full"
+    />
+    <div
+      class="absolute inset-0 opacity-25 bg-gradient-to-tr from-indigo-400 via-pink-600 to-black"
+    ></div>
+    <div
+      class="container relative h-full px-1 py-1 mx-auto md:px-12 md:py-12 z-1"
+    >
+      <div
+        class="w-full h-full p-3 border-pink-600 shadow-xl md:p-8 border-3 md:border-12 rounded-xl"
+      >
+        <div class="flex items-center justify-center w-full">
+          <n-link to="/">
+            <img
+              class="object-fill w-10 h-10 md:h-15 md:w-15"
+              src="~/assets/img/logo.svg"
+            />
+          </n-link>
+          <p
+            class="mx-3 text-xl font-bold tracking-widest text-gray-200 md:text-4xl"
+          >
+            INSCRIPTION
+          </p>
+        </div>
+        <div class="flex h-full mt-5">
+          <div
+            class="flex justify-center w-full h-full p-5 overflow-y-auto bg-indigo-900 rounded-md shadow-xl align-center"
+            style="height: 90%"
+          >
+            <form class="w-full mt-8 text-center lg:w-1/2">
+              <div class="py-5 text-left">
+                <input
+                  v-model="username"
+                  type="text"
+                  class="block w-full px-4 py-5 text-xl text-center text-white bg-indigo-600 rounded-lg shadow-2xl md:text-2xl focus:outline-none focus:border-indigo-700"
+                  placeholder="Pseudo"
+                />
+              </div>
+              <div class="py-5 text-left">
+                <input
+                  v-model="email"
+                  type="email"
+                  class="block w-full px-4 py-5 text-xl text-center text-white bg-indigo-600 rounded-lg shadow-2xl md:text-2xl focus:outline-none focus:border-indigo-700"
+                  placeholder="Email"
+                />
+              </div>
+              <div class="py-5 text-left">
+                <input
+                  v-model="password"
+                  type="password"
+                  class="block w-full px-4 py-5 text-xl text-center text-white bg-indigo-600 rounded-lg shadow-2xl md:text-2xl focus:outline-none focus:border-indigo-700"
+                  placeholder="Mot de passe"
+                />
+              </div>
+              <div class="py-5">
+                <button
+                  class="block w-full p-5 text-xl font-bold tracking-wider text-white bg-red-600 rounded-lg shadow-xl md:text-2xl hover:bg-red-800 focus:outline-none focus:border-gray-700"
+                  @click="createUser"
+                >
+                  S'INSCRIRE
+                </button>
+              </div>
+              <div class="flex flex-wrap items-center justify-center">
+                <n-link
+                  to="login"
+                  class="flex items-center justify-center w-full p-3 mx-2 mt-3 text-white no-underline transform scale-100 bg-indigo-800 rounded-lg shadow-xl md:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+                >
+                  <div class="mr-3">
+                    <img
+                      class="object-fill w-10 p-1"
+                      src="~/assets/img/hotel-bell.svg"
+                    />
+                  </div>
+                  <div>
+                    <div class="text-xs text-left">J'AI UN COMPTE</div>
+                    <div class="-mt-1 font-sans text-xl font-semibold">
+                      CONNEXION
+                    </div>
+                  </div>
+                </n-link>
+              </div>
+            </form>
           </div>
         </div>
-        <!--Popup-->
-        <template v-if="popup">
-          <div
-            class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center"
-          >
-            <div
-              class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"
-            ></div>
-            <div
-              class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto"
-            >
-              <div class="modal-content py-4 text-left px-6">
-                <!--Icon-->
-                <div class="flex items-center justify-center flex-1">
-                  <img
-                    class="object-fill h-50 w-55"
-                    src="~/assets/img/tick.png"
-                  />
-                </div>
-                <!--Title-->
-                <div class="flex justify-between items-center pb-3">
-                  <p class="text-2xl text-center font-bold">
-                    Inscription réussie !
-                  </p>
-                </div>
-                <!--Body-->
-                <p>Cliquer sur le bouton ci-dessous pour continuer</p>
-                <!--Footer-->
-                <div class="flex justify-end pt-2">
-                  <button
-                    class="block w-full p-2 font-bold tracking-wider text-white bg-red-400 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-700 hover:bg-red-600"
-                    @click="goToIndex"
-                  >
-                    Continuer
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </template>
       </div>
-    </section>
+    </div>
   </div>
 </template>
 
@@ -128,12 +106,8 @@ export default {
     async createUser(e) {
       e.preventDefault()
       if (!this.username) {
+        //! !!! TODO: VRAIE VALIDATION AVEC VUELIDATE
         alert("Veuillez saisir un nom d'utilisateur")
-      }
-      if (!this.confirm_password) {
-        alert('Veuillez confirmer le mot de passe')
-      } else if (this.confirm_password !== this.password) {
-        alert('La confirmation du mot de passe est fausse')
       } else {
         try {
           await this.$fire.auth.createUserWithEmailAndPassword(

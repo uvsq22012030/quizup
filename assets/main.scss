@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap');
+
+* {
+  font-family: 'Open Sans', sans-serif;
+  transition: all 0.2s ease-out;
+}
+
+body {
+  background: -webkit-linear-gradient(
+    to right,
+    #642b73,
+    #691b88
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #642b73, #691b88);
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.5s;
+}
+.page-enter,
+.page-leave-to {
+  opacity: 0.01;
+  zoom: 1;
+}
+
+.glasso {
+  color: white !important;
+}
+
+.modal-content {
+  position: relative;
+  width: 80vh;
+  padding: 16px;
+  overflow: auto;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.modal-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
