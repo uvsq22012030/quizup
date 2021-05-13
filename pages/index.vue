@@ -399,7 +399,7 @@ export default {
     playSolo(chronoMode) {
       // On redirige vers la page de jeu en envoyant le json correspondant
       this.$router.push({
-        name: 'new-game',
+        name: 'game',
         params: {
           theme: this.chosenTheme.data,
           themeName: this.themeName,
