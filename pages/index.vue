@@ -164,15 +164,6 @@
                         >
                           Jouer en solo
                         </button>
-                        <!--
-                        <button
-                          type="submit"
-                          class="px-3 py-2 font-semibold text-white bg-red-400 rounded-full hover:bg-red-600 hover:text-white"
-                          @click="matchMaking(popularThemes[0])"
-                        >
-                          Matchmaking
-                        </button>
-                        -->
                       </div>
                     </div>
                   </div>

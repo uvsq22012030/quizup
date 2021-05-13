@@ -38,12 +38,12 @@
                     v-if="lobby.state !== 'finished'"
                     class="flex item-center justify-center font-bold"
                   >
-                    {{ Object.keys(lobby.players).length }} / 2
+                    {{ Object.keys(lobby.players).length }}
                   </div>
                 </td>
                 <td class="px-1 py-1 md:px-6 md:py-3 text-center">
                   <button
-                    v-if="lobby.state !== 'finished'"
+                    v-if="lobby.state === 'pending'"
                     type="submit"
                     class="hover:bg-red-600 rounded-full py-2 px-3 font-semibold hover:text-white bg-red-400 text-white"
                     @click="
@@ -175,22 +175,21 @@ export default {
   methods: {
     // Methode qui permet à l'utilisateur de rejoindre un lobby
     joinLobby(lobbyId, playersNumber, creatorId) {
-      if (playersNumber === 2) {
-        // Lobby plein
-        alert('Full')
-      } else if (creatorId === this.$fire.auth.currentUser.uid) {
+      // if (playersNumber === 2) {
+      //   // Lobby plein
+      //   alert('Full')
+      // } else
+      if (creatorId === this.$fire.auth.currentUser.uid) {
         // Le meme utilisateur ne peut pas rejoindre le meme lobby 2 fois
         alert('Same user')
       } else {
-        this.lobbiesRef.child(lobbyId).update({
-          state: 'ongoing',
-        })
-        this.lobbiesRef.child(lobbyId + '/players/1').set({
+        this.lobbiesRef.child(lobbyId + '/players/' + playersNumber).set({
           name: this.$fire.auth.currentUser.displayName,
           uid: this.$fire.auth.currentUser.uid,
           isReady: false,
           isDone: false,
           score: 0,
+          lastAnswer: null,
         })
         this.$router.push('/lobby/' + lobbyId)
       }
@@ -232,6 +231,7 @@ export default {
               isReady: false,
               isDone: false,
               score: 0,
+              lastAnswer: null,
             },
           ],
           questions: fetchedQuestions,

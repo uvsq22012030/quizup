@@ -5,14 +5,7 @@
     style="background-image: url(../background.jpg)"
   >
     <section v-if="lobbyInfo" class="flex flex-col min-h-screen">
-      <div
-        v-if="
-          (!gameStarted && lobbyInfo.players.length < 2) ||
-          (lobbyInfo.players[0] && !lobbyInfo.players[0].isReady) ||
-          (lobbyInfo.players[1] && !lobbyInfo.players[1].isReady)
-        "
-        class="block"
-      >
+      <div v-if="!gameStarted || !gameReady" class="block">
         Utilisateur dans le lobby :
         <div v-for="(player, idx) in lobbyInfo.players" :key="idx">
           <h1>
@@ -155,24 +148,11 @@
             >
               Score : {{ gameInfo.score }} points
             </p>
-            <!-- Gagné/Perdu/Egalité -->
+            <!-- Classement final -->
             <p
-              v-if="result === 1"
               class="block text-center bottom-0 w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
             >
-              Vous avez gagné :D !
-            </p>
-            <p
-              v-else-if="result === 2"
-              class="block text-center bottom-0 w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
-            >
-              Vous avez perdu :(
-            </p>
-            <p
-              v-else-if="result === 3"
-              class="block text-center bottom-0 w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
-            >
-              Egalité
+              Vous êtes classé : {{ userRanking }}
             </p>
             <!-- Bouton retour au menu -->
             <div
@@ -229,7 +209,7 @@
           <p
             class="block text-center bottom-0 w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
           >
-            L'adversaire a quitté
+            Tout les adversaires ont quitté
           </p>
           <p
             class="block text-center bottom-0 w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
@@ -274,6 +254,8 @@ export default {
       if (answer) {
         // On lance l'ecran de chargement
         this.isLoading = true
+        // On arrete d'écouter les evenements
+        this.lobbyRef.off('value')
         // Si l'utilisateur est le createur du lobby alors on supprime le lobby
         if (
           !this.gameStarted &&
@@ -332,11 +314,11 @@ export default {
         answers: 0,
       },
       userNumber: null, // Position de l'utilisateur dans la base de données
-      opponentNumber: null, // Position de l'adversaire dans la base de données
       gameReady: false, // Booléen indiquant si la partie est prete à etre lancée ou non
       gameStarted: false, // Booléen indiquant si la partie a commencé ou non
       opponentSurrendered: false, // Booléen indiquant si l'adversaire a quitté ou abandonné
-      result: null, // Booléen indiquant le résultat de la partie (1: Gagné, 2: Perdu, 3:Egalité)
+      rankingTable: [], // Classement final total de la partie
+      userRanking: null, // Classement final du joueur
     }
   },
   beforeCreate() {
@@ -376,10 +358,7 @@ export default {
       // On recupere les questions du theme choisi et son nom
       this.randomQuestions = this.lobbyInfo.questions
       this.gameInfo.theme = this.lobbyInfo.theme.name
-      this.userNumber =
-        this.lobbyInfo.creator.uid === this.$fire.auth.currentUser.uid ? 0 : 1
-      this.opponentNumber =
-        this.lobbyInfo.creator.uid === this.$fire.auth.currentUser.uid ? 1 : 0
+      this.userNumber = this.lobbyInfo.players.length - 1
     })
     // On ecoute les evenement du serveur
     this.lobbyRef.on('value', (snapshot) => {
@@ -397,14 +376,22 @@ export default {
       if (this.lobbyInfo) {
         if (!this.gameStarted) {
           // On verifie si la partie est prete à etre lancée
+          const ready = (player) => player.isReady
           this.gameReady =
             this.lobbyInfo.players.length > 1 &&
-            this.lobbyInfo.players[0].isReady &&
-            this.lobbyInfo.players[1].isReady
+            this.lobbyInfo.players.every(ready)
           if (this.gameReady) {
             // On lance la partie
             this.gameStarted = true
             this.intervalId = setInterval(this.countdown, 1000)
+            // Le createur du lobby change l'état de la partie à 'Terminée'
+            if (!this.userNumber) {
+              this.$fire.database
+                .ref('lobbies/' + this.$route.params.lobby)
+                .update({
+                  state: 'ongoing',
+                })
+            }
           }
         } else if (
           Object.keys(this.lobbyInfo.players).length === 1 &&
@@ -429,8 +416,8 @@ export default {
             })
         } else if (this.currentQuestionNumber < 10) {
           // On verifie si les deux utilisateurs ont terminé
-          this.done =
-            this.lobbyInfo.players[0].isDone && this.lobbyInfo.players[1].isDone
+          const roundDone = (player) => player.isDone
+          this.done = this.lobbyInfo.players.every(roundDone)
           // Si les deux utilisateurs ont terminé alors on passe au round suivant (question suivante)
           if (this.done) {
             // On commence le tour
@@ -460,6 +447,8 @@ export default {
     // On supprime l'ecouteur d'evenements
     window.removeEventListener('beforeunload', this.preventNav)
     window.removeEventListener('unload', this.browserClosedHandler)
+    // On arrete d'écouter les evenements
+    this.lobbyRef.off('value')
   },
   methods: {
     browserClosedHandler(event) {
@@ -579,20 +568,17 @@ export default {
       } else {
         // Arret du chronometre
         clearInterval(this.intervalId)
-        // Determination du résultat
-        if (
-          this.lobbyInfo.players[this.userNumber].score >
-          this.lobbyInfo.players[this.opponentNumber].score
-        ) {
-          this.result = 1
-        } else if (
-          this.lobbyInfo.players[this.userNumber].score <
-          this.lobbyInfo.players[this.opponentNumber].score
-        ) {
-          this.result = 2
-        } else {
-          this.result = 3
-        }
+        // Determination du classement final
+        this.rankingTable = this.lobbyInfo.players.sort(function (a, b) {
+          return b.score - a.score
+        })
+        // Recuperation de la position de l'utilisateur dans le classement
+        this.userRanking =
+          this.rankingTable
+            .map(function (player) {
+              return player.uid
+            })
+            .indexOf(this.$fire.auth.currentUser.uid) + 1
         // On met l'état de la partie à terminer
         this.$fire.database.ref('lobbies/' + this.$route.params.lobby).update({
           state: 'finished',
