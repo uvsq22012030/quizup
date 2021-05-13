@@ -52,12 +52,6 @@ export default {
       type: [String, Number],
       default: '19',
     },
-    buttonFunction: {
-      type: Function,
-      default() {
-        console.log('Hello World')
-      },
-    },
   },
 }
 </script>

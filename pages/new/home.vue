@@ -48,6 +48,7 @@
                 <button
                   type="button"
                   class="flex items-center justify-center w-full p-3 mx-2 mt-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+                  @click="browseLobbies()"
                 >
                   <div class="mr-3">
                     <img
@@ -65,7 +66,7 @@
                 <button
                   type="button"
                   class="flex items-center justify-center w-full p-3 mx-2 mt-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
-                  @click="openSelectPopup = true"
+                  @click="optionsPopup = true"
                 >
                   <div class="mr-3">
                     <img
@@ -98,6 +99,7 @@
                   v-for="(theme, index) in resultQuery"
                   :key="index"
                   :label="theme.name"
+                  @click="soloPopup(theme.name)"
                 ></GameCard>
               </div>
             </div>
@@ -107,7 +109,7 @@
     </div>
 
     <vue-final-modal
-      v-model="openSelectPopup"
+      v-model="optionsPopup"
       :ssr="true"
       :classes="['glasso', 'modal-container']"
       content-class="modal-content"
@@ -117,16 +119,17 @@
           class="object-fill w-8 h-8 lg:h-15 lg:w-15 animate-bounce"
           src="~/assets/img/mental-health.svg"
         />
-        <p class="my-2 text-center">
-          Mets ton contenu de popup ici Nassim. Mdrr essaie de respecter le
-          style de design. j'ai commencé avec les boutons pour toi
+        <p v-if="themeName" class="my-2 capitalize font-bold text-center">
+          Theme selectionné : {{ themeName.split('_').join(' ') }}
         </p>
+        <p class="my-2 text-center">Choisir un mode de jeu :</p>
       </div>
 
       <div class="flex flex-wrap items-center justify-center mt-2">
         <button
           type="button"
           class="flex items-center justify-center w-full p-3 mx-2 mt-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+          @click="playSolo(false)"
         >
           <div class="mr-3">
             <img class="object-fill w-10 p-1" src="~/assets/img/bulb.svg" />
@@ -139,6 +142,7 @@
         <button
           type="button"
           class="flex items-center justify-center w-full p-3 mx-2 mt-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+          @click="playSolo(true)"
         >
           <div class="mr-3">
             <img class="object-fill w-10 p-1" src="~/assets/img/deadline.svg" />
@@ -146,6 +150,19 @@
           <div>
             <div class="text-xs text-left">MODE</div>
             <div class="-mt-1 font-sans font-semibold lg:text-xl">CHRONO</div>
+          </div>
+        </button>
+        <button
+          type="button"
+          class="flex items-center justify-center w-full p-3 mx-2 mt-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+          @click="matchMaking(themeName)"
+        >
+          <div class="mr-3">
+            <img class="object-fill w-10 p-1" src="~/assets/img/vs.svg" />
+          </div>
+          <div>
+            <div class="text-xs text-left">MODE</div>
+            <div class="-mt-1 font-sans font-semibold lg:text-xl">VERSUS</div>
           </div>
         </button>
       </div>
@@ -157,9 +174,14 @@
 export default {
   data() {
     return {
-      searchQuery: '',
+      optionsPopup: false,
+      chosenTheme: null,
       fetchedThemes: [],
-      openSelectPopup: false,
+      themeIdDictionary: {},
+      searchQuery: null,
+      lobbiesRef: null,
+      searchingForMatch: false,
+      themeName: null,
     }
   },
   computed: {
@@ -176,26 +198,28 @@ export default {
       }
     },
   },
-  mounted() {
+  created() {
+    // On recupere les theme de l'API
     this.fetchThemes()
+    // On recupere la reference des lobbies dans la base de données
+    this.lobbiesRef = this.$fire.database.ref('lobbies/')
   },
   methods: {
+    // Methode qui redirige vers la page des lobbies
+    browseLobbies() {
+      this.$router.push('/lobby')
+    },
     // Recuperation des theme à partir de l'API
     async fetchThemes() {
-      try {
-        const json = await this.$axios.get(
-          'https://enigmatic-stream-69193.herokuapp.com/categories'
-        )
-        // On recupere les themes
-        this.fetchedThemes = json.data
-        // On reformatte le nom de chaque theme pour l'inserer dans la liste des suggestions de la barre de recherche
-        this.fetchedThemes.forEach((theme) => {
-          this.searchSuggestions.push(this.format(theme.name))
-        })
-        // On récupere 15 thèmes à la une
-      } catch (err) {
-        console.log(err)
-      }
+      const json = await this.$axios.get(
+        'https://enigmatic-stream-69193.herokuapp.com/categories'
+      )
+      // On recupere les themes
+      this.fetchedThemes = json.data
+      // On reformatte le nom de chaque theme pour l'inserer dans la liste des suggestions de la barre de recherche
+      this.fetchedThemes.forEach((theme) => {
+        this.themeIdDictionary[theme.name] = theme.id
+      })
     },
     // Deconnexion
     async signOut() {
@@ -213,6 +237,167 @@ export default {
       } catch (e) {
         alert(e)
       }
+    },
+    // Affichage du menu d'options de partie
+    async soloPopup(themeName) {
+      // Recuperation du nom du theme
+      this.themeName = themeName
+      // On récupere l'id du theme choisi
+      this.chosenTheme = await this.$axios.get(
+        'https://enigmatic-stream-69193.herokuapp.com/categories/' +
+          String(this.themeIdDictionary[themeName])
+      )
+      // On affiche le menu d'options de partie
+      this.optionsPopup = true
+    },
+    // Creation du lobby pour le matchmaking
+    async createLobby(themeName, queueId) {
+      // On recupere le theme
+      let fetchedQuestions = await this.$axios.get(
+        'https://enigmatic-stream-69193.herokuapp.com/categories/' +
+          String(this.themeIdDictionary[themeName])
+      )
+      // On prend 10 questions au hasard parmis les 30
+      fetchedQuestions = this.shuffleJsonArray(
+        fetchedQuestions.data.questions
+      ).slice(0, 10)
+      // Informations du lobby
+      const lobbyInfo = {
+        creator: {
+          name: this.$fire.auth.currentUser.displayName,
+          uid: this.$fire.auth.currentUser.uid,
+        },
+        theme: {
+          name: themeName,
+          id: this.themeIdDictionary[themeName],
+        },
+        state: 'matchmaking',
+        players: [
+          {
+            name: this.$fire.auth.currentUser.displayName,
+            uid: this.$fire.auth.currentUser.uid,
+            isReady: false,
+            isDone: false,
+            score: 0,
+          },
+        ],
+        questions: fetchedQuestions,
+      }
+      const lobbyId = this.lobbiesRef.push(lobbyInfo).key
+      // On indique au serveur qu'un joueur est disponible
+      this.$fire.database.ref('queues/' + queueId).update({
+        state: 'found',
+        lobbyKey: lobbyId,
+      })
+      this.$router.push('/lobby/' + lobbyId)
+    },
+    shuffleJsonArray(array) {
+      // Implementation du Fisher Yates shuffle
+      // https://bost.ocks.org/mike/shuffle
+      let currentIndex = array.length
+      let temporaryValue
+      let randomIndex
+      // While there remain elements to shuffle...
+      while (currentIndex !== 0) {
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex)
+        currentIndex -= 1
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex]
+        array[currentIndex] = array[randomIndex]
+        array[randomIndex] = temporaryValue
+      }
+      return array
+    },
+    matchMaking(themeName) {
+      // On recupere l'identifiant du theme
+      const themeId = this.themeIdDictionary[themeName]
+      // On indique qu'on est en train de chercher un adversaire
+      this.searchingForMatch = true
+      // On cherche dans la liste de recherche en cours si un adversaire ayant choisi le meme theme est en train de chercher une partie
+      this.$fire.database
+        .ref('queues/')
+        .get()
+        .then((snapshot) => {
+          let found = false
+          // Si il y a déjà des recherches en cours
+          if (snapshot.val()) {
+            const queueObject = snapshot.val()
+            const queues = Object.keys(queueObject)
+            // On parcours les recherches en cours jusqu'à trouver le theme correspondant à celui choisi par l'utilisateur
+            for (let i = 0; i < queues.length; i++) {
+              // Si on trouve un match on crée un lobby et on redirige l'utilisateur dans le lobby
+              if (queueObject[queues[i]].theme.id === themeId) {
+                // On a trouvé un joueur
+                found = true
+                // On indique que la recherche est terminée
+                this.searchingForMatch = false
+                // On crée un lobby et on redirige l'utilisateur
+                this.createLobby(themeName, queues[i])
+              }
+            }
+          }
+          if (!found) {
+            // Si on ne trouve aucune recherche correspondante
+            // On indique au serveur qu'on est en attente de joueur
+            const queueInfo = {
+              opponent: {
+                name: this.$fire.auth.currentUser.displayName,
+                uid: this.$fire.auth.currentUser.uid,
+              },
+              theme: {
+                name: themeName,
+                id: themeId,
+              },
+              state: 'searching',
+            }
+            const queueId = this.$fire.database.ref('queues/').push(queueInfo)
+              .key
+            // On écoute les evenements pour voir si un joueur a rejoint
+            this.$fire.database
+              .ref('queues/' + queueId)
+              .on('value', (snapshot) => {
+                const lobbyKey =
+                  snapshot.val() !== null ? snapshot.val().lobbyKey : null
+                if (lobbyKey) {
+                  // On met à jour l'état de la partie
+                  this.$fire.database.ref('lobbies/').child(lobbyKey).update({
+                    state: 'ongoing',
+                  })
+                  // On envoit au serveur les informations du joueur
+                  this.$fire.database
+                    .ref('lobbies/')
+                    .child(lobbyKey + '/players/1')
+                    .set({
+                      name: this.$fire.auth.currentUser.displayName,
+                      uid: this.$fire.auth.currentUser.uid,
+                      isReady: false,
+                      isDone: false,
+                      score: 0,
+                    })
+                  // On arrête et on supprime la recherche
+                  this.searchingForMatch = false
+                  this.$fire.database.ref('queues/' + queueId).remove()
+                  // On arrête d'écouter les evenements
+                  this.$fire.database.ref('queues/' + queueId).off('value')
+                  // On renvoit l'utilisateur vers le lobby
+                  this.$router.push('/lobby/' + lobbyKey)
+                }
+              })
+          }
+        })
+    },
+    // Lancement du jeu solo
+    playSolo(chronoMode) {
+      // On redirige vers la page de jeu en envoyant le json correspondant
+      this.$router.push({
+        name: 'game',
+        params: {
+          theme: this.chosenTheme.data,
+          themeName: this.themeName,
+          isTimed: chronoMode,
+        },
+      })
     },
   },
 }
