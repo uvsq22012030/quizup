@@ -407,11 +407,13 @@ export default {
     // On ajoute un ecouteur d'evenements pour voir si l'utilisateur est encore sur la page
     window.addEventListener('beforeunload', this.preventNav)
     window.addEventListener('unload', this.browserClosedHandler)
+    window.addEventListener('onunload', this.browserClosedHandler)
   },
   beforeDestroy() {
     // On supprime l'ecouteur d'evenements
     window.removeEventListener('beforeunload', this.preventNav)
     window.removeEventListener('unload', this.browserClosedHandler)
+    window.removeEventListener('onunload', this.browserClosedHandler)
     // On arrete d'écouter les evenements
     this.lobbyRef.off('value')
   },
