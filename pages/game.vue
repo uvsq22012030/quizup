@@ -43,10 +43,6 @@
           </div>
           <!-- Chrono -->
 
-          <div class="flex items-center justify-center">
-            <div></div>
-          </div>
-
           <div class="flex h-full mt-5">
             <div
               class="w-full h-full p-5 bg-indigo-900 rounded-md shadow-xl"
