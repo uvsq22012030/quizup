@@ -99,6 +99,19 @@ export default {
       email: '',
     }
   },
+  head() {
+    return {
+      title: 'Play uvsQuiz - Revolution du Trivia',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content:
+            'Le seul jeu de questions-réponses multijoueurs que vous jouerez si vous avez été à UVSQ',
+        },
+      ],
+    }
+  },
   methods: {
     async sendEmail(e) {
       e.preventDefault()

@@ -125,6 +125,19 @@ export default {
       password: '',
     }
   },
+  head() {
+    return {
+      title: 'Join uvsQuiz - Revolution du Trivia',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content:
+            'Le seul jeu de questions-réponses multijoueurs que vous jouerez si vous avez été à UVSQ',
+        },
+      ],
+    }
+  },
   methods: {
     async signInUser(e) {
       e.preventDefault()

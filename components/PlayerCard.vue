@@ -3,22 +3,22 @@
     class="flex items-center justify-center w-full p-3 my-3 space-x-3 transition duration-300 ease-in-out transform scale-95 bg-indigo-900 rounded-lg shadow-xl glassomorphism hover:bg-indigo-600 border-1 hover:border-bg-indigo-400 lg:h-25 hover:shadow-2xl"
   >
     <img
-      class="inline-block h-full bg-indigo-800 border-indigo-900 rounded-full shadow-2xl border-10"
+      class="inline-block bg-indigo-800 border-indigo-900 rounded-full shadow-2xl w-15 border-10"
       :src="'https://avatars.dicebear.com/api/bottts/' + name + '.svg'"
     />
     <h1
-      class="py-5 font-bold text-left text-gray-100 capitalize w-full h-full lg:text-2xl"
+      class="w-full h-full py-5 font-bold text-left text-gray-100 capitalize lg:text-2xl"
     >
       {{ name }}
     </h1>
     <img
       v-if="host"
-      class="inline-block h-full rounded-full shadow-2xl border-2 bg-indigo-800 border-indigo-900"
+      class="inline-block bg-indigo-800 border-2 border-indigo-900 rounded-full shadow-2xl w-15"
       src="~/assets/img/crowns.png"
     />
     <button
       v-else-if="kick"
-      class="float-right h-full w-auto sm:p-2 outline-none border-0 focus:outline-none bg-opacity-0"
+      class="float-right w-auto h-full bg-opacity-0 border-0 outline-none sm:p-2 focus:outline-none"
       @click="$emit('click')"
     >
       <img

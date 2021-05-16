@@ -7,15 +7,15 @@
       content-class="modal-content"
       :click-to-close="true"
     >
-      <div class="h-full w-full flex flex-col">
+      <div class="flex flex-col w-full h-full">
         <h1
-          class="mb-3 text-center text-white h-1/3 font-bold tracking-wide md:text-2xl"
+          class="mb-3 font-bold tracking-wide text-center text-white h-1/3 md:text-2xl"
         >
           VOUS AVEZ ÉTÉ EXPULSÉ !
         </h1>
         <div class="text-center h-60">
           <img
-            class="inline-block h-5/6 border-0 mb-3"
+            class="inline-block mb-3 border-0 h-5/6"
             src="~/assets/img/cry.svg"
           />
         </div>
@@ -52,14 +52,11 @@
             </div>
             <button
               type="button"
-              class="justify-self-end flex items-center justify-center w-full p-3 mx-2 mt-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+              class="flex items-center justify-center w-full p-3 mx-2 mt-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl justify-self-end lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
               @click="lobbyPopup = true"
             >
               <div class="mr-3">
-                <img
-                  class="object-fill w-10 p-1"
-                  src="~/assets/img/lobby.svg"
-                />
+                <img class="object-fill w-10 p-1" src="~/assets/img/sofa.svg" />
               </div>
               <div>
                 <div class="text-xs text-left">CREER MON</div>
@@ -92,7 +89,7 @@
                 ></LobbyCard>
               </div>
               <div v-else class="text-center">
-                <p class="mx-3 text-l tracking-wider text-gray-200 md:text-4xl">
+                <p class="mx-3 tracking-wider text-gray-200 text-l md:text-4xl">
                   Aucun lobby pour le moment.
                 </p>
               </div>
@@ -118,8 +115,9 @@
         id="search"
         v-model="selectedTheme"
         :options="themeList"
-        class="bg-indigo-800 border-1 border-indigo-900 appearance-none hover:bg-indigo-600 w-1/2 py-4 m-auto text-white placeholder-white rounded-full leading-tight focus:outline-none"
+        class="w-full py-1 m-auto leading-tight text-white placeholder-white bg-indigo-800 border-indigo-900 rounded-full appearance-none md:w-3/5 border-1 hover:bg-indigo-600 focus:outline-none"
         label="theme"
+        append-to-body
         type="text"
         placeholder="Rechercher un thème..."
       >
@@ -158,6 +156,19 @@ export default {
       themeList: [], // Liste des noms des themes pour la barre de recherche
       themeIdDictionary: {}, // Dictionnaire nom : id pour les themes
       kicked: this.$route.params.kicked, // Booléen indiquant si l'utilisateur a été expulsé
+    }
+  },
+  head() {
+    return {
+      title: 'Play uvsQuiz - Revolution du Trivia',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content:
+            'Le seul jeu de questions-réponses multijoueurs que vous jouerez si vous avez été à UVSQ',
+        },
+      ],
     }
   },
   created() {

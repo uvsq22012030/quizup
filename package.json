@@ -20,7 +20,8 @@
     "nuxt": "^2.15.3",
     "nuxt-vue-select": "^0.1.4",
     "vue-final-modal": "^2.2.0",
-    "vue-qr": "^2.4.0"
+    "vue-qr": "^2.4.0",
+    "vue-radial-progress": "^0.3.2"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^6.0.0",
