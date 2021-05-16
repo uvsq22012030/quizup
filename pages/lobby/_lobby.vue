@@ -232,9 +232,9 @@
                   </h1>
                   <div class="flex flex-wrap w-full mt-10">
                     <AnswerCard
+                      ref="answerCards"
                       v-for="(n, index) in 4"
                       :key="index"
-                      ref="answerCards"
                       :disabled="done"
                       :label="
                         randomQuestions[currentQuestionNumber].propositions[
@@ -423,6 +423,16 @@ export default {
               force: true,
             },
           })
+        } else if (
+          snapshot.val()[this.$route.params.lobby].state !== 'En attente'
+        ) {
+          // La partie a déjà commencée
+          this.$router.push({
+            name: 'lobby',
+            params: {
+              force: true,
+            },
+          })
         }
       })
   },
@@ -436,7 +446,12 @@ export default {
       // On recupere les questions du theme choisi et son nom
       this.randomQuestions = this.lobbyInfo.questions
       this.gameInfo.theme = this.lobbyInfo.theme.name
-      this.userNumber = this.lobbyInfo.players.length - 1
+      // this.userNumber = this.lobbyInfo.players.length - 1
+      for (let i = 0; i < this.lobbyInfo.players.length; i++) {
+        if (this.$fire.auth.currentUser.uid === this.lobbyInfo.players[i].uid) {
+          this.userNumber = i
+        }
+      }
       this.isLoading = false
     })
     // On ecoute les evenement du serveur
@@ -578,6 +593,8 @@ export default {
       )
     },
     browserClosedHandler(event) {
+      // On arrete d'écouter les evenements
+      this.lobbyRef.off('value')
       // On lance l'ecran de chargement
       this.isLoading = true
       // Si l'utilisateur est le createur du lobby alors on supprime le lobby
@@ -608,6 +625,7 @@ export default {
       event.returnValue = ''
     },
     play(userAnswer, index) {
+      console.log(this.userNumber)
       // On stop et cache le timer
       clearInterval(this.intervalId)
       this.$refs.timeBar.className += 'hidden'

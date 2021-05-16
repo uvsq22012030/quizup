@@ -24,7 +24,7 @@
             src="~/assets/img/play-button.svg"
           />
         </div>
-        <div v-if="status !== 'En cours'">
+        <div v-if="status === 'En attente'">
           <div class="-mt-1 font-sans font-semibold lg:text-xl">REJOINDRE</div>
         </div>
       </button>
