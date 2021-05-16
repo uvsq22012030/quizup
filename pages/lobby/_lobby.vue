@@ -1,5 +1,44 @@
 <template>
   <div v-if="!isLoading">
+    <vue-final-modal
+      v-model="kickPopup"
+      :ssr="true"
+      :classes="['glasso', 'modal-container']"
+      content-class="modal-content"
+    >
+      <div class="h-full w-full flex flex-col">
+        <h1
+          class="mb-3 text-center text-indigo-800 h-1/3 font-bold tracking-wide md:text-2xl"
+        >
+          EXPULSER LE JOUEUR ?
+        </h1>
+        <div class="text-center h-100">
+          <img
+            class="inline-block h-5/6 border-0 mb-3"
+            src="~/assets/img/alarm.svg"
+          />
+          <h1 class="text-center text-indigo-800 font-bold">
+            Veux-tu vraiment expulser ce joueur?
+          </h1>
+        </div>
+        <div class="flex flex-wrap items-center justify-center mt-2">
+          <button
+            type="button"
+            class="flex items-center justify-center w-full p-3 mx-2 mt-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+            @click="kickPlayer()"
+          >
+            <div class="-mt-1 font-sans font-semibold lg:text-xl">OUI</div>
+          </button>
+          <button
+            type="button"
+            class="flex items-center justify-center w-full p-3 mx-2 mt-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+            @click="kickPopup = false"
+          >
+            <div class="-mt-1 font-sans font-semibold lg:text-xl">NON</div>
+          </button>
+        </div>
+      </div>
+    </vue-final-modal>
     <div class="relative h-screen overflow-hidden bg-indigo-900">
       <img
         src="~/assets/img/Rainbow-Vortex.svg"
@@ -13,44 +52,119 @@
         v-if="!gameStarted || !gameReady"
         class="container relative h-full px-1 py-1 mx-auto md:px-12 md:py-12 z-1"
       >
-        <div class="block">
-          Utilisateur dans le lobby :
-          <div v-for="(player, idx) in lobbyInfo.players" :key="idx">
-            <h1>
-              {{ player.name }} : {{ player.isReady ? 'Prêt' : 'Pas prêt' }}
-            </h1>
-          </div>
-          <button
-            v-if="userNumber !== null && !lobbyInfo.players[userNumber].isReady"
-            type="submit"
-            class="px-auto flex items-center bg-red-400 hover:bg-red-600 text-white text-lg font-bold w-40 border rounded-xl focus:outline-none"
-            @click="getReady()"
-          >
-            Je suis pret !
-          </button>
-          <button
-            type="submit"
-            class="px-auto flex items-center bg-red-400 hover:bg-red-600 text-white text-lg font-bold w-40 border rounded-xl focus:outline-none"
-            @click="shareLobby = shareLobby ? false : true"
-          >
-            Partager ce lobby
-          </button>
-          <div v-if="shareLobby">
-            <div class="flex items-center">
-              <input
-                type="text"
-                class="w-150 border-black border-2"
-                :value="url"
-                readonly
+        <div
+          class="w-full h-full p-3 border-indigo-900 shadow-xl md:p-8 border-3 md:border-12 rounded-xl"
+        >
+          <div class="flex items-center justify-between w-full mb-2">
+            <n-link to="/lobby">
+              <img
+                src="~/assets/img/back.svg"
+                class="hover:animate-bounce object-fill w-10 h-10"
               />
-              <button
-                type="submit"
-                class="pl-2 flex items-center bg-red-400 hover:bg-red-600 text-white text-md font-bold w-40 border rounded-xl focus:outline-none"
-              >
-                Copier l'url
-              </button>
+            </n-link>
+            <div class="flex items-center">
+              <img
+                class="object-fill w-10 h-10 md:h-15 md:w-15"
+                src="~/assets/img/logo.svg"
+              />
             </div>
-            <vue-qr :text="url"></vue-qr>
+            <div class="invisible w-1/10"></div>
+          </div>
+          <div
+            class="bg-indigo-900 border-3 border-indigo-800 w-full h-4/6 shadow-xl rounded-md"
+          >
+            <h4
+              class="mt-2 text-center capitalize font-bold tracking-normal text-yellow-400 md:text-4xl"
+            >
+              JOUEURS : {{ lobbyInfo.players.length }}
+            </h4>
+            <div
+              class="w-full h-full p-2 p-5 overflow-y-auto bg-indigo-900 rounded-md shadow-xl"
+            >
+              <div class="w-full h-full">
+                <PlayerCard
+                  v-for="(player, index) in lobbyInfo.players"
+                  :key="index"
+                  :name="player.name"
+                  :host="player.uid === lobbyInfo.creator.uid"
+                  :kick="
+                    lobbyInfo !== null &&
+                    userNumber !== null &&
+                    lobbyInfo.players[userNumber].uid ===
+                      lobbyInfo.creator.uid &&
+                    lobbyInfo.players[userNumber].uid !== player.uid
+                  "
+                  @click="openKickPopup(index)"
+                ></PlayerCard>
+              </div>
+            </div>
+            <div
+              v-if="
+                lobbyInfo !== null &&
+                userNumber !== null &&
+                lobbyInfo.players[userNumber].uid === lobbyInfo.creator.uid
+              "
+              class="mt-6 flex items-center justify-center space-x-3"
+            >
+              <div class="flex flex-col">
+                <button
+                  type="button"
+                  class="flex items-center justify-center w-full text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+                  @click="copyURL()"
+                >
+                  <div class="mr-3">
+                    <img
+                      class="object-fill w-10 p-1"
+                      src="~/assets/img/link.png"
+                    />
+                  </div>
+                  <div
+                    class="-mt-1 font-sans font-semibold lg:text-xl capitalize"
+                  >
+                    inviter
+                  </div>
+                </button>
+                <h1
+                  v-if="urlCopied"
+                  class="mt-1 text-center text-gray-400 text-md"
+                >
+                  LIEN COPIÉ !
+                </h1>
+                <h1 v-else class="mt-1 invisible h-6"></h1>
+              </div>
+              <div class="flex flex-col">
+                <button
+                  type="button"
+                  class="flex items-center justify-center w-full text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+                  @click="startGame()"
+                >
+                  <div class="mr-3">
+                    <img
+                      class="object-fill w-10 p-1"
+                      src="~/assets/img/play-button.svg"
+                    />
+                  </div>
+                  <div
+                    class="-mt-1 font-sans font-semibold lg:text-xl capitalize"
+                  >
+                    démarrer
+                  </div>
+                </button>
+                <h1 class="mt-1 invisible h-6"></h1>
+              </div>
+            </div>
+            <div
+              v-else
+              class="mt-6 flex items-center justify-center space-x-2 h-1/6"
+            >
+              <img
+                class="animate-spin inline-block h-1/2"
+                src="~/assets/img/spinner.svg"
+              />
+              <h1 class="text-center text-gray-400 text-xl">
+                En attente de l'hôte pour démarrer la partie ;)
+              </h1>
+            </div>
           </div>
         </div>
       </div>
@@ -67,13 +181,12 @@
               class="w-full h-full p-3 border-indigo-900 shadow-xl md:p-8 border-3 md:border-12 rounded-xl"
             >
               <div class="flex items-center justify-between w-full">
-                <n-link to="/">
+                <n-link to="/lobby">
                   <img
                     src="~/assets/img/back.svg"
                     class="object-fill w-5 h-5"
                   />
                 </n-link>
-
                 <div class="flex items-center justify-center">
                   <div class="flex -space-x-1 overflow-x-scroll">
                     <img
@@ -135,12 +248,12 @@
                       v-for="(n, index) in 4"
                       :key="index"
                       :disabled="done"
+                      ref="answerCards"
                       :label="
                         randomQuestions[currentQuestionNumber].propositions[
                           index
                         ]
                       "
-                      ref="answerCards"
                       @click="
                         play(
                           randomQuestions[currentQuestionNumber].propositions[
@@ -206,10 +319,7 @@
 </template>
 
 <script>
-import VueQr from 'vue-qr'
-
 export default {
-  components: { VueQr },
   beforeRouteLeave(to, from, next) {
     if (!to.params.force) {
       // L'utilisateur essaie de quitter le lobby
@@ -255,9 +365,10 @@ export default {
   },
   data() {
     return {
-      url: '', // URL de la page courante
-      shareLobby: false, // Booleen indiquant si l'on doit afficher les options de partage de lobby
-      isLoading: false, // Booleen indiquant si l'on doit afficher l'ecran de chargement ou pas
+      playerToKick: null, // Joueur que l'hôte a choisit d'expulser
+      kickPopup: false, // Booleen affichant le popup d'expulsion de joueur
+      urlCopied: false, // Booleen indiquant si l'url a bien été copiée
+      isLoading: true, // Booleen indiquant si l'on doit afficher l'ecran de chargement ou pas
       historyRef: null, // Reference sur l'historique dans la base de données
       intervalId: null, // Identifiant pour la fonction setInterval du chronometre
       timer: 20, // Temps donné pour chaque question
@@ -265,9 +376,6 @@ export default {
       lobbyRef: null, // Reference sur le lobby dans la base de données
       lobbyInfo: null, // Informations du lobby
       randomQuestions: [], // Liste aleatoire de questions
-      defaultButtonClass:
-        // CSS par défaut de chaque bouton
-        'h-5/6 w-5/12 p-2 font-xl tracking-wider text-gray-700 border-2 border-gray-700 shadow-xl rounded-3xl focus:outline-none focus:border-gray-700 hover:font-bold hover:bg-gray-100 bg-white',
       currentQuestionNumber: 0, // Numero de la question courante
       totalQuestions: 10, // Nombre total de questions
       gameInfo: {
@@ -324,6 +432,7 @@ export default {
       this.randomQuestions = this.lobbyInfo.questions
       this.gameInfo.theme = this.lobbyInfo.theme.name
       this.userNumber = this.lobbyInfo.players.length - 1
+      this.isLoading = false
     })
     // On ecoute les evenement du serveur
     this.lobbyRef.on('value', (snapshot) => {
@@ -340,23 +449,27 @@ export default {
       // Si les infos existent et que la partie n'a pas commencé
       if (this.lobbyInfo) {
         if (!this.gameStarted) {
-          // On verifie si la partie est prete à etre lancée
-          const ready = (player) => player.isReady
-          this.gameReady =
-            this.lobbyInfo.players.length > 1 &&
-            this.lobbyInfo.players.every(ready)
+          // Si l'utilisateur se fait expulser
+          if (
+            this.userNumber !== null &&
+            !Object.keys(this.lobbyInfo.players).includes(
+              String(this.userNumber)
+            )
+          ) {
+            this.$router.push({
+              name: 'lobby',
+              params: {
+                force: true,
+                kicked: true,
+              },
+            })
+          }
+          // On recupere l'état de la partie
+          this.gameReady = this.lobbyInfo.state === 'En cours'
           if (this.gameReady) {
             // On lance la partie
             this.gameStarted = true
             this.intervalId = setInterval(this.countdown, 1000)
-            // Le createur du lobby change l'état de la partie à 'Terminée'
-            if (!this.userNumber) {
-              this.$fire.database
-                .ref('lobbies/' + this.$route.params.lobby)
-                .update({
-                  state: 'ongoing',
-                })
-            }
           }
         } else if (
           Object.keys(this.lobbyInfo.players).length === 1 &&
@@ -377,7 +490,7 @@ export default {
           this.$fire.database
             .ref('lobbies/' + this.$route.params.lobby)
             .update({
-              state: 'finished',
+              state: 'Terminée',
             })
         } else if (this.currentQuestionNumber < 10) {
           // On verifie si les deux utilisateurs ont terminé
@@ -418,6 +531,47 @@ export default {
     this.lobbyRef.off('value')
   },
   methods: {
+    kickPlayer() {
+      this.$fire.database
+        .ref(
+          'lobbies/' +
+            this.$route.params.lobby +
+            '/players/' +
+            this.playerToKick
+        )
+        .remove()
+      this.playerToKick = null
+      this.kickPopup = false
+    },
+    openKickPopup(playerNumber) {
+      this.playerToKick = playerNumber
+      this.kickPopup = true
+    },
+    startGame() {
+      if (this.lobbyInfo.players.length >= 2) {
+        // Le createur du lobby change l'état de la partie à 'En cours'
+        this.$fire.database.ref('lobbies/' + this.$route.params.lobby).update({
+          state: 'En cours',
+        })
+      } else {
+        alert("Il n'y a pas assez de joueurs dans le lobby !")
+      }
+    },
+    copyURL() {
+      const tmp = document.createElement('textarea')
+      document.body.appendChild(tmp)
+      tmp.value = window.location.href
+      tmp.select()
+      document.execCommand('copy')
+      this.urlCopied = true
+      document.body.removeChild(tmp)
+      setTimeout(
+        function () {
+          this.urlCopied = false
+        }.bind(this),
+        2000
+      )
+    },
     browserClosedHandler(event) {
       // On lance l'ecran de chargement
       this.isLoading = true
@@ -447,12 +601,6 @@ export default {
     preventNav(event) {
       event.preventDefault()
       event.returnValue = ''
-    },
-    // Methode qui permet à l'utilisateur de se mettre pret
-    getReady() {
-      this.lobbyRef.child('players/' + this.userNumber).update({
-        isReady: true,
-      })
     },
     play(userAnswer, index) {
       // On stop et cache le timer
@@ -529,7 +677,7 @@ export default {
             .indexOf(this.$fire.auth.currentUser.uid) + 1
         // On met l'état de la partie à terminer
         this.$fire.database.ref('lobbies/' + this.$route.params.lobby).update({
-          state: 'finished',
+          state: 'terminée',
         })
         // On se connecte à la base de données pour sauvegarder l'historique
         if (!this.$fire.auth.currentUser.isAnonymous) {

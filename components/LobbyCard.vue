@@ -10,7 +10,7 @@
       <p class="text-gray-100 text">{{ players }} Joueur(s)</p>
     </div>
     <div>
-      <p class="text-gray-100 text">{{ status }}</p>
+      <p class="text-gray-100 text capitalize">{{ status }}</p>
     </div>
     <div>
       <button
@@ -24,7 +24,7 @@
             src="~/assets/img/play-button.svg"
           />
         </div>
-        <div>
+        <div v-if="status !== 'En cours'">
           <div class="-mt-1 font-sans font-semibold lg:text-xl">REJOINDRE</div>
         </div>
       </button>

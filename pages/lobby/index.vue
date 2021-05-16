@@ -1,5 +1,26 @@
 <template>
   <div>
+    <vue-final-modal
+      v-model="kicked"
+      :ssr="true"
+      :classes="['glasso', 'modal-container']"
+      content-class="modal-content"
+      :click-to-close="true"
+    >
+      <div class="h-full w-full flex flex-col">
+        <h1
+          class="mb-3 text-center text-white h-1/3 font-bold tracking-wide md:text-2xl"
+        >
+          VOUS AVEZ ÉTÉ EXPULSÉ !
+        </h1>
+        <div class="text-center h-60">
+          <img
+            class="inline-block h-5/6 border-0 mb-3"
+            src="~/assets/img/cry.svg"
+          />
+        </div>
+      </div>
+    </vue-final-modal>
     <div class="relative h-screen overflow-hidden bg-indigo-900">
       <img
         src="~/assets/img/Rose-Petals.svg"
@@ -136,6 +157,7 @@ export default {
       selectedTheme: null, // Theme choisi dans le menu de creation de lobby
       themeList: [], // Liste des noms des themes pour la barre de recherche
       themeIdDictionary: {}, // Dictionnaire nom : id pour les themes
+      kicked: this.$route.params.kicked, // Booléen indiquant si l'utilisateur a été expulsé
     }
   },
   created() {
@@ -175,7 +197,6 @@ export default {
         this.lobbiesRef.child(lobbyId + '/players/' + playersNumber).set({
           name: this.$fire.auth.currentUser.displayName,
           uid: this.$fire.auth.currentUser.uid,
-          isReady: false,
           isDone: false,
           score: 0,
           lastAnswer: null,
@@ -212,12 +233,11 @@ export default {
             name: themeName,
             id: this.themeIdDictionary[themeName],
           },
-          state: 'pending',
+          state: 'En attente',
           players: [
             {
               name: this.$fire.auth.currentUser.displayName,
               uid: this.$fire.auth.currentUser.uid,
-              isReady: false,
               isDone: false,
               score: 0,
               lastAnswer: null,
