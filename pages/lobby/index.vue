@@ -1,134 +1,148 @@
 <template>
   <div>
-    <section class="flex flex-col min-h-screen">
-      <div class="block">
-        <!-- Game history -->
-        <h1>Liste des lobbies</h1>
-        <div v-if="lobbiesList.length" class="bg-white shadow-md rounded">
-          <table
-            class="max-w-sm md:w-full md:max-w-full table-fixed md:table-auto shadow-2xl"
-          >
-            <tbody class="w-full text-gray-600 text-sm font-light">
-              <tr
-                v-for="(lobby, idx) in lobbiesList"
-                :key="idx"
-                class="w-full h-40 border-b border-gray-200 hover:bg-red-400"
+    <vue-final-modal
+      v-model="kicked"
+      :ssr="true"
+      :classes="['glasso', 'modal-container']"
+      content-class="modal-content"
+      :click-to-close="true"
+    >
+      <div class="h-full w-full flex flex-col">
+        <h1
+          class="mb-3 text-center text-white h-1/3 font-bold tracking-wide md:text-2xl"
+        >
+          VOUS AVEZ ÉTÉ EXPULSÉ !
+        </h1>
+        <div class="text-center h-60">
+          <img
+            class="inline-block h-5/6 border-0 mb-3"
+            src="~/assets/img/cry.svg"
+          />
+        </div>
+      </div>
+    </vue-final-modal>
+    <div class="relative h-screen overflow-hidden bg-indigo-900">
+      <img
+        src="~/assets/img/Rose-Petals.svg"
+        class="absolute object-cover w-full h-full"
+      />
+      <div
+        class="absolute inset-0 opacity-25 bg-gradient-to-tr from-indigo-400 via-indigo-600 to-black"
+      ></div>
+      <div
+        class="container relative h-full px-1 py-1 mx-auto md:px-12 md:py-12 z-1"
+      >
+        <div
+          class="w-full h-full p-3 border-indigo-900 shadow-xl md:p-8 border-3 md:border-12 rounded-xl"
+        >
+          <div class="flex items-center justify-between w-full">
+            <div class="invisible w-1/6"></div>
+            <div class="flex items-center">
+              <n-link to="/">
+                <img
+                  class="object-fill w-10 h-10 md:h-15 md:w-15"
+                  src="~/assets/img/logo.svg"
+                />
+              </n-link>
+              <p
+                class="mx-3 text-xl font-bold tracking-widest text-gray-200 md:text-4xl"
               >
-                <td
-                  class="px-1 py-1 md:px-6 md:py-3 text-left whitespace-nowrap"
-                >
-                  <div class="flex items-center">
-                    <span class="font-medium">{{ lobby.creator.name }}</span>
-                  </div>
-                </td>
-                <td class="px-1 py-1 md:px-6 md:py-3 text-left">
-                  <div class="flex items-center">
-                    <span>{{ lobby.theme.name }}</span>
-                  </div>
-                </td>
-                <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                  <span
-                    class="bg-red-200 text-gray-800 py-1 px-3 rounded-full text-xs"
-                  >
-                    {{ lobby.state }}
-                  </span>
-                </td>
-                <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                  <div
-                    v-if="lobby.state !== 'finished'"
-                    class="flex item-center justify-center font-bold"
-                  >
-                    {{ Object.keys(lobby.players).length }}
-                  </div>
-                </td>
-                <td class="px-1 py-1 md:px-6 md:py-3 text-center">
-                  <button
-                    v-if="lobby.state === 'pending'"
-                    type="submit"
-                    class="hover:bg-red-600 rounded-full py-2 px-3 font-semibold hover:text-white bg-red-400 text-white"
-                    @click="
-                      joinLobby(
-                        lobby.id,
-                        Object.keys(lobby.players).length,
-                        lobby.creator.uid
-                      )
-                    "
-                  >
-                    Rejoindre
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <p v-else>Pas de lobby.</p>
-        <div>
-          <button
-            type="submit"
-            class="hover:bg-red-600 rounded-full py-2 px-3 font-semibold hover:text-white bg-red-400 text-white"
-            @click="lobbyPopup = true"
-          >
-            Creer un lobby
-          </button>
-        </div>
-        <!-- Lobby popup -->
-        <template v-if="lobbyPopup">
-          <div
-            class="modal fixed w-full h-full top-0 left-0 flex items-center justify-center"
-          >
-            <div
-              class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"
-            ></div>
-            <div
-              class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto"
+                LOBBIES
+              </p>
+            </div>
+            <button
+              type="button"
+              class="justify-self-end flex items-center justify-center w-full p-3 mx-2 mt-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+              @click="lobbyPopup = true"
             >
-              <div
-                class="bg-gray-100 modal-content border-3 border-gray-600 rouned-xl block pt-2 pb-5 px-4"
-              >
-                <!-- Bouton retour au menu -->
-                <div class="w-full h-8">
-                  <button
-                    type="submit"
-                    class="bg-red-400 float-right hover:bg-red-600 text-white text-center text-lg font-bold w-7 border rounded-full focus:outline-none"
-                    @click="lobbyPopup = false"
-                  >
-                    »
-                  </button>
+              <div class="mr-3">
+                <img
+                  class="object-fill w-10 p-1"
+                  src="~/assets/img/lobby.svg"
+                />
+              </div>
+              <div>
+                <div class="text-xs text-left">CREER MON</div>
+                <div class="-mt-1 font-sans font-semibold lg:text-xl">
+                  LOBBY
                 </div>
-                <!--Search Bar -->
-                <div class="p-8">
-                  Choisir un thème :
-                  <div
-                    class="bg-gray-100 flex items-center rounded-2xl md:rounded-full shadow-lg w-full mx-auto"
-                  >
-                    <v-select
-                      id="search"
-                      v-model="selectedTheme"
-                      :options="themeList"
-                      class="bg-gray-100 border-0 rounded-l-2xl md:rounded-l-full w-full py-4 px-6 text-gray-700 leading-tight focus:outline-none"
-                      label="theme"
-                      type="text"
-                      placeholder="Chercher un thème..."
-                    >
-                    </v-select>
-                  </div>
-                </div>
-                <div class="text-center flex items-center mt-5">
-                  <button
-                    type="submit"
-                    class="hover:bg-red-600 w-1/3 m-auto rounded-full py-2 px-3 font-semibold hover:text-white bg-red-400 text-white"
-                    @click="createLobby(selectedTheme)"
-                  >
-                    Creer le lobby »
-                  </button>
-                </div>
+              </div>
+            </button>
+          </div>
+          <div class="flex h-full mt-5">
+            <div
+              class="w-full h-full p-5 overflow-y-auto bg-indigo-900 rounded-md shadow-xl"
+              style="height: 90%"
+            >
+              <div v-if="lobbiesList.length" class="w-full h-full">
+                <LobbyCard
+                  v-for="(lobby, idx) in lobbiesList"
+                  :key="idx"
+                  :label="lobby.theme.name"
+                  :user="lobby.creator.name"
+                  :status="lobby.state"
+                  :players="Object.keys(lobby.players).length"
+                  @click="
+                    joinLobby(
+                      lobby.id,
+                      Object.keys(lobby.players).length,
+                      lobby.creator.uid
+                    )
+                  "
+                ></LobbyCard>
+              </div>
+              <div v-else class="text-center">
+                <p class="mx-3 text-l tracking-wider text-gray-200 md:text-4xl">
+                  Aucun lobby pour le moment.
+                </p>
               </div>
             </div>
           </div>
-        </template>
-        <footer class="bg-white mt-5 opacity-0"><h1>Footer</h1></footer>
+        </div>
       </div>
-    </section>
+    </div>
+    <vue-final-modal
+      v-model="lobbyPopup"
+      :ssr="true"
+      :classes="['glasso', 'modal-container']"
+      content-class="modal-content"
+    >
+      <div class="flex flex-col items-center">
+        <img
+          class="object-fill w-8 h-8 lg:h-15 lg:w-15 animate-bounce"
+          src="~/assets/img/mental-health.svg"
+        />
+        <p class="my-2 text-center">Selectionner un thème :</p>
+      </div>
+      <v-select
+        id="search"
+        v-model="selectedTheme"
+        :options="themeList"
+        class="bg-indigo-800 border-1 border-indigo-900 appearance-none hover:bg-indigo-600 w-1/2 py-4 m-auto text-white placeholder-white rounded-full leading-tight focus:outline-none"
+        label="theme"
+        type="text"
+        placeholder="Rechercher un thème..."
+      >
+      </v-select>
+      <div class="flex flex-wrap items-center justify-center mt-2">
+        <button
+          type="button"
+          class="flex items-center justify-center w-full p-3 mx-2 mt-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+          @click="createLobby(selectedTheme)"
+        >
+          <div class="mr-3">
+            <img
+              class="object-fill w-10 p-1"
+              src="~/assets/img/play-button.svg"
+            />
+          </div>
+          <div>
+            <div class="text-xs text-left">CREER LE</div>
+            <div class="-mt-1 font-sans font-semibold lg:text-xl">LOBBY</div>
+          </div>
+        </button>
+      </div>
+    </vue-final-modal>
   </div>
 </template>
 
@@ -143,6 +157,7 @@ export default {
       selectedTheme: null, // Theme choisi dans le menu de creation de lobby
       themeList: [], // Liste des noms des themes pour la barre de recherche
       themeIdDictionary: {}, // Dictionnaire nom : id pour les themes
+      kicked: this.$route.params.kicked, // Booléen indiquant si l'utilisateur a été expulsé
     }
   },
   created() {
@@ -175,10 +190,6 @@ export default {
   methods: {
     // Methode qui permet à l'utilisateur de rejoindre un lobby
     joinLobby(lobbyId, playersNumber, creatorId) {
-      // if (playersNumber === 2) {
-      //   // Lobby plein
-      //   alert('Full')
-      // } else
       if (creatorId === this.$fire.auth.currentUser.uid) {
         // Le meme utilisateur ne peut pas rejoindre le meme lobby 2 fois
         alert('Same user')
@@ -186,7 +197,6 @@ export default {
         this.lobbiesRef.child(lobbyId + '/players/' + playersNumber).set({
           name: this.$fire.auth.currentUser.displayName,
           uid: this.$fire.auth.currentUser.uid,
-          isReady: false,
           isDone: false,
           score: 0,
           lastAnswer: null,
@@ -223,12 +233,11 @@ export default {
             name: themeName,
             id: this.themeIdDictionary[themeName],
           },
-          state: 'pending',
+          state: 'En attente',
           players: [
             {
               name: this.$fire.auth.currentUser.displayName,
               uid: this.$fire.auth.currentUser.uid,
-              isReady: false,
               isDone: false,
               score: 0,
               lastAnswer: null,
@@ -275,4 +284,4 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped></style>
