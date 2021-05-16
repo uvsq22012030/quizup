@@ -181,13 +181,18 @@
               class="w-full h-full p-3 border-indigo-900 shadow-xl md:p-8 border-3 md:border-12 rounded-xl"
             >
               <div class="flex items-center justify-between w-full">
-                <n-link to="/lobby">
-                  <img
-                    src="~/assets/img/back.svg"
-                    class="object-fill w-5 h-5"
-                  />
-                </n-link>
-                <div class="flex items-center justify-center">
+                <div class="w-1/4">
+                  <radial-progress-bar
+                    v-if="currentQuestionNumber < 10"
+                    ref="timeBar"
+                    :diameter="100"
+                    :completed-steps="timer * 5"
+                    :total-steps="100"
+                  >
+                    <p class="text-xl text-white">{{ timer }}</p>
+                  </radial-progress-bar>
+                </div>
+                <div class="flex items-center justify-center w-1/4">
                   <div class="flex -space-x-1 overflow-x-scroll">
                     <img
                       v-for="(player, idx) in lobbyInfo.players"
@@ -203,36 +208,18 @@
                 </div>
 
                 <p
-                  class="mx-3 text-xl font-bold tracking-widest text-yellow-400 md:text-4xl"
+                  class="w-1/4 mx-3 text-xl font-bold tracking-widest text-right text-yellow-400 md:text-4xl"
                 >
                   {{ gameInfo.answers }}
                 </p>
                 <p
-                  class="mx-3 text-xl font-bold tracking-widest text-indigo-400 md:text-4xl"
+                  class="w-1/4 mx-3 text-xl font-bold tracking-widest text-right text-indigo-400 md:text-4xl"
                 >
                   {{ currentQuestionNumber + 1 }}
                   <span class="text-base">/{{ totalQuestions }}</span>
                 </p>
               </div>
-              <!-- Chrono -->
-              <div ref="timeBar">
-                <!-- Progressbar -->
-                <div
-                  v-if="currentQuestionNumber < 10"
-                  class="flex float-left w-5/6 h-4 bg-white rounded-full shadow-2xl bg-grey-light md:mt-3"
-                >
-                  <div
-                    class="h-4 py-1 text-xs leading-none text-center text-white bg-indigo-500 rounded-full"
-                    :style="'width:' + 5 * (20 - timer) + '%'"
-                  ></div>
-                </div>
-                <!-- Hourglass -->
-                <img
-                  v-if="currentQuestionNumber < 10"
-                  class="flex object-fill w-10 h-5 bg-none right-5 md:h-12 md:w-20"
-                  src="~/assets/img/hourglass.gif"
-                />
-              </div>
+
               <div class="flex h-full mt-5">
                 <div
                   class="w-full h-full p-5 bg-indigo-900 rounded-md shadow-xl"
@@ -319,7 +306,12 @@
 </template>
 
 <script>
+import RadialProgressBar from 'vue-radial-progress'
+
 export default {
+  components: {
+    RadialProgressBar,
+  },
   beforeRouteLeave(to, from, next) {
     if (!to.params.force) {
       // L'utilisateur essaie de quitter le lobby
