@@ -6,18 +6,18 @@
       :classes="['glasso', 'modal-container']"
       content-class="modal-content"
     >
-      <div class="h-full w-full flex flex-col">
+      <div class="flex flex-col w-full h-full">
         <h1
-          class="mb-3 text-center text-indigo-800 h-1/3 font-bold tracking-wide md:text-2xl"
+          class="mb-3 font-bold tracking-wide text-center text-indigo-800 h-1/3 md:text-2xl"
         >
           EXPULSER LE JOUEUR ?
         </h1>
         <div class="text-center h-100">
           <img
-            class="inline-block h-5/6 border-0 mb-3"
+            class="inline-block mb-3 border-0 h-5/6"
             src="~/assets/img/alarm.svg"
           />
-          <h1 class="text-center text-indigo-800 font-bold">
+          <h1 class="font-bold text-center text-indigo-800">
             Veux-tu vraiment expulser ce joueur?
           </h1>
         </div>
@@ -59,7 +59,7 @@
             <n-link to="/lobby">
               <img
                 src="~/assets/img/back.svg"
-                class="hover:animate-bounce object-fill w-10 h-10"
+                class="object-fill w-10 h-10 hover:animate-bounce"
               />
             </n-link>
             <div class="flex items-center">
@@ -71,10 +71,10 @@
             <div class="invisible w-1/10"></div>
           </div>
           <div
-            class="bg-indigo-900 border-3 border-indigo-800 w-full h-4/6 shadow-xl rounded-md"
+            class="w-full bg-indigo-900 border-indigo-800 rounded-md shadow-xl border-3"
           >
             <h4
-              class="mt-2 text-center capitalize font-bold tracking-normal text-yellow-400 md:text-4xl"
+              class="mt-2 font-bold tracking-normal text-center text-yellow-400 capitalize md:text-4xl"
             >
               JOUEURS : {{ lobbyInfo.players.length }}
             </h4>
@@ -104,9 +104,9 @@
                 userNumber !== null &&
                 lobbyInfo.players[userNumber].uid === lobbyInfo.creator.uid
               "
-              class="mt-6 flex items-center justify-center space-x-3"
+              class="flex flex-wrap items-center justify-center p-5 mt-6 space-x-3"
             >
-              <div class="flex flex-col">
+              <div class="flex flex-col w-full md:w-60">
                 <button
                   type="button"
                   class="flex items-center justify-center w-full text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
@@ -119,20 +119,20 @@
                     />
                   </div>
                   <div
-                    class="-mt-1 font-sans font-semibold lg:text-xl capitalize"
+                    class="-mt-1 font-sans font-semibold capitalize lg:text-xl"
                   >
                     inviter
                   </div>
                 </button>
-                <h1
+                <span
                   v-if="urlCopied"
                   class="mt-1 text-center text-gray-400 text-md"
                 >
                   LIEN COPIÉ !
-                </h1>
-                <h1 v-else class="mt-1 invisible h-6"></h1>
+                </span>
+                <span v-else class="invisible h-6 mt-1"></span>
               </div>
-              <div class="flex flex-col">
+              <div class="flex flex-col w-full md:w-60">
                 <button
                   type="button"
                   class="flex items-center justify-center w-full text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
@@ -145,23 +145,23 @@
                     />
                   </div>
                   <div
-                    class="-mt-1 font-sans font-semibold lg:text-xl capitalize"
+                    class="-mt-1 font-sans font-semibold capitalize lg:text-xl"
                   >
                     démarrer
                   </div>
                 </button>
-                <h1 class="mt-1 invisible h-6"></h1>
+                <h1 class="invisible h-6 mt-1"></h1>
               </div>
             </div>
             <div
               v-else
-              class="mt-6 flex items-center justify-center space-x-2 h-1/6"
+              class="flex items-center justify-center mt-6 space-x-2 h-1/6"
             >
               <img
-                class="animate-spin inline-block h-1/2"
+                class="inline-block animate-spin h-1/2"
                 src="~/assets/img/spinner.svg"
               />
-              <h1 class="text-center text-gray-400 text-xl">
+              <h1 class="text-xl text-center text-gray-400">
                 En attente de l'hôte pour démarrer la partie ;)
               </h1>
             </div>
@@ -219,17 +219,17 @@
                 <!-- Progressbar -->
                 <div
                   v-if="currentQuestionNumber < 10"
-                  class="flex h-4 bg-white w-5/6 bg-grey-light float-left rounded-full shadow-2xl md:mt-3"
+                  class="flex float-left w-5/6 h-4 bg-white rounded-full shadow-2xl bg-grey-light md:mt-3"
                 >
                   <div
-                    class="h-4 bg-indigo-500 text-xs leading-none py-1 text-center rounded-full text-white"
+                    class="h-4 py-1 text-xs leading-none text-center text-white bg-indigo-500 rounded-full"
                     :style="'width:' + 5 * (20 - timer) + '%'"
                   ></div>
                 </div>
                 <!-- Hourglass -->
                 <img
                   v-if="currentQuestionNumber < 10"
-                  class="flex bg-none right-5 object-fill h-5 w-10 md:h-12 md:w-20"
+                  class="flex object-fill w-10 h-5 bg-none right-5 md:h-12 md:w-20"
                   src="~/assets/img/hourglass.gif"
                 />
               </div>
@@ -247,8 +247,8 @@
                     <AnswerCard
                       v-for="(n, index) in 4"
                       :key="index"
-                      :disabled="done"
                       ref="answerCards"
+                      :disabled="done"
                       :label="
                         randomQuestions[currentQuestionNumber].propositions[
                           index
@@ -272,40 +272,40 @@
           </div>
         </div>
         <!-- Si l'adversaire quitte ou abandonne -->
-        <div v-else class="block h-full w-full py-10 md:py-30">
+        <div v-else class="block w-full h-full py-10 md:py-30">
           <img
-            class="block mr-auto ml-auto object-fill h-20 w-20 md:h-50 md:w-50"
+            class="block object-fill w-20 h-20 ml-auto mr-auto md:h-50 md:w-50"
             src="~/assets/img/wreath.png"
           />
           <!-- Partie terminée -->
           <p
-            class="block text-center bottom-0 w-full mt-5 text-xl md:text-6xl font-bold tracking-wide text-gray-600"
+            class="bottom-0 block w-full mt-5 text-xl font-bold tracking-wide text-center text-gray-600 md:text-6xl"
           >
             Partie terminée !
           </p>
           <!-- Message de fin -->
           <p
-            class="block text-center bottom-0 w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
+            class="bottom-0 block w-full mt-5 font-bold tracking-wide text-center text-gray-600 text-l md:text-2xl"
           >
             Tout les adversaires ont quitté
           </p>
           <p
-            class="block text-center bottom-0 w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
+            class="bottom-0 block w-full mt-5 font-bold tracking-wide text-center text-gray-600 text-l md:text-2xl"
           >
             Vous avez gagné !
           </p>
           <!-- Score -->
           <p
-            class="block text-center bottom-0 w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
+            class="bottom-0 block w-full mt-5 font-bold tracking-wide text-center text-gray-600 text-l md:text-2xl"
           >
             Score : {{ gameInfo.score }} points
           </p>
           <!-- Bouton retour au menu -->
           <div
-            class="flex w-full h-1/4 items-stretch justify-center text-center space-x-8 mt-5"
+            class="flex items-stretch justify-center w-full mt-5 space-x-8 text-center h-1/4"
           >
             <button
-              class="h-1/2 w-1/3 p-2 text-sm md:text-lg font-bold tracking-wider text-white bg-red-400 border-0 rounded-2xl shadow-2xl focus:outline-none hover:bg-red-600 md:hover:text-xl"
+              class="w-1/3 p-2 text-sm font-bold tracking-wider text-white bg-red-400 border-0 shadow-2xl h-1/2 md:text-lg rounded-2xl focus:outline-none hover:bg-red-600 md:hover:text-xl"
               type="submit"
               @click="$router.push('/lobby')"
             >

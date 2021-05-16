@@ -1,21 +1,21 @@
 <template>
   <div
-    class="flex items-center justify-between w-full p-2 my-3 transition duration-100 ease-in-out transform scale-95 bg-indigo-900 rounded-lg shadow-xl cursor-pointer hover:bg-indigo-600 hover:scale-100 border-1 hover:border-bg-indigo-400 hover:shadow-2xl"
+    class="flex flex-wrap items-center justify-between w-full p-2 my-3 transition duration-100 ease-in-out transform scale-95 bg-indigo-900 rounded-lg shadow-xl cursor-pointer hover:bg-indigo-600 hover:scale-100 border-1 hover:border-bg-indigo-400 hover:shadow-2xl"
   >
-    <div>
+    <div class="w-2/3">
       <h2 class="text-lg font-bold text-gray-100 capitalize">
         {{ label.split('_').join(' ') }} -
         <span class="text-indigo-400">HOST: {{ user }}</span>
       </h2>
       <p class="text-gray-100 text">{{ players }} Joueur(s)</p>
     </div>
-    <div>
-      <p class="text-gray-100 text capitalize">{{ status }}</p>
+    <div class="w-1/3 p-2">
+      <p class="text-right text-gray-100 capitalize">{{ status }}</p>
     </div>
-    <div>
+    <div class="w-full py-1">
       <button
         type="button"
-        class="flex items-center justify-center w-full text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+        class="flex items-center justify-center w-full text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl hover:bg-indigo-600 hover:scale-105 h-14"
         @click="$emit('click')"
       >
         <div class="mr-3">
