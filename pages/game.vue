@@ -17,40 +17,36 @@
           class="w-full h-full p-3 border-indigo-900 shadow-xl md:p-8 border-3 md:border-12 rounded-xl"
         >
           <div class="flex items-center justify-between w-full">
-            <n-link to="/">
-              <img src="~/assets/img/back.svg" class="object-fill w-5 h-5" />
-            </n-link>
+            <div class="w-1/3">
+              <radial-progress-bar
+                v-if="currentQuestionNumber < 10 && isTimed"
+                ref="timeBar"
+                :diameter="100"
+                :completed-steps="timer * 5"
+                :total-steps="100"
+              >
+                <p class="text-xl text-white">{{ timer }}</p>
+              </radial-progress-bar>
+            </div>
+
             <p
-              class="mx-3 text-xl font-bold tracking-widest text-yellow-400 md:text-4xl"
+              class="w-1/3 mx-3 text-xl font-bold tracking-widest text-center text-yellow-400 md:text-4xl"
             >
               {{ gameInfo.answers }}
             </p>
             <p
-              class="mx-3 text-xl font-bold tracking-widest text-indigo-400 md:text-4xl"
+              class="w-1/3 mx-3 text-xl font-bold tracking-widest text-right text-indigo-400 md:text-4xl"
             >
               {{ currentQuestionNumber + 1 }}
               <span class="text-base">/{{ totalQuestions }}</span>
             </p>
           </div>
           <!-- Chrono -->
-          <div v-if="isTimed" ref="timeBar">
-            <!-- Progressbar -->
-            <div
-              v-if="currentQuestionNumber < 10"
-              class="flex float-left w-5/6 h-4 bg-white rounded-full shadow-2xl bg-grey-light md:mt-3"
-            >
-              <div
-                class="h-4 py-1 text-xs leading-none text-center text-white bg-indigo-500 rounded-full"
-                :style="'width:' + 5 * (20 - timer) + '%'"
-              ></div>
-            </div>
-            <!-- Hourglass -->
-            <img
-              v-if="currentQuestionNumber < 10"
-              class="flex object-fill w-10 h-5 bg-none right-5 md:h-12 md:w-20"
-              src="~/assets/img/hourglass.gif"
-            />
+
+          <div class="flex items-center justify-center">
+            <div></div>
           </div>
+
           <div class="flex h-full mt-5">
             <div
               class="w-full h-full p-5 bg-indigo-900 rounded-md shadow-xl"
@@ -81,29 +77,33 @@
                 ></AnswerCard>
               </div>
               <!-- Anecdote -->
-              <div
-                v-if="currentQuestionNumber < 10 && done"
-                class="flex items-center justify-between"
-              >
-                <div class="flex flex-shrink-0 mr-auto text-left">
+              <div v-if="currentQuestionNumber < 10 && done" class="">
+                <div class="flex items-center justify-center w-full">
                   <img
-                    class="top-0 object-fill w-3 h-3 mr-1 md:h-6 md:w-6"
-                    src="~/assets/img/lamp.png"
+                    class="object-fill mr-3 w-7 h-7"
+                    src="~/assets/img/mental-health.svg"
                   />
-                  <h1
-                    class="block float-left text-center text-indigo-300 text-md max-w-max"
-                  >
+                  <h1 class="text-indigo-300 text-md max-w-max">
                     {{ randomQuestions[currentQuestionNumber].anecdote }}
                   </h1>
                 </div>
                 <button
-                  class="float-right w-auto h-full bg-indigo-900 bg-opacity-0 border-0 outline-none sm:p-2 focus:outline-none"
+                  type="button"
+                  class="flex items-center justify-center w-full p-3 mx-2 mt-5 text-white transform scale-90 bg-indigo-800 rounded-lg shadow-xl hover:bg-indigo-600 hover:scale-95 h-14"
                   @click="nextQuestion"
                 >
-                  <img
-                    class="object-fill w-8 h-8 outline-none lg:h-15 lg:w-15 animate-bounce focus:outline-none"
-                    src="~/assets/img/right-arrow.svg"
-                  />
+                  <div class="mr-3">
+                    <img
+                      class="object-fill w-10 p-1"
+                      src="~/assets/img/next.svg"
+                    />
+                  </div>
+                  <div>
+                    <div class="text-sm text-left">PROCHAINE</div>
+                    <div class="-mt-1 font-sans font-semibold lg:text-xl">
+                      QUESTION
+                    </div>
+                  </div>
                 </button>
               </div>
             </div>
@@ -117,7 +117,12 @@
 </template>
 
 <script>
+import RadialProgressBar from 'vue-radial-progress'
+
 export default {
+  components: {
+    RadialProgressBar,
+  },
   data() {
     return {
       historyRef: null, // Reference sur l'historique dans la base de données
@@ -139,6 +144,28 @@ export default {
         type: 'Solo',
         score: 0,
         answers: 0,
+      },
+      options: {
+        text: {
+          color: '#FFFFFF',
+          shadowEnable: true,
+          shadowColor: '#000000',
+          hideText: true,
+        },
+        progress: {
+          color: '#2dbd2d',
+          backgroundColor: '#333333',
+        },
+        layout: {
+          height: 100,
+          width: 150,
+          verticalTextAlign: 61,
+          horizontalTextAlign: 43,
+          zeroOffset: 0,
+          strokeWidth: 30,
+          progressPadding: 5,
+          type: 'circle',
+        },
       },
       gameKey: null, // Clé de la partie dans la base de donnée
     }
