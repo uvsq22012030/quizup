@@ -119,7 +119,7 @@
           class="object-fill w-8 h-8 lg:h-15 lg:w-15 animate-bounce"
           src="~/assets/img/mental-health.svg"
         />
-        <p v-if="themeName" class="my-2 capitalize font-bold text-center">
+        <p v-if="themeName" class="my-2 font-bold text-center capitalize">
           Theme selectionné : {{ themeName.split('_').join(' ') }}
         </p>
         <p class="my-2 text-center">Choisir un mode de jeu :</p>
@@ -187,14 +187,16 @@ export default {
   computed: {
     resultQuery() {
       if (this.searchQuery) {
-        return this.fetchedThemes.filter((item) => {
-          return this.searchQuery
-            .toLowerCase()
-            .split(' ')
-            .every((v) => item.name.toLowerCase().includes(v))
-        })
+        return Object.freeze(
+          this.fetchedThemes.filter((item) => {
+            return this.searchQuery
+              .toLowerCase()
+              .split(' ')
+              .every((v) => item.name.toLowerCase().includes(v))
+          })
+        )
       } else {
-        return this.fetchedThemes
+        return Object.freeze(this.fetchedThemes)
       }
     },
   },
