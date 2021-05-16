@@ -394,6 +394,19 @@ export default {
       userRanking: null, // Classement final du joueur
     }
   },
+  head() {
+    return {
+      title: 'Lobby uvsQuiz - Revolution du Trivia',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content:
+            'Le seul jeu de questions-réponses multijoueurs que vous jouerez si vous avez été à UVSQ',
+        },
+      ],
+    }
+  },
   beforeCreate() {
     // On redirige l'utilisateur si le lobby n'existe pas
     this.$fire.database

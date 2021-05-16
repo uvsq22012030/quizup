@@ -184,6 +184,19 @@ export default {
       themeName: null,
     }
   },
+  head() {
+    return {
+      title: 'Play uvsQuiz - Revolution du Trivia',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content:
+            'Le seul jeu de questions-réponses multijoueurs que vous jouerez si vous avez été à UVSQ',
+        },
+      ],
+    }
+  },
   computed: {
     resultQuery() {
       if (this.searchQuery) {

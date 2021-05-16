@@ -158,6 +158,19 @@ export default {
       kicked: this.$route.params.kicked, // Booléen indiquant si l'utilisateur a été expulsé
     }
   },
+  head() {
+    return {
+      title: 'Play uvsQuiz - Revolution du Trivia',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content:
+            'Le seul jeu de questions-réponses multijoueurs que vous jouerez si vous avez été à UVSQ',
+        },
+      ],
+    }
+  },
   created() {
     // On recupere les theme de l'API
     this.fetchThemes()

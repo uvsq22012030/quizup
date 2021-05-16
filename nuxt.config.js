@@ -36,13 +36,9 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    // https://www.npmjs.com/package/nuxt-vue-select
     'nuxt-vue-select',
-    // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
-    // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
-    // https://firebase.nuxtjs.org/guide/getting-started/
     [
       '@nuxtjs/firebase',
       {
@@ -79,7 +75,19 @@ export default {
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {
     manifest: {
-      lang: 'en',
+      name: 'uvsQuiz',
+      short_name: 'uvsQuiz',
+      language: 'fr-FR',
+      display: 'fullscreen',
+      theme_color: 'indigo',
+      background_color: '#ffffff',
+    },
+    meta: {
+      /* meta options */
+      name: 'uvsQuiz',
+      description:
+        'Le seul jeu de questions-réponses multijoueurs que vous jouerez si vous avez été à UVSQ',
+      theme_color: 'indigo',
     },
   },
 

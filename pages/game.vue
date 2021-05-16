@@ -37,17 +37,17 @@
             <!-- Progressbar -->
             <div
               v-if="currentQuestionNumber < 10"
-              class="flex h-4 bg-white w-5/6 bg-grey-light float-left rounded-full shadow-2xl md:mt-3"
+              class="flex float-left w-5/6 h-4 bg-white rounded-full shadow-2xl bg-grey-light md:mt-3"
             >
               <div
-                class="h-4 bg-indigo-500 text-xs leading-none py-1 text-center rounded-full text-white"
+                class="h-4 py-1 text-xs leading-none text-center text-white bg-indigo-500 rounded-full"
                 :style="'width:' + 5 * (20 - timer) + '%'"
               ></div>
             </div>
             <!-- Hourglass -->
             <img
               v-if="currentQuestionNumber < 10"
-              class="flex bg-none right-5 object-fill h-5 w-10 md:h-12 md:w-20"
+              class="flex object-fill w-10 h-5 bg-none right-5 md:h-12 md:w-20"
               src="~/assets/img/hourglass.gif"
             />
           </div>
@@ -65,11 +65,11 @@
                 <AnswerCard
                   v-for="(n, index) in 4"
                   :key="index"
+                  ref="answerCards"
                   :disabled="done"
                   :label="
                     randomQuestions[currentQuestionNumber].propositions[index]
                   "
-                  ref="answerCards"
                   @click="
                     play(
                       randomQuestions[currentQuestionNumber].propositions[
@@ -85,9 +85,9 @@
                 v-if="currentQuestionNumber < 10 && done"
                 class="flex items-center justify-between"
               >
-                <div class="text-left flex flex-shrink-0 mr-auto">
+                <div class="flex flex-shrink-0 mr-auto text-left">
                   <img
-                    class="mr-1 top-0 object-fill h-3 w-3 md:h-6 md:w-6"
+                    class="top-0 object-fill w-3 h-3 mr-1 md:h-6 md:w-6"
                     src="~/assets/img/lamp.png"
                   />
                   <h1
@@ -97,11 +97,11 @@
                   </h1>
                 </div>
                 <button
-                  class="float-right h-full w-auto sm:p-2 outline-none bg-indigo-900 border-0 focus:outline-none bg-opacity-0"
+                  class="float-right w-auto h-full bg-indigo-900 bg-opacity-0 border-0 outline-none sm:p-2 focus:outline-none"
                   @click="nextQuestion"
                 >
                   <img
-                    class="object-fill w-8 h-8 lg:h-15 lg:w-15 animate-bounce outline-none focus:outline-none"
+                    class="object-fill w-8 h-8 outline-none lg:h-15 lg:w-15 animate-bounce focus:outline-none"
                     src="~/assets/img/right-arrow.svg"
                   />
                 </button>
@@ -141,6 +141,19 @@ export default {
         answers: 0,
       },
       gameKey: null, // Clé de la partie dans la base de donnée
+    }
+  },
+  head() {
+    return {
+      title: 'Play uvsQuiz - Revolution du Trivia',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content:
+            'Le seul jeu de questions-réponses multijoueurs que vous jouerez si vous avez été à UVSQ',
+        },
+      ],
     }
   },
   created() {
