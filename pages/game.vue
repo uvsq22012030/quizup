@@ -49,7 +49,7 @@
 
           <div class="flex h-full mt-5">
             <div
-              class="w-full h-full p-5 bg-indigo-900 rounded-md shadow-xl"
+              class="w-full h-full p-5 overflow-y-scroll bg-indigo-900 rounded-md shadow-xl"
               style="height: 90%"
             >
               <h1
@@ -83,7 +83,7 @@
                     class="object-fill mr-3 w-7 h-7"
                     src="~/assets/img/mental-health.svg"
                   />
-                  <h1 class="text-indigo-300 text-md max-w-max">
+                  <h1 class="text-sm text-indigo-300 max-w-max">
                     {{ randomQuestions[currentQuestionNumber].anecdote }}
                   </h1>
                 </div>
