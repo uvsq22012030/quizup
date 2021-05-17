@@ -128,9 +128,6 @@ export default {
       done: false, // Booléen décrivant si l'utilisateur a repondu ou non à la question courante
       theme: [],
       randomQuestions: [], // Liste aleatoire de questions
-      defaultButtonClass:
-        // CSS par défaut de chaque bouton
-        'h-5/6 w-5/12 p-2 font-xl tracking-wider text-gray-700 border-2 border-gray-700 shadow-xl rounded-3xl focus:outline-none focus:border-gray-700 hover:font-bold hover:bg-gray-100 bg-white',
       currentQuestionNumber: 0, // Numero de la question courante
       totalQuestions: 10, // Nombre total de questions
       gameInfo: {

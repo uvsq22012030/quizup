@@ -357,7 +357,6 @@ export default {
           {
             name: this.$fire.auth.currentUser.displayName,
             uid: this.$fire.auth.currentUser.uid,
-            isReady: false,
             isDone: false,
             score: 0,
           },
@@ -472,7 +471,6 @@ export default {
                           .set({
                             name: this.$fire.auth.currentUser.displayName,
                             uid: this.$fire.auth.currentUser.uid,
-                            isReady: false,
                             isDone: false,
                             score: 0,
                           })

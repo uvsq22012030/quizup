@@ -1,5 +1,21 @@
 <template>
   <div v-if="!isLoading">
+    <audio id="myAudio">
+      <source src="~/assets/audio/initialCountdown.mp3" type="audio/mpeg" />
+    </audio>
+    <vue-final-modal
+      v-model="showIc"
+      :ssr="true"
+      :classes="['glasso', 'modal-container']"
+      content-class="bg-transparent"
+      :click-to-close="false"
+    >
+      <img
+        v-if="initialCountdown > 0"
+        class="animate-ping object-cover h-full w-full"
+        :src="getImgUrl(initialCountdown)"
+      />
+    </vue-final-modal>
     <vue-final-modal
       v-model="kickPopup"
       :ssr="true"
@@ -384,6 +400,9 @@ export default {
       opponentSurrendered: false, // Booléen indiquant si l'adversaire a quitté ou abandonné
       rankingTable: [], // Classement final total de la partie
       userRanking: null, // Classement final du joueur
+      initialCountdown: 3, // Compte à rebours initial de début de partie
+      icIntervalId: null, // Identifiant pour la fonction setInterval du compte à rebours initial
+      showIc: false, // Booléen permettant l'affichage du compte à rebours initial
     }
   },
   head() {
@@ -487,9 +506,23 @@ export default {
           // On recupere l'état de la partie
           this.gameReady = this.lobbyInfo.state === 'En cours'
           if (this.gameReady) {
-            // On lance la partie
-            this.gameStarted = true
-            this.intervalId = setInterval(this.countdown, 1000)
+            // On lance le compte à rebours initial
+            this.showIc = true
+            this.icIntervalId = setInterval(
+              function () {
+                this.initialCountdown -= 1
+                // Si le compte à rebours atteint 0
+                if (!this.initialCountdown) {
+                  // On arrête le compte à rebours
+                  clearInterval(this.icIntervalId)
+                  this.showIc = false
+                  // On lance la partie
+                  this.gameStarted = true
+                  this.intervalId = setInterval(this.countdown, 1000)
+                }
+              }.bind(this),
+              1000
+            )
           }
         } else if (
           Object.keys(this.lobbyInfo.players).length === 1 &&
@@ -551,6 +584,9 @@ export default {
     this.lobbyRef.off('value')
   },
   methods: {
+    getImgUrl(imgNumber) {
+      return require('~/assets/img/chrono' + imgNumber + '.png')
+    },
     kickPlayer() {
       this.$fire.database
         .ref(
@@ -573,6 +609,18 @@ export default {
         this.$fire.database.ref('lobbies/' + this.$route.params.lobby).update({
           state: 'En cours',
         })
+        // const sound = document.getElementById('myAudio')
+        // sound.load()
+        // sound.play()
+        const sound = new Audio(require('@/assets/audio/initialCountdown.mp3'))
+        sound
+          .play()
+          .then(() => {
+            // Audio is playing
+          })
+          .catch((e) => {
+            console.log(e)
+          })
       } else {
         alert("Il n'y a pas assez de joueurs dans le lobby !")
       }
