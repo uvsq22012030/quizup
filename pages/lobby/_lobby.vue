@@ -1,8 +1,5 @@
 <template>
   <div v-if="!isLoading">
-    <audio id="myAudio">
-      <source src="~/assets/audio/initialCountdown.mp3" type="audio/mpeg" />
-    </audio>
     <vue-final-modal
       v-model="showIc"
       :ssr="true"
@@ -508,6 +505,8 @@ export default {
           if (this.gameReady) {
             // On lance le compte à rebours initial
             this.showIc = true
+            const sound = new Audio('/initialCountdown.mp3')
+            sound.play()
             this.icIntervalId = setInterval(
               function () {
                 this.initialCountdown -= 1
@@ -609,18 +608,6 @@ export default {
         this.$fire.database.ref('lobbies/' + this.$route.params.lobby).update({
           state: 'En cours',
         })
-        // const sound = document.getElementById('myAudio')
-        // sound.load()
-        // sound.play()
-        const sound = new Audio(require('@/assets/audio/initialCountdown.mp3'))
-        sound
-          .play()
-          .then(() => {
-            // Audio is playing
-          })
-          .catch((e) => {
-            console.log(e)
-          })
       } else {
         alert("Il n'y a pas assez de joueurs dans le lobby !")
       }
