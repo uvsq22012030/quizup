@@ -167,6 +167,59 @@
         </button>
       </div>
     </vue-final-modal>
+    <vue-final-modal
+      v-model="searchingForMatch"
+      :ssr="true"
+      :classes="['glasso', 'modal-container']"
+      :click-to-close="false"
+      content-class="modal-content"
+    >
+      <!-- Recherche d'un adversaire -->
+      <div v-if="!found">
+        <div class="flex items-center justify-center mt-6 space-x-2 h-1/6">
+          <img
+            class="inline-block animate-spin h-1/2"
+            src="~/assets/img/spinner.svg"
+          />
+          <h1 class="text-xl text-center text-gray-400">
+            Recherche d'un adversaire en cours...
+          </h1>
+        </div>
+        <div class="flex flex-wrap items-center justify-center mt-2">
+          <button
+            type="button"
+            class="flex items-center justify-center w-full p-3 mx-2 mt-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+            @click="cancelSearch()"
+          >
+            <div class="mr-3">
+              <img class="object-fill w-10 p-1" src="~/assets/img/close.svg" />
+            </div>
+            <div class="-mt-1 font-sans font-semibold lg:text-xl">ANNULER</div>
+          </button>
+        </div>
+      </div>
+      <div v-else class="flex flex-col w-full h-full">
+        <h1
+          class="mb-3 font-bold tracking-wide text-center text-indigo-800 h-1/3 md:text-2xl"
+        >
+          ADVERSAIRE TROUVÉ !
+        </h1>
+        <div class="text-center h-50">
+          <img
+            class="animate-ping inline-block mb-3 border-0 h-5/6"
+            src="~/assets/img/singles.svg"
+          />
+        </div>
+        <div class="flex flex-col items-center justify-center mt-2">
+          <h1 class="font-bold text-center text-indigo-800">
+            Vous serez rediriger dans :
+          </h1>
+          <h1 class="font-bold text-center text-2xl text-indigo-800">
+            {{ countdown }}
+          </h1>
+        </div>
+      </div>
+    </vue-final-modal>
   </div>
 </template>
 
@@ -182,6 +235,11 @@ export default {
       lobbiesRef: null,
       searchingForMatch: false,
       themeName: null,
+      queueId: null,
+      found: false,
+      countdown: 3,
+      intervalId: null,
+      lobbyId: null,
     }
   },
   head() {
@@ -299,20 +357,18 @@ export default {
           {
             name: this.$fire.auth.currentUser.displayName,
             uid: this.$fire.auth.currentUser.uid,
-            isReady: false,
             isDone: false,
             score: 0,
           },
         ],
         questions: fetchedQuestions,
       }
-      const lobbyId = this.lobbiesRef.push(lobbyInfo).key
+      this.lobbyId = this.lobbiesRef.push(lobbyInfo).key
       // On indique au serveur qu'un joueur est disponible
       this.$fire.database.ref('queues/' + queueId).update({
         state: 'found',
-        lobbyKey: lobbyId,
+        lobbyKey: this.lobbyId,
       })
-      this.$router.push('/lobby/' + lobbyId)
     },
     shuffleJsonArray(array) {
       // Implementation du Fisher Yates shuffle
@@ -333,6 +389,8 @@ export default {
       return array
     },
     matchMaking(themeName) {
+      // On ferme le popup de choix du mode
+      this.optionsPopup = false
       // On recupere l'identifiant du theme
       const themeId = this.themeIdDictionary[themeName]
       // On indique qu'on est en train de chercher un adversaire
@@ -342,7 +400,7 @@ export default {
         .ref('queues/')
         .get()
         .then((snapshot) => {
-          let found = false
+          this.found = false
           // Si il y a déjà des recherches en cours
           if (snapshot.val()) {
             const queueObject = snapshot.val()
@@ -352,15 +410,26 @@ export default {
               // Si on trouve un match on crée un lobby et on redirige l'utilisateur dans le lobby
               if (queueObject[queues[i]].theme.id === themeId) {
                 // On a trouvé un joueur
-                found = true
-                // On indique que la recherche est terminée
-                this.searchingForMatch = false
-                // On crée un lobby et on redirige l'utilisateur
+                this.found = true
+                // On crée un lobby
                 this.createLobby(themeName, queues[i])
+                this.intervalId = setInterval(
+                  function () {
+                    this.countdown -= 1
+                    if (!this.countdown) {
+                      clearInterval(this.intervalId)
+                      // On indique que la recherche est terminée
+                      this.searchingForMatch = false
+                      // On redirige l'utilisateur
+                      this.$router.push('/lobby/' + this.lobbyId)
+                    }
+                  }.bind(this),
+                  1000
+                )
               }
             }
           }
-          if (!found) {
+          if (!this.found) {
             // Si on ne trouve aucune recherche correspondante
             // On indique au serveur qu'on est en attente de joueur
             const queueInfo = {
@@ -374,41 +443,64 @@ export default {
               },
               state: 'searching',
             }
-            const queueId = this.$fire.database.ref('queues/').push(queueInfo)
-              .key
+            this.queueId = this.$fire.database
+              .ref('queues/')
+              .push(queueInfo).key
             // On écoute les evenements pour voir si un joueur a rejoint
             this.$fire.database
-              .ref('queues/' + queueId)
+              .ref('queues/' + this.queueId)
               .on('value', (snapshot) => {
                 const lobbyKey =
                   snapshot.val() !== null ? snapshot.val().lobbyKey : null
                 if (lobbyKey) {
+                  // On a trouvé un joueur
+                  this.found = true
                   // On met à jour l'état de la partie
                   this.$fire.database.ref('lobbies/').child(lobbyKey).update({
-                    state: 'ongoing',
+                    state: 'En cours',
                   })
-                  // On envoit au serveur les informations du joueur
-                  this.$fire.database
-                    .ref('lobbies/')
-                    .child(lobbyKey + '/players/1')
-                    .set({
-                      name: this.$fire.auth.currentUser.displayName,
-                      uid: this.$fire.auth.currentUser.uid,
-                      isReady: false,
-                      isDone: false,
-                      score: 0,
-                    })
-                  // On arrête et on supprime la recherche
-                  this.searchingForMatch = false
-                  this.$fire.database.ref('queues/' + queueId).remove()
-                  // On arrête d'écouter les evenements
-                  this.$fire.database.ref('queues/' + queueId).off('value')
-                  // On renvoit l'utilisateur vers le lobby
-                  this.$router.push('/lobby/' + lobbyKey)
+                  this.intervalId = setInterval(
+                    function () {
+                      this.countdown -= 1
+                      if (!this.countdown) {
+                        clearInterval(this.intervalId)
+                        // On envoit au serveur les informations du joueur
+                        this.$fire.database
+                          .ref('lobbies/')
+                          .child(lobbyKey + '/players/1')
+                          .set({
+                            name: this.$fire.auth.currentUser.displayName,
+                            uid: this.$fire.auth.currentUser.uid,
+                            isDone: false,
+                            score: 0,
+                          })
+                        // On arrête et on supprime la recherche
+                        this.searchingForMatch = false
+                        this.$fire.database
+                          .ref('queues/' + this.queueId)
+                          .remove()
+                        // On arrête d'écouter les evenements
+                        this.$fire.database
+                          .ref('queues/' + this.queueId)
+                          .off('value')
+                        // On renvoit l'utilisateur vers le lobby
+                        this.$router.push('/lobby/' + lobbyKey)
+                      }
+                    }.bind(this),
+                    1000
+                  )
                 }
               })
           }
         })
+    },
+    // Fonction qui annule la recherche en matchmaking
+    cancelSearch() {
+      // On arrête et on supprime la recherche
+      this.searchingForMatch = false
+      this.$fire.database.ref('queues/' + this.queueId).remove()
+      // On arrête d'écouter les evenements
+      this.$fire.database.ref('queues/' + this.queueId).off('value')
     },
     // Lancement du jeu solo
     playSolo(chronoMode) {

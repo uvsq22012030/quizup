@@ -1,6 +1,19 @@
 <template>
   <div v-if="!isLoading">
     <vue-final-modal
+      v-model="showIc"
+      :ssr="true"
+      :classes="['glasso', 'modal-container']"
+      content-class="bg-transparent"
+      :click-to-close="false"
+    >
+      <img
+        v-if="initialCountdown > 0"
+        class="animate-ping object-cover h-full w-full"
+        :src="getImgUrl(initialCountdown)"
+      />
+    </vue-final-modal>
+    <vue-final-modal
       v-model="kickPopup"
       :ssr="true"
       :classes="['glasso', 'modal-container']"
@@ -232,9 +245,9 @@
                   </h1>
                   <div class="flex flex-wrap w-full mt-10">
                     <AnswerCard
+                      ref="answerCards"
                       v-for="(n, index) in 4"
                       :key="index"
-                      ref="answerCards"
                       :disabled="done"
                       :label="
                         randomQuestions[currentQuestionNumber].propositions[
@@ -255,48 +268,87 @@
               </div>
             </div>
             <!-- Fin de partie -->
-            <div></div>
+            <div
+              v-else
+              class="container relative h-full px-1 py-1 mx-auto md:px-12 md:py-12 z-1"
+            >
+              <div
+                class="flex flex-col items-center space-y-2 w-full h-full p-3 border-indigo-900 shadow-xl md:p-8 border-3 md:border-12 rounded-xl"
+              >
+                <h1 class="text-center text-gray-100 font-bold text-4xl">
+                  Vous êtes classé : {{ userRanking }}.
+                </h1>
+                <h1 class="text-center text-gray-100 font-bold text-4xl">
+                  Score : {{ gameInfo.score }} points
+                </h1>
+                <div
+                  class="w-1/2 h-4/5 p-2 p-5 overflow-y-auto bg-indigo-900 rounded-md shadow-xl"
+                >
+                  <div class="w-full h-full">
+                    <RankCard
+                      v-for="(player, index) in rankingTable"
+                      :key="index"
+                      :name="player.name"
+                      :rank="index + 1"
+                      :score="player.score"
+                    ></RankCard>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  class="flex items-center justify-center w-full text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+                  @click="$router.push('/lobby')"
+                >
+                  <div class="mr-3">
+                    <img
+                      class="object-fill w-10 p-1"
+                      src="~/assets/img/back.svg"
+                    />
+                  </div>
+                  <div
+                    class="-mt-1 font-sans font-semibold capitalize lg:text-xl"
+                  >
+                    Retour
+                  </div>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
         <!-- Si l'adversaire quitte ou abandonne -->
-        <div v-else class="block w-full h-full py-10 md:py-30">
-          <img
-            class="block object-fill w-20 h-20 ml-auto mr-auto md:h-50 md:w-50"
-            src="~/assets/img/wreath.png"
-          />
-          <!-- Partie terminée -->
-          <p
-            class="bottom-0 block w-full mt-5 text-xl font-bold tracking-wide text-center text-gray-600 md:text-6xl"
-          >
-            Partie terminée !
-          </p>
-          <!-- Message de fin -->
-          <p
-            class="bottom-0 block w-full mt-5 font-bold tracking-wide text-center text-gray-600 text-l md:text-2xl"
-          >
-            Tout les adversaires ont quitté
-          </p>
-          <p
-            class="bottom-0 block w-full mt-5 font-bold tracking-wide text-center text-gray-600 text-l md:text-2xl"
-          >
-            Vous avez gagné !
-          </p>
-          <!-- Score -->
-          <p
-            class="bottom-0 block w-full mt-5 font-bold tracking-wide text-center text-gray-600 text-l md:text-2xl"
-          >
-            Score : {{ gameInfo.score }} points
-          </p>
-          <!-- Bouton retour au menu -->
+        <div
+          v-else
+          class="container relative h-full px-1 py-1 mx-auto md:px-12 md:py-12 z-1"
+        >
           <div
-            class="flex items-stretch justify-center w-full mt-5 space-x-8 text-center h-1/4"
+            class="flex flex-col items-center space-y-2 w-full h-full p-3 border-indigo-900 shadow-xl md:p-8 border-3 md:border-12 rounded-xl"
           >
+            <div class="w-1/2 h-50">
+              <img
+                class="object-contain h-full w-full"
+                src="~/assets/img/winner.png"
+              />
+            </div>
+            <h1 class="text-center text-gray-100 font-bold text-4xl">
+              VOUS AVEZ GAGNÉ !
+            </h1>
+            <h1 class="text-center text-gray-100 text-2xl">
+              Tout les adversaires ont quitté
+            </h1>
+            <h1 class="text-center text-gray-100 font-bold text-4xl">
+              Score : {{ gameInfo.score }} points
+            </h1>
             <button
-              class="w-1/3 p-2 text-sm font-bold tracking-wider text-white bg-red-400 border-0 shadow-2xl h-1/2 md:text-lg rounded-2xl focus:outline-none hover:bg-red-600 md:hover:text-xl"
-              type="submit"
+              type="button"
+              class="flex items-center justify-center w-full text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
               @click="$router.push('/lobby')"
             >
-              Revenir au menu des lobbies
+              <div class="mr-3">
+                <img class="object-fill w-10 p-1" src="~/assets/img/back.svg" />
+              </div>
+              <div class="-mt-1 font-sans font-semibold capitalize lg:text-xl">
+                Retour
+              </div>
             </button>
           </div>
         </div>
@@ -384,6 +436,9 @@ export default {
       opponentSurrendered: false, // Booléen indiquant si l'adversaire a quitté ou abandonné
       rankingTable: [], // Classement final total de la partie
       userRanking: null, // Classement final du joueur
+      initialCountdown: 3, // Compte à rebours initial de début de partie
+      icIntervalId: null, // Identifiant pour la fonction setInterval du compte à rebours initial
+      showIc: false, // Booléen permettant l'affichage du compte à rebours initial
     }
   },
   head() {
@@ -423,6 +478,16 @@ export default {
               force: true,
             },
           })
+        } else if (
+          snapshot.val()[this.$route.params.lobby].state !== 'En attente'
+        ) {
+          // La partie a déjà commencée
+          this.$router.push({
+            name: 'lobby',
+            params: {
+              force: true,
+            },
+          })
         }
       })
   },
@@ -436,7 +501,12 @@ export default {
       // On recupere les questions du theme choisi et son nom
       this.randomQuestions = this.lobbyInfo.questions
       this.gameInfo.theme = this.lobbyInfo.theme.name
-      this.userNumber = this.lobbyInfo.players.length - 1
+      // this.userNumber = this.lobbyInfo.players.length - 1
+      for (let i = 0; i < this.lobbyInfo.players.length; i++) {
+        if (this.$fire.auth.currentUser.uid === this.lobbyInfo.players[i].uid) {
+          this.userNumber = i
+        }
+      }
       this.isLoading = false
     })
     // On ecoute les evenement du serveur
@@ -472,9 +542,25 @@ export default {
           // On recupere l'état de la partie
           this.gameReady = this.lobbyInfo.state === 'En cours'
           if (this.gameReady) {
-            // On lance la partie
-            this.gameStarted = true
-            this.intervalId = setInterval(this.countdown, 1000)
+            // On lance le compte à rebours initial
+            this.showIc = true
+            const sound = new Audio('/initialCountdown.mp3')
+            sound.play()
+            this.icIntervalId = setInterval(
+              function () {
+                this.initialCountdown -= 1
+                // Si le compte à rebours atteint 0
+                if (!this.initialCountdown) {
+                  // On arrête le compte à rebours
+                  clearInterval(this.icIntervalId)
+                  this.showIc = false
+                  // On lance la partie
+                  this.gameStarted = true
+                  this.intervalId = setInterval(this.countdown, 1000)
+                }
+              }.bind(this),
+              1000
+            )
           }
         } else if (
           Object.keys(this.lobbyInfo.players).length === 1 &&
@@ -536,6 +622,9 @@ export default {
     this.lobbyRef.off('value')
   },
   methods: {
+    getImgUrl(imgNumber) {
+      return require('~/assets/img/chrono' + imgNumber + '.png')
+    },
     kickPlayer() {
       this.$fire.database
         .ref(
@@ -578,6 +667,8 @@ export default {
       )
     },
     browserClosedHandler(event) {
+      // On arrete d'écouter les evenements
+      this.lobbyRef.off('value')
       // On lance l'ecran de chargement
       this.isLoading = true
       // Si l'utilisateur est le createur du lobby alors on supprime le lobby
@@ -608,6 +699,7 @@ export default {
       event.returnValue = ''
     },
     play(userAnswer, index) {
+      console.log(this.userNumber)
       // On stop et cache le timer
       clearInterval(this.intervalId)
       this.$refs.timeBar.className += 'hidden'

@@ -14,6 +14,7 @@
     </div>
     <div class="w-full py-1">
       <button
+        v-if="status === 'En attente'"
         type="button"
         class="flex items-center justify-center w-full text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl hover:bg-indigo-600 hover:scale-105 h-14"
         @click="$emit('click')"
@@ -24,7 +25,7 @@
             src="~/assets/img/play-button.svg"
           />
         </div>
-        <div v-if="status !== 'En cours'">
+        <div>
           <div class="-mt-1 font-sans font-semibold lg:text-xl">REJOINDRE</div>
         </div>
       </button>

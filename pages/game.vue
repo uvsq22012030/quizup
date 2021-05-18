@@ -106,7 +106,66 @@
           </div>
         </div>
         <!-- Fin de partie -->
-        <div></div>
+        <div
+          class="container relative h-full px-1 py-1 mx-auto md:px-12 md:py-12 z-1"
+        >
+          <div
+            class="flex flex-col items-center space-y-2 w-full h-full p-3 border-indigo-900 shadow-xl md:p-8 border-3 md:border-12 rounded-xl"
+          >
+            <h1 class="text-center text-gray-100 text-2xl">Partie terminée</h1>
+            <div class="w-1/2 h-50">
+              <img
+                class="object-contain h-full w-full"
+                src="~/assets/img/winner.png"
+              />
+            </div>
+            <h1 class="text-center text-gray-100 font-bold text-4xl">
+              Bonnes réponses : {{ gameInfo.answers }} / {{ totalQuestions }}
+            </h1>
+            <h1
+              v-if="isTimed"
+              class="text-center text-gray-100 font-bold text-4xl"
+            >
+              Score : {{ gameInfo.score }} points
+            </h1>
+            <div class="flex items-center justify-center space-x-2">
+              <button
+                type="button"
+                class="flex items-center justify-center w-full text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+                @click="$router.push('/')"
+              >
+                <div class="mr-3">
+                  <img
+                    class="object-fill w-10 p-1"
+                    src="~/assets/img/back.svg"
+                  />
+                </div>
+                <div
+                  class="-mt-1 font-sans font-semibold capitalize lg:text-xl"
+                >
+                  Retour
+                </div>
+              </button>
+              <button
+                type="button"
+                class="flex items-center justify-center w-full text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+                @click="retry()"
+              >
+                <div class="mr-3">
+                  <img
+                    class="object-fill w-10 p-1"
+                    src="~/assets/img/circular-arrow.png"
+                  />
+                </div>
+                <div
+                  class="-mt-1 font-sans font-semibold capitalize lg:text-xl"
+                >
+                  Rejouer
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -128,9 +187,6 @@ export default {
       done: false, // Booléen décrivant si l'utilisateur a repondu ou non à la question courante
       theme: [],
       randomQuestions: [], // Liste aleatoire de questions
-      defaultButtonClass:
-        // CSS par défaut de chaque bouton
-        'h-5/6 w-5/12 p-2 font-xl tracking-wider text-gray-700 border-2 border-gray-700 shadow-xl rounded-3xl focus:outline-none focus:border-gray-700 hover:font-bold hover:bg-gray-100 bg-white',
       currentQuestionNumber: 0, // Numero de la question courante
       totalQuestions: 10, // Nombre total de questions
       gameInfo: {
@@ -238,6 +294,7 @@ export default {
         if (this.isTimed) {
           // On calcule le score de la question
           this.gameInfo.score += Math.max(0, this.timer) * 20
+          console.log(this.gameInfo.score)
           if (!this.$fire.auth.currentUser.isAnonymous) {
             // On l'enregistre dans la base de données
             this.historyRef.child(this.gameKey).update({
