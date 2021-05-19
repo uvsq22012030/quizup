@@ -224,7 +224,7 @@ export default {
   },
   head() {
     return {
-      title: 'Play uvsQuiz - Revolution du Trivia',
+      title: 'Play uvsQuiz - Révolution du Trivia',
       meta: [
         {
           hid: 'description',

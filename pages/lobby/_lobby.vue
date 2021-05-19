@@ -333,7 +333,7 @@
               VOUS AVEZ GAGNÉ !
             </h1>
             <h1 class="text-center text-gray-100 text-2xl">
-              Tout les adversaires ont quitté
+              Tous les adversaires ont quitté
             </h1>
             <h1 class="text-center text-gray-100 font-bold text-4xl">
               Score : {{ gameInfo.score }} points

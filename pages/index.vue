@@ -120,7 +120,7 @@
           src="~/assets/img/mental-health.svg"
         />
         <p v-if="themeName" class="my-2 font-bold text-center capitalize">
-          Theme selectionné : {{ themeName.split('_').join(' ') }}
+          Thème selectionné : {{ themeName.split('_').join(' ') }}
         </p>
         <p class="my-2 text-center">Choisir un mode de jeu :</p>
       </div>
@@ -212,7 +212,7 @@
         </div>
         <div class="flex flex-col items-center justify-center mt-2">
           <h1 class="font-bold text-center text-indigo-800">
-            Vous serez rediriger dans :
+            Vous serez redirigés dans :
           </h1>
           <h1 class="font-bold text-center text-2xl text-indigo-800">
             {{ countdown }}
