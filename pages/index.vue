@@ -353,6 +353,7 @@ export default {
           id: this.themeIdDictionary[themeName],
         },
         state: 'matchmaking',
+        type: 'matchmaking',
         players: [
           {
             name: this.$fire.auth.currentUser.displayName,

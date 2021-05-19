@@ -245,6 +245,7 @@ export default {
             id: this.themeIdDictionary[themeName],
           },
           state: 'En attente',
+          type: 'normal',
           players: [
             {
               name: this.$fire.auth.currentUser.displayName,
