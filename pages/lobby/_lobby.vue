@@ -479,6 +479,7 @@ export default {
             },
           })
         } else if (
+          snapshot.val()[this.$route.params.lobby].type === 'normal' &&
           snapshot.val()[this.$route.params.lobby].state !== 'En attente'
         ) {
           // La partie a déjà commencée
@@ -570,25 +571,31 @@ export default {
           // On recupere l'état de la partie
           this.gameReady = this.lobbyInfo.state === 'En cours'
           if (this.gameReady) {
-            // On lance le compte à rebours initial
-            this.showIc = true
-            const sound = new Audio('/initialCountdown.mp3')
-            sound.play()
-            this.icIntervalId = setInterval(
-              function () {
-                this.initialCountdown -= 1
-                // Si le compte à rebours atteint 0
-                if (!this.initialCountdown) {
-                  // On arrête le compte à rebours
-                  clearInterval(this.icIntervalId)
-                  this.showIc = false
-                  // On lance la partie
-                  this.gameStarted = true
-                  this.intervalId = setInterval(this.countdown, 1000)
-                }
-              }.bind(this),
-              1000
-            )
+            if (this.lobbyInfo.type === 'matchmaking') {
+              // On lance la partie
+              this.gameStarted = true
+              this.intervalId = setInterval(this.countdown, 1000)
+            } else if (this.lobbyInfo.type === 'normal') {
+              // On lance le compte à rebours initial
+              this.showIc = true
+              const sound = new Audio('/initialCountdown.mp3')
+              sound.play()
+              this.icIntervalId = setInterval(
+                function () {
+                  this.initialCountdown -= 1
+                  // Si le compte à rebours atteint 0
+                  if (!this.initialCountdown) {
+                    // On arrête le compte à rebours
+                    clearInterval(this.icIntervalId)
+                    this.showIc = false
+                    // On lance la partie
+                    this.gameStarted = true
+                    this.intervalId = setInterval(this.countdown, 1000)
+                  }
+                }.bind(this),
+                1000
+              )
+            }
           }
         } else if (
           Object.keys(this.lobbyInfo.players).length === 1 &&
