@@ -248,7 +248,6 @@
                       ref="answerCards"
                       v-for="(n, index) in 4"
                       :key="index"
-                      :disabled="done"
                       :label="
                         randomQuestions[currentQuestionNumber].propositions[
                           index
