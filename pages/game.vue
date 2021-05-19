@@ -1,224 +1,183 @@
 <template>
-  <div
-    class="bg-local min-h-screen"
-    style="background-image: url(background.jpg)"
-  >
-    <section class="flex flex-col min-h-screen">
+  <div>
+    <div class="relative h-screen overflow-hidden bg-indigo-900">
+      <img
+        src="~/assets/img/Rainbow-Vortex.svg"
+        class="absolute object-cover w-full h-full"
+      />
       <div
-        class="flex items-stretch justify-center py-5 sm:py-10 flex-1 lg:px-15 min-h-screen"
+        class="absolute inset-0 opacity-25 bg-gradient-to-tr from-indigo-400 via-indigo-600 to-black"
+      ></div>
+      <div
+        class="container relative h-full px-1 py-1 mx-auto md:px-12 md:py-12 z-1"
       >
+        <!-- Partie en cours -->
         <div
-          class="rounded-lg border-1 shadow-2xl px-1 md:px-5 py-3 sm:border-2 xl:max-w-3/5 sm:w-screen"
+          v-if="currentQuestionNumber < 10"
+          class="w-full h-full p-3 border-indigo-900 shadow-xl md:p-8 border-3 md:border-12 rounded-xl"
         >
-          <!-- Informations sur la partie -->
-          <div
-            v-if="currentQuestionNumber + 1 <= 10"
-            class="flex justify-between h-5 w-full mb-8"
-          >
-            <div
-              class="block md:flex text-left w-1/3 text-xs md:font-bold md:text-l"
+          <div class="flex items-center justify-between w-full">
+            <div class="w-1/3">
+              <radial-progress-bar
+                v-if="currentQuestionNumber < 10 && isTimed"
+                ref="timeBar"
+                :diameter="100"
+                :completed-steps="timer * 5"
+                :total-steps="100"
+              >
+                <p class="text-xl text-white">{{ timer }}</p>
+              </radial-progress-bar>
+            </div>
+
+            <p
+              class="w-1/3 mx-3 text-xl font-bold tracking-widest text-center text-yellow-400 md:text-4xl"
             >
-              <!-- Bouton retour au menu -->
-              <div class="flex items-start md:items-center">
-                <button
-                  type="submit"
-                  class="md:pl-2 flex items-center bg-red-400 hover:bg-red-600 text-white text-lg font-bold md:w-7 border mr-2 rounded-full focus:outline-none"
-                  @click="$router.push('/')"
-                >
-                  «
-                </button>
-                <!-- Difficulté 
-                <div class="w-auto space-x-3 text-left md:flex md:items-center">
-                  Difficulté
-                  <div class="flex items-center md:mt-2 mb-4 md:mb-3">
-                    <svg
-                      v-for="i in Object.keys(randomQuestions).length"
-                      :key="i"
-                      :class="[
-                        i <= Object.keys(randomQuestions).indexOf(difficulty) + 1
-                          ? 'text-yellow-500'
-                          : 'text-gray-400',
-                        'mx-1 w-4 h-4 fill-current',
-                      ]"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"
-                      />
-                    </svg>
-                  </div>
+              {{ gameInfo.answers }}
+            </p>
+            <p
+              class="w-1/3 mx-3 text-xl font-bold tracking-widest text-right text-indigo-400 md:text-4xl"
+            >
+              {{ currentQuestionNumber + 1 }}
+              <span class="text-base">/{{ totalQuestions }}</span>
+            </p>
+          </div>
+          <!-- Chrono -->
+
+          <div class="flex h-full mt-5">
+            <div
+              class="w-full h-full p-5 overflow-y-scroll bg-indigo-900 rounded-md shadow-xl"
+              style="height: 90%"
+            >
+              <h1
+                class="my-3 text-xl font-bold text-center text-white md:text-2xl"
+              >
+                {{ randomQuestions[currentQuestionNumber].question }}
+              </h1>
+              <div class="flex flex-wrap w-full mt-10">
+                <AnswerCard
+                  v-for="(n, index) in 4"
+                  :key="index"
+                  ref="answerCards"
+                  :disabled="done"
+                  :label="
+                    randomQuestions[currentQuestionNumber].propositions[index]
+                  "
+                  @click="
+                    play(
+                      randomQuestions[currentQuestionNumber].propositions[
+                        index
+                      ],
+                      index
+                    )
+                  "
+                ></AnswerCard>
+              </div>
+              <!-- Anecdote -->
+              <div v-if="currentQuestionNumber < 10 && done" class="">
+                <div class="flex items-center justify-center w-full">
+                  <img
+                    class="object-fill mr-3 w-7 h-7"
+                    src="~/assets/img/mental-health.svg"
+                  />
+                  <h1 class="text-sm text-indigo-300 max-w-max">
+                    {{ randomQuestions[currentQuestionNumber].anecdote }}
+                  </h1>
                 </div>
-                -->
+                <button
+                  type="button"
+                  class="flex items-center justify-center w-full p-3 mx-2 mt-5 text-white transform scale-90 bg-indigo-800 rounded-lg shadow-xl hover:bg-indigo-600 hover:scale-95 h-14"
+                  @click="nextQuestion"
+                >
+                  <div class="mr-3">
+                    <img
+                      class="object-fill w-10 p-1"
+                      src="~/assets/img/next.svg"
+                    />
+                  </div>
+                  <div>
+                    <div class="text-sm text-left">PROCHAINE</div>
+                    <div class="-mt-1 font-sans font-semibold lg:text-xl">
+                      QUESTION
+                    </div>
+                  </div>
+                </button>
               </div>
             </div>
-            <div
-              class="justify-center space-x-2 flex w-1/3 items-center text-xs md:font-bold md:text-l"
-            >
-              <img class="h-3 w-3 md:h-8 md:w-8" src="~/assets/img/check.png" />
-              <p>{{ gameInfo.answers }}</p>
-            </div>
-            <div
-              class="justify-end space-x-1 flex w-1/3 items-center text-xs md:font-bold md:text-l"
-            >
-              <img
-                class="h-3 w-3 md:h-8 md:w-8"
-                src="~/assets/img/questions.png"
-              />
-              <p>{{ currentQuestionNumber + 1 }}/{{ totalQuestions }}</p>
-            </div>
           </div>
-          <!-- Timer bar -->
-          <div v-if="isTimed" ref="timeBar">
-            <!-- Progressbar -->
-            <div
-              v-if="currentQuestionNumber + 1 <= 10"
-              class="flex h-4 bg-white w-5/6 bg-grey-light float-left rounded-full shadow-2xl md:mt-3"
-            >
-              <div
-                class="h-4 bg-red-400 text-xs leading-none py-1 text-center rounded-full text-white"
-                :style="'width:' + 5 * (20 - timer) + '%'"
-              ></div>
-            </div>
-            <!-- Hourglass -->
-            <img
-              v-if="currentQuestionNumber + 1 <= 10"
-              class="flex bg-none right-5 object-fill h-5 w-10 md:h-12 md:w-20"
-              src="~/assets/img/hourglass.gif"
-            />
-          </div>
-          <!-- Question -->
+        </div>
+        <!-- Fin de partie -->
+        <div
+          class="container relative h-full px-1 py-1 mx-auto md:px-12 md:py-12 z-1"
+        >
           <div
-            v-if="currentQuestionNumber + 1 <= 10"
-            class="block h-1/6 w-full mb-2"
+            class="flex flex-col items-center space-y-2 w-full h-full p-3 border-indigo-900 shadow-xl md:p-8 border-3 md:border-12 rounded-xl"
           >
-            <p
-              class="block float-left w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
+            <h1 class="text-center text-gray-100 text-2xl">Partie terminée</h1>
+            <div class="w-1/2 h-50">
+              <img
+                class="object-contain h-full w-full"
+                src="~/assets/img/winner.png"
+              />
+            </div>
+            <h1 class="text-center text-gray-100 font-bold text-4xl">
+              Bonnes réponses : {{ gameInfo.answers }} / {{ totalQuestions }}
+            </h1>
+            <h1
+              v-if="isTimed"
+              class="text-center text-gray-100 font-bold text-4xl"
             >
-              {{ randomQuestions[currentQuestionNumber].question }}
-            </p>
-          </div>
-          <!-- Message de fin de partie -->
-          <div v-else class="block h-full w-full py-10 md:py-30">
-            <img
-              class="block mr-auto ml-auto object-fill h-20 w-20 md:h-50 md:w-50"
-              src="~/assets/img/wreath.png"
-            />
-            <p
-              class="block text-center bottom-0 w-full mt-5 text-xl md:text-6xl font-bold tracking-wide text-gray-600"
-            >
-              Partie terminée !
-            </p>
-            <p
-              class="block text-center bottom-0 w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
-            >
-              {{ gameInfo.answers }} / {{ totalQuestions }}
-            </p>
-            <p
-              class="block text-center bottom-0 w-full mt-5 text-l md:text-2xl font-bold tracking-wide text-gray-600"
-            >
-              Bonne réponses
-            </p>
-            <div
-              class="flex w-full h-1/4 items-stretch justify-center text-center space-x-8 mt-5"
-            >
+              Score : {{ gameInfo.score }} points
+            </h1>
+            <div class="flex items-center justify-center space-x-2">
               <button
-                class="h-1/2 w-1/3 p-2 text-sm md:text-lg font-bold tracking-wider text-white bg-red-400 border-0 rounded-2xl shadow-2xl focus:outline-none hover:bg-red-600 md:hover:text-xl"
-                type="submit"
-                @click="retry"
-              >
-                Rejouer
-              </button>
-              <button
-                class="h-1/2 w-1/3 p-2 text-sm md:text-lg font-bold tracking-wider text-white bg-red-400 border-0 rounded-2xl shadow-2xl focus:outline-none hover:bg-red-600 md:hover:text-xl"
-                type="submit"
+                type="button"
+                class="flex items-center justify-center w-full text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
                 @click="$router.push('/')"
               >
-                Revenir au menu
-              </button>
-            </div>
-          </div>
-          <!-- Réponses -->
-          <div
-            v-if="currentQuestionNumber + 1 <= 10"
-            ref="buttons1"
-            class="block w-full h-1/4 items-stretch justify-between text-center space-x-8"
-          >
-            <button
-              :disabled="done"
-              type="submit"
-              :class="defaultButtonClass"
-              @click="play"
-            >
-              {{ randomQuestions[currentQuestionNumber].propositions[0] }}
-            </button>
-            <button
-              :disabled="done"
-              type="submit"
-              :class="defaultButtonClass"
-              @click="play"
-            >
-              {{ randomQuestions[currentQuestionNumber].propositions[1] }}
-            </button>
-          </div>
-          <div
-            v-if="currentQuestionNumber + 1 <= 10"
-            ref="buttons2"
-            class="block w-full h-1/4 items-stretch justify-between text-center space-x-8 mb-5"
-          >
-            <button
-              :disabled="done"
-              type="submit"
-              :class="defaultButtonClass"
-              @click="play"
-            >
-              {{ randomQuestions[currentQuestionNumber].propositions[2] }}
-            </button>
-            <button
-              :disabled="done"
-              type="submit"
-              :class="defaultButtonClass"
-              @click="play"
-            >
-              {{ randomQuestions[currentQuestionNumber].propositions[3] }}
-            </button>
-          </div>
-          <div v-if="currentQuestionNumber + 1 <= 10 && done">
-            <!-- Anecdote -->
-            <div class="block h-auto w-full space-y-2 mt-2">
-              <hr class="w-full border-t" />
-              <div class="text-left flex flex-shrink-0 text-gray-800 mr-auto">
-                <img
-                  class="mr-1 top-0 object-fill h-3 w-3 md:h-6 md:w-6"
-                  src="~/assets/img/lamp.png"
-                />
-                <p
-                  class="block float-left w-full text-xs md:text-xl font-bold tracking-wider text-gray-600"
+                <div class="mr-3">
+                  <img
+                    class="object-fill w-10 p-1"
+                    src="~/assets/img/back.svg"
+                  />
+                </div>
+                <div
+                  class="-mt-1 font-sans font-semibold capitalize lg:text-xl"
                 >
-                  Anecdote :
-                  {{ randomQuestions[currentQuestionNumber].anecdote }}
-                </p>
-              </div>
-            </div>
-            <!-- Bouton suivant -->
-            <div class="block h-auto w-full mb-5">
+                  Retour
+                </div>
+              </button>
               <button
-                type="submit"
-                class="float-right h-full w-1/4 md:w-1/6 sm:p-2 text-xs md:text-l tracking-wider text-gray-700 bg-white border-2 border-gray-700 shadow-xl rounded-xl focus:outline-none focus:border-gray-700 hover:bg-gray-100 hover:font-bold"
-                @click="nextQuestion"
+                type="button"
+                class="flex items-center justify-center w-full text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+                @click="retry()"
               >
-                Suivant »
+                <div class="mr-3">
+                  <img
+                    class="object-fill w-10 p-1"
+                    src="~/assets/img/circular-arrow.png"
+                  />
+                </div>
+                <div
+                  class="-mt-1 font-sans font-semibold capitalize lg:text-xl"
+                >
+                  Rejouer
+                </div>
               </button>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   </div>
 </template>
 
 <script>
+import RadialProgressBar from 'vue-radial-progress'
+
 export default {
+  components: {
+    RadialProgressBar,
+  },
   data() {
     return {
       historyRef: null, // Reference sur l'historique dans la base de données
@@ -228,9 +187,6 @@ export default {
       done: false, // Booléen décrivant si l'utilisateur a repondu ou non à la question courante
       theme: [],
       randomQuestions: [], // Liste aleatoire de questions
-      defaultButtonClass:
-        // CSS par défaut de chaque bouton
-        'h-5/6 w-5/12 p-2 font-xl tracking-wider text-gray-700 border-2 border-gray-700 shadow-xl rounded-3xl focus:outline-none focus:border-gray-700 hover:font-bold hover:bg-gray-100 bg-white',
       currentQuestionNumber: 0, // Numero de la question courante
       totalQuestions: 10, // Nombre total de questions
       gameInfo: {
@@ -241,7 +197,42 @@ export default {
         score: 0,
         answers: 0,
       },
+      options: {
+        text: {
+          color: '#FFFFFF',
+          shadowEnable: true,
+          shadowColor: '#000000',
+          hideText: true,
+        },
+        progress: {
+          color: '#2dbd2d',
+          backgroundColor: '#333333',
+        },
+        layout: {
+          height: 100,
+          width: 150,
+          verticalTextAlign: 61,
+          horizontalTextAlign: 43,
+          zeroOffset: 0,
+          strokeWidth: 30,
+          progressPadding: 5,
+          type: 'circle',
+        },
+      },
       gameKey: null, // Clé de la partie dans la base de donnée
+    }
+  },
+  head() {
+    return {
+      title: 'Play uvsQuiz - Revolution du Trivia',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content:
+            'Le seul jeu de questions-réponses multijoueurs que vous jouerez si vous avez été à UVSQ',
+        },
+      ],
     }
   },
   created() {
@@ -285,28 +276,25 @@ export default {
       }
       return array
     },
-    play(e) {
-      e.preventDefault()
+    play(userAnswer, index) {
       // On stop et cache le timer
       if (this.isTimed) {
         clearInterval(this.intervalId)
         this.$refs.timeBar.className += 'hidden'
       }
-      // On récupere la réponse cliquée
-      const userAnswer = e.target.innerText
+      // On compare la réponse cliquée
       const rightAnswer = this.randomQuestions[this.currentQuestionNumber]
         .réponse
       if (userAnswer === rightAnswer) {
         // Bonne réponse
         // On la met en vert
-        e.target.className = e.target.className
-          .replace('hover:bg-gray-100', '')
-          .replace('bg-white', 'bg-green-400')
+        this.$refs.answerCards[index].isCorrect = true
         // On augmente le nombre de bonne réponses
         this.gameInfo.answers += 1
         if (this.isTimed) {
           // On calcule le score de la question
           this.gameInfo.score += Math.max(0, this.timer) * 20
+          console.log(this.gameInfo.score)
           if (!this.$fire.auth.currentUser.isAnonymous) {
             // On l'enregistre dans la base de données
             this.historyRef.child(this.gameKey).update({
@@ -318,40 +306,26 @@ export default {
       } else {
         // Mauvaise réponse
         // On met la réponse en rouge
-        e.target.className = e.target.className
-          .replace('hover:bg-gray-100', '')
-          .replace('bg-white', 'bg-red-400')
+        this.$refs.answerCards[index].isFalse = true
         // On met la bonne réponse en vert
-        const buttons1 = this.$refs.buttons1.children
-        const buttons2 = this.$refs.buttons2.children
-        buttons1.forEach(function (b) {
-          if (b.innerText === rightAnswer) {
-            b.className = b.className
-              .replace('hover:bg-gray-100', '')
-              .replace('bg-white', 'bg-green-400')
-          }
-        })
-        buttons2.forEach(function (b) {
-          if (b.innerText === rightAnswer) {
-            b.className = b.className
-              .replace('hover:bg-gray-100', '')
-              .replace('bg-white', 'bg-green-400')
+        this.$refs.answerCards.forEach(function (b) {
+          if (b.label === rightAnswer) {
+            b.isCorrect = true
           }
         })
       }
       // On termine le tour
       this.done = true
     },
-    nextQuestion(e) {
-      e.preventDefault()
+    nextQuestion() {
       // On passe à la prochaine question
       this.currentQuestionNumber++
       if (this.currentQuestionNumber < 10) {
         // On remet les boutons à zero
-        const buttons1 = this.$refs.buttons1.children
-        const buttons2 = this.$refs.buttons2.children
-        buttons1.forEach((b) => (b.className = this.defaultButtonClass))
-        buttons2.forEach((b) => (b.className = this.defaultButtonClass))
+        this.$refs.answerCards.forEach(function (b) {
+          b.isFalse = false
+          b.isCorrect = false
+        })
         // On cache l'anecdote et le bouton suivant
         this.done = false
         if (this.isTimed) {
@@ -365,8 +339,7 @@ export default {
         }
       } else clearInterval(this.intervalId)
     },
-    retry(e) {
-      e.preventDefault()
+    retry() {
       // On cache l'anectode et le bouton suivant
       this.done = false
       // On tire 10 questions au hasard
@@ -397,20 +370,9 @@ export default {
         // On met la bonne réponse en vert
         const rightAnswer = this.randomQuestions[this.currentQuestionNumber]
           .réponse
-        const buttons1 = this.$refs.buttons1.children
-        const buttons2 = this.$refs.buttons2.children
-        buttons1.forEach(function (b) {
-          if (b.innerText === rightAnswer) {
-            b.className = b.className
-              .replace('hover:bg-gray-100', '')
-              .replace('bg-white', 'bg-green-400')
-          }
-        })
-        buttons2.forEach(function (b) {
-          if (b.innerText === rightAnswer) {
-            b.className = b.className
-              .replace('hover:bg-gray-100', '')
-              .replace('bg-white', 'bg-green-400')
+        this.$refs.answerCards.forEach(function (b) {
+          if (b.label === rightAnswer) {
+            b.isCorrect = true
           }
         })
         // On cache le timer
@@ -423,4 +385,4 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped></style>

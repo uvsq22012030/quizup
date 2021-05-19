@@ -5,20 +5,25 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'QuizUp',
+    title: 'Play uvsQuiz - Le jeu de quiz révolutionnaire',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
+      {
+        hid: 'description',
+        name: 'description',
+        content:
+          'Le seul jeu de questions-réponses multijoueurs que vous jouerez si vous avez été à UVSQ',
+      },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.svg' }],
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [],
+  css: ['@/assets/main.scss'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: ['~plugins/vue-final-modal.js', '~plugins/vue-progress-bar.js'],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -36,13 +41,9 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    // https://www.npmjs.com/package/nuxt-vue-select
     'nuxt-vue-select',
-    // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
-    // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
-    // https://firebase.nuxtjs.org/guide/getting-started/
     [
       '@nuxtjs/firebase',
       {
@@ -54,7 +55,8 @@ export default {
           messagingSenderId: '737504622882',
           appId: '1:737504622882:web:9c7d18b64d1e06884e4d7b',
           measurementId: 'G-BZXCQ7M42Q',
-          databaseURL: 'https://quizup-91757-default-rtdb.europe-west1.firebasedatabase.app',
+          databaseURL:
+            'https://quizup-91757-default-rtdb.europe-west1.firebasedatabase.app',
         },
         services: {
           auth: {
@@ -78,10 +80,33 @@ export default {
   // PWA module configuration: https://go.nuxtjs.dev/pwa
   pwa: {
     manifest: {
-      lang: 'en',
+      name: 'uvsQuiz',
+      short_name: 'uvsQuiz',
+      language: 'fr-FR',
+      display: 'fullscreen',
+      theme_color: 'indigo',
+      background_color: '#ffffff',
+    },
+    meta: {
+      /* meta options */
+      name: 'uvsQuiz',
+      description:
+        'Le seul jeu de questions-réponses multijoueurs que vous jouerez si vous avez été à UVSQ',
+      theme_color: 'indigo',
     },
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {},
+  build: {
+    transpile: ['vue-final-modal'],
+    extend(config, ctx) {
+      config.module.rules.push({
+        test: /\.(ogg|mp3|wav|mpe?g)$/i,
+        loader: 'file-loader',
+        options: {
+          name: '[path][name].[ext]'
+        }
+      })
+    },
+  },
 }
