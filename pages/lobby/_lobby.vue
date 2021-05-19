@@ -488,6 +488,34 @@ export default {
               force: true,
             },
           })
+        } else {
+          // Le joueur rejoint le lobby
+          const idTable = snapshot
+            .val()
+            [this.$route.params.lobby].players.map(function (player) {
+              return player.uid
+            })
+          let includes = false
+          for (let i = 0; i < idTable.length; i++) {
+            if (idTable[i] === this.$fire.auth.currentUser.uid) {
+              includes = true
+              break
+            }
+          }
+          if (!includes) {
+            const playersNumber = snapshot.val()[this.$route.params.lobby]
+              .players.length
+            this.$fire.database
+              .ref('lobbies/')
+              .child(this.$route.params.lobby + '/players/' + playersNumber)
+              .set({
+                name: this.$fire.auth.currentUser.displayName,
+                uid: this.$fire.auth.currentUser.uid,
+                isDone: false,
+                score: 0,
+                lastAnswer: null,
+              })
+          }
         }
       })
   },
