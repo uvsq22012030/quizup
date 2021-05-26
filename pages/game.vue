@@ -110,57 +110,59 @@
           class="container relative h-full px-1 py-1 mx-auto md:px-12 md:py-12 z-1"
         >
           <div
-            class="flex flex-col items-center space-y-2 w-full h-full p-3 border-indigo-900 shadow-xl md:p-8 border-3 md:border-12 rounded-xl"
+            class="flex flex-col items-center w-full h-full p-3 mt-6 space-y-2 border-indigo-900 shadow-xl md:p-8 border-3 md:border-12 rounded-xl"
           >
-            <h1 class="text-center text-gray-100 text-2xl">Partie terminée</h1>
-            <div class="w-1/2 h-50">
+            <h1 class="py-8 text-4xl text-center text-gray-100">
+              Partie terminée
+            </h1>
+            <div class="w-1/2 my-5 h-50">
               <img
-                class="object-contain h-full w-full"
-                src="~/assets/img/winner.png"
+                class="object-contain w-full h-full"
+                src="~/assets/img/finish-line.svg"
               />
             </div>
-            <h1 class="text-center text-gray-100 font-bold text-4xl">
+            <h1 class="my-8 text-4xl font-bold text-center text-gray-100">
               Bonnes réponses : {{ gameInfo.answers }} / {{ totalQuestions }}
             </h1>
             <h1
               v-if="isTimed"
-              class="text-center text-gray-100 font-bold text-4xl"
+              class="text-4xl font-bold text-center text-gray-100"
             >
               Score : {{ gameInfo.score }} points
             </h1>
             <div class="flex items-center justify-center space-x-2">
               <button
                 type="button"
-                class="flex items-center justify-center w-full text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+                class="flex items-center justify-center w-full p-4 m-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-1/2 hover:bg-indigo-600 hover:scale-105 h-14"
                 @click="$router.push('/')"
               >
-                <div class="mr-3">
+                <div class="">
                   <img
                     class="object-fill w-10 p-1"
                     src="~/assets/img/back.svg"
                   />
                 </div>
                 <div
-                  class="-mt-1 font-sans font-semibold capitalize lg:text-xl"
+                  class="ml-2 -mt-1 font-sans font-semibold capitalize lg:text-base"
                 >
-                  Retour
+                  RETOUR
                 </div>
               </button>
               <button
                 type="button"
-                class="flex items-center justify-center w-full text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-48 hover:bg-indigo-600 hover:scale-105 h-14"
+                class="flex items-center justify-center w-full p-4 m-3 text-white transform scale-100 bg-indigo-800 rounded-lg shadow-xl lg:w-1/2 hover:bg-indigo-600 hover:scale-105 h-14"
                 @click="retry()"
               >
-                <div class="mr-3">
+                <div class="">
                   <img
                     class="object-fill w-10 p-1"
                     src="~/assets/img/circular-arrow.png"
                   />
                 </div>
                 <div
-                  class="-mt-1 font-sans font-semibold capitalize lg:text-xl"
+                  class="ml-2 -mt-1 font-sans font-semibold capitalize lg:text-base"
                 >
-                  Rejouer
+                  REJOUER
                 </div>
               </button>
             </div>
